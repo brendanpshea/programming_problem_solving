@@ -27,8 +27,6 @@
 "Java allows variables to be declared and used without explicit initialization.",false
 "public static void main(String[] args) { is the signature of the main method in Java.",true
 "String actionCommand = scanner.nextLine(); reads a line of user input and stores it in the actionCommand variable.",true
-"if (actionCommand.equals(\"explore\")) { ... } checks if actionCommand is equal to the string \"explore\" using the equals method.",true
-"else if (actionCommand.equals("idle")) { ... } is part of an if-else-if statement.",true
 "else { ... } is the final else block in an if-else-if statement.",true
 "In Java, import java.util.Scanner; imports the Scanner class from Java's utility package.",true
 "In Java, Scanner scanner = new Scanner(System.in); creates a new Scanner object for reading user input.",true
