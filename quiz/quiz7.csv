@@ -27,9 +27,9 @@
 "public static void main(String[] args) { is the signature of the main method in Java.",true
 "String actionCommand = scanner.nextLine(); reads a line of user input and stores it in the actionCommand variable.",true
 "else { ... } is the final else block in an if-else-if statement.",true
-"In Java, import java.util.Scanner; imports the Scanner class from Java's utility package.",true
-"In Java, Scanner scanner = new Scanner(System.in); creates a new Scanner object for reading user input.",true
-"In Java, int userNumber; declares an integer variable named userNumber.",true
-"In Java, do { ... } while (userNumber < 1 || userNumber > 10); is a do-while loop that validates user input.",true
+"import java.util.Scanner; imports the Scanner class from Java's utility package.",true
+"Scanner scanner = new Scanner(System.in); creates a new Scanner object for reading user input.",true
+"int userNumber; declares an integer variable named userNumber.",true
+" do { ... } while (userNumber < 1 || userNumber > 10); is a do-while loop that validates user input.",true
 "Java variables are declared using var keyword: var x = 10;", false
 "Java uses indentation to denote code blocks: if (x > 10): print('x is greater than 10')", false
