@@ -23,7 +23,6 @@
 "Java uses the input function for reading user input.",false
 "Java requires manual management of computer memory.",false
 "Java uses the # symbol for comments.",false
-"Java uses the + operator for string concatenation and arithmetic addition.",false
 "Java allows variables to be declared and used without explicit initialization.",false
 "public static void main(String[] args) { is the signature of the main method in Java.",true
 "String actionCommand = scanner.nextLine(); reads a line of user input and stores it in the actionCommand variable.",true
