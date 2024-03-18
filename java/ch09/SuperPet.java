@@ -1,5 +1,3 @@
-package ch09;
-
 public abstract class SuperPet {
     protected String name;
     protected String superPower;

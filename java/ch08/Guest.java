@@ -1,4 +1,3 @@
-package ch08;
 public class Guest {
     // Attributes of the Guest class
     private String name;

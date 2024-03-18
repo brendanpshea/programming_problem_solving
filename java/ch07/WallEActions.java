@@ -1,5 +1,3 @@
-package ch07;
-
 import java.util.Scanner;
 
 public class WallEActions {

@@ -1,5 +1,3 @@
-package ch09;
-
 public class Dog extends Animal {
     // attributes
     private boolean leashTrained;

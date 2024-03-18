@@ -1,5 +1,3 @@
-package ch09;
-
 public class Cat extends Animal {
     // attributes
     private boolean declawed;

@@ -1,5 +1,3 @@
-package ch09;
-
 public class Volunteer {
     private String name;
     private int age;

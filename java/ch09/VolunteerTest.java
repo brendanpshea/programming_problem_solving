@@ -1,5 +1,3 @@
-package ch09;
-
 public class VolunteerTest {
     public static void main(String[] args) {
         Volunteer volunteer1 = new Volunteer("Anaxagoras");

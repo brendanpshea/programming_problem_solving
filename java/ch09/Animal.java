@@ -1,5 +1,3 @@
-package ch09;
-
 public class Animal {
   private String name, species, breed;
   private int age;

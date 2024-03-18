@@ -1,5 +1,3 @@
-package ch08;
-
 import java.util.ArrayList;
 public class UndeadArrayPractice {
 

@@ -1,5 +1,3 @@
-package ch09;
-
 public class PetFood {
     private String brand;
     private String type; // e.g., Dry, Wet, Treats

@@ -1,5 +1,3 @@
-package ch09;
-
 public class DogCatTest {
     public static void main(String[] args) {
         // Creating instances of Dog, Cat, and Animal

@@ -1,4 +1,3 @@
-package ch08;
 public class GuestTest {
     public static void main(String[] args) {
         // Creating an object for Dracula

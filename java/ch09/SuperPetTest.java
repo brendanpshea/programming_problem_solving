@@ -1,5 +1,3 @@
-package ch09;
-
 public class SuperPetTest {
 
     public static void main(String[] args) {

@@ -1,4 +1,3 @@
-package ch08;
 public class Room {
     // Attributes
     private int roomNumber;

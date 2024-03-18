@@ -1,5 +1,3 @@
-package ch09;
-
 public class SuperDog extends SuperPet {
 
     public SuperDog(String name) {
