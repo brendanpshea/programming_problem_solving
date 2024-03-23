@@ -1,24 +1,24 @@
-"In Object-Oriented Programming (OOP), programs are designed by making them out of objects that interact with one another.", "true"
-"In OOP, objects do not interact with each other.", "false"
-"A class is a blueprint for creating objects.", "true"
-"An object is a blueprint for creating classes.", "false"
-"Encapsulation is the practice of hiding the internal details of an object and only exposing the necessary information to the outside world.", "true"
-"Encapsulation involves exposing all the internal details of an object to the outside world.", "false"
-"Abstraction is the process of representing complex systems in a simplified way by focusing on essential features and ignoring unnecessary details.", "true"
-"Abstraction involves focusing on all the details of a complex system, including unnecessary ones.", "false"
-"In Java, a class is defined using the 'class' keyword.", "true"
-"In Java, a class is defined using the 'object' keyword.", "false"
-"Attributes in a Java class are variables that hold data about the state of an object.", "true"
-"Methods in a Java class are variables that hold data about the state of an object.", "false"
-"A constructor in Java is a special method that has the same name as the class.", "true"
-"A constructor in Java must have a different name than the class.", "false"
-"Access modifiers in Java determine the scope of access for classes, methods, and variables.", "true"
-"Access modifiers in Java have no effect on the scope of access for classes, methods, and variables.", "false"
-"The 'private' access modifier in Java restricts the visibility to the class itself.", "true"
-"The 'public' access modifier in Java restricts the visibility to the class itself.", "false"
-"Getter methods in Java are public methods that allow other classes to retrieve the value of private attributes.", "true"
-"Setter methods in Java are public methods that allow other classes to retrieve the value of private attributes.", "false"
-"Every Java application must have a main() method.", "true"
-"Not every Java application requires a main() method.", "false"
-"Objects in Java are created using the 'new' keyword.", "true"
-"Objects in Java are created using the 'object' keyword.", "false"
+"In Object-Oriented Programming (OOP), programs are designed by making them out of objects that interact with one another.", 1
+"In OOP, objects do not interact with each other.", 0
+"A class is a blueprint for creating objects.", 1
+"An object is a blueprint for creating classes.", 0
+"Encapsulation is the practice of hiding the internal details of an object and only exposing the necessary information to the outside world.", 1
+"Encapsulation involves exposing all the internal details of an object to the outside world.", 0
+"Abstraction is the process of representing complex systems in a simplified way by focusing on essential features and ignoring unnecessary details.", 1
+"Abstraction involves focusing on all the details of a complex system, including unnecessary ones.", 0
+"In Java, a class is defined using the 'class' keyword.", 1
+"In Java, a class is defined using the 'object' keyword.", 0
+"Attributes in a Java class are variables that hold data about the state of an object.", 1
+"Methods in a Java class are variables that hold data about the state of an object.", 0
+"A constructor in Java is a special method that has the same name as the class.", 1
+"A constructor in Java must have a different name than the class.", 0
+"Access modifiers in Java determine the scope of access for classes, methods, and variables.", 1
+"Access modifiers in Java have no effect on the scope of access for classes, methods, and variables.", 0
+"The 'private' access modifier in Java restricts the visibility to the class itself.", 1
+"The 'public' access modifier in Java restricts the visibility to the class itself.", 0
+"Getter methods in Java are public methods that allow other classes to retrieve the value of private attributes.", 1
+"Setter methods in Java are public methods that allow other classes to retrieve the value of private attributes.", 0
+"Every Java application must have a main() method.", 1
+"Not every Java application requires a main() method.", 0
+"Objects in Java are created using the 'new' keyword.", 1
+"Objects in Java are created using the 'object' keyword.", 0
