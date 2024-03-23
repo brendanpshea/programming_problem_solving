@@ -1,24 +1,24 @@
-"The name of the public class must exactly match the name of the file it is in, considering Java's case sensitivity.", "true"
-"The name of the public class does not need to match the name of the file it is in.", "false"
-"Java requires that you compile your source code into bytecode before you can run it.", "true"
-"Java allows you to run your source code directly without compiling it into bytecode.", "false"
-"After compiling, you run your Java program with the 'java' command followed by the class name without the .class extension.", "true"
-"After compiling, you run your Java program with the 'javac' command followed by the class name with the .class extension.", "false"
-"The 'assignGuest' method in the Room class assigns a guest to the room.", "true"
-"The 'vacateRoom' method in the Room class assigns a guest to the room.", "false"
-"The 'displayRoomDetails' method in the Room class prints out the room's details, including room number, type, occupancy status, and nightly rate.", "true"
-"The 'displayRoomDetails' method in the Room class only prints out the room number and type.", "false"
-"Java arrays are fixed in size and their capacity cannot be altered once created.", "true"
-"Java arrays are dynamic in size and their capacity can be altered after creation.", "false"
-"Java ArrayLists offer a dynamic array that can grow and shrink as needed.", "true"
-"Java ArrayLists have a fixed size that cannot be changed after initialization.", "false"
-"The 'add' method is used to add elements to an ArrayList.", "true"
-"The 'append' method is used to add elements to an ArrayList.", "false"
-"The 'remove' method is used to remove elements from an ArrayList.", "true"
-"The 'delete' method is used to remove elements from an ArrayList.", "false"
-"In a UML class diagram, classes are depicted as rectangles divided into three parts: class name, attributes, and methods.", "true"
-"In a UML class diagram, classes are depicted as circles divided into two parts: class name and attributes.", "false"
-"In a UML class diagram, a plain line connecting two classes indicates an association between them.", "true"
-"In a UML class diagram, a dotted line connecting two classes indicates an association between them.", "false"
-"In a UML class diagram, the '+' symbol before an attribute or method indicates that it is public.", "true"
-"In a UML class diagram, the '-' symbol before an attribute or method indicates that it is public.", "false"
+"The name of the public class must exactly match the name of the file it is in, considering Java's case sensitivity.", 1
+"The name of the public class does not need to match the name of the file it is in.", 0
+"Java requires that you compile your source code into bytecode before you can run it.", 1
+"Java allows you to run your source code directly without compiling it into bytecode.", 0
+"After compiling, you run your Java program with the 'java' command followed by the class name without the .class extension.", 1
+"After compiling, you run your Java program with the 'javac' command followed by the class name with the .class extension.", 0
+"The 'assignGuest' method in the Room class assigns a guest to the room.", 1
+"The 'vacateRoom' method in the Room class assigns a guest to the room.", 0
+"The 'displayRoomDetails' method in the Room class prints out the room's details, including room number, type, occupancy status, and nightly rate.", 1
+"The 'displayRoomDetails' method in the Room class only prints out the room number and type.", 0
+"Java arrays are fixed in size and their capacity cannot be altered once created.", 1
+"Java arrays are dynamic in size and their capacity can be altered after creation.", 0
+"Java ArrayLists offer a dynamic array that can grow and shrink as needed.", 1
+"Java ArrayLists have a fixed size that cannot be changed after initialization.", 0
+"The 'add' method is used to add elements to an ArrayList.", 1
+"The 'append' method is used to add elements to an ArrayList.", 0
+"The 'remove' method is used to remove elements from an ArrayList.", 1
+"The 'delete' method is used to remove elements from an ArrayList.", 0
+"In a UML class diagram, classes are depicted as rectangles divided into three parts: class name, attributes, and methods.", 1
+"In a UML class diagram, classes are depicted as circles divided into two parts: class name and attributes.", 0
+"In a UML class diagram, a plain line connecting two classes indicates an association between them.", 1
+"In a UML class diagram, a dotted line connecting two classes indicates an association between them.", 0
+"In a UML class diagram, the '+' symbol before an attribute or method indicates that it is public.", 1
+"In a UML class diagram, the '-' symbol before an attribute or method indicates that it is public.", 0
