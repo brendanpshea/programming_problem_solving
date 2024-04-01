@@ -26,3 +26,18 @@
 "In Java, encapsulation is achieved by using the 'encapsulate' keyword.", 0
 "Constructors in Java are used to initialize the object's state when it is created.", 1
 "In Java, constructors have a return type.", 0
+"Constructor overloading in Java allows a class to have more than one constructor.", 1
+"Each overloaded constructor must have a unique signature, which means the number and/or type of parameters must differ.", 1
+"In Java, constructors can only have one parameter.", 0
+"In Java, constructors are not allowed to call other constructors within the same class.", 0
+"Constructor overloading allows objects of a class to be instantiated in different ways, depending on the available information.", 1
+"Overloaded constructors must have the same number of parameters.", 0
+"The 'toString()' method in Java returns a string representation of an object.", 1
+"The 'toString()' method is a feature of the abstract Object class, which is the parent of every Java class.", 1
+"By default, the 'toString()' method returns a string that consists of the class name followed by the '@' symbol and the object's hashcode.", 1
+"The default implementation of the 'toString()' method provides a meaningful description of the object.", 0
+"To override the 'toString()' method, you need to define a new version of the method in your class that returns the desired string.", 1
+"Overriding the 'toString()' method is mandatory for all Java classes.", 0
+"When you print an object in Java, it implicitly calls the object's 'toString()' method.", 1
+"The 'toString()' method cannot be overridden in Java.", 0
+"Overriding the 'toString()' method allows you to provide a more informative string representation of an object.", 1
