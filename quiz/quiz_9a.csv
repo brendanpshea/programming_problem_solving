@@ -1,0 +1,28 @@
+"Inheritance allows the creation of new classes based on existing classes, inheriting their properties and methods.", 1
+"Inheritance in Java is achieved by using the 'inherits' keyword followed by the name of the superclass.", 0
+"A subclass can add its own properties and methods in addition to the ones inherited from the superclass.", 1
+"A subclass cannot override the methods inherited from its superclass in Java.", 0
+"The 'extends' keyword in Java is used to define a subclass (derived class) of a superclass (base class).", 1
+"In Java, a class can inherit from multiple classes simultaneously, achieving multiple inheritance.", 0
+"The 'super' keyword in Java is used to call the constructor and methods of the superclass.", 1
+"In Java, the 'super' keyword is used to define a subclass.", 0
+"Abstract classes in Java cannot be instantiated directly.", 1
+"Abstract classes in Java are defined using the 'abstraction' keyword.", 0
+"An abstract method in Java is declared without an implementation in the abstract class.", 1
+"In Java, abstract methods are defined using the 'virtual' keyword.", 0
+"A subclass of an abstract class must implement all the abstract methods declared in the abstract class.", 1
+"In Java, a subclass of an abstract class can choose not to implement some of the abstract methods.", 0
+"A class hierarchy in Java represents the relationship between classes through inheritance.", 1
+"In a class hierarchy, a subclass can only inherit from one superclass.", 1
+"In Java, a class can inherit from another class and implement multiple interfaces at the same time.", 1
+"In Java, a class hierarchy is created using the 'hierarchy' keyword.", 0
+"The 'protected' access modifier in Java allows access within the same class, subclasses, and the same package.", 1
+"In Java, the 'public' access modifier restricts access to within the same class only.", 0
+"The 'final' keyword in Java is used to define a class that cannot be subclassed.", 1
+"In Java, a final method can be overridden by its subclasses.", 0
+"The '@Override' annotation in Java is used to indicate that a method is being overridden from a superclass.", 1
+"In Java, the '@Overload' annotation is used to indicate method overriding.", 0
+"In object-oriented programming, encapsulation is the practice of hiding internal details of an object and providing a controlled interface.", 1
+"In Java, encapsulation is achieved by using the 'encapsulate' keyword.", 0
+"Constructors in Java are used to initialize the object's state when it is created.", 1
+"In Java, constructors have a return type.", 0
