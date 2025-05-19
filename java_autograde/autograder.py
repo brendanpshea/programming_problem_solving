@@ -1,3 +1,7 @@
+# This tool uses JUnit tests to evaluate code
+# It is meant to embed single problems within a Colab notebook cell
+# Unlike the Java Practice Tools, no mass-loaading of problems from JSON
+
 import os
 import subprocess
 import uuid
