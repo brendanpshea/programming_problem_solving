@@ -1,128 +1,12 @@
-# This tools works the same as the "Python Practice Tool" from COMP 1150
+# Optimized Java Practice Tool for Google Colab - Fixed Version
 from IPython.display import display, Javascript, HTML
 import json, random, itertools, io, urllib.request, contextlib, os, tempfile, subprocess
 from copy import deepcopy
 import numpy as np, pandas as pd, html
 import ipywidgets as widgets
-
-# --- Java execution utilities ------------------------------------------------
-def compile_and_run_java(code, class_name, inputs=None):
-    """Compile and run Java code, returning the output and any errors"""
-    # Create a temporary directory for our files
-    with tempfile.TemporaryDirectory() as tmpdir:
-        # Write the Java code to a file
-        java_file = os.path.join(tmpdir, f"{class_name}.java")
-        with open(java_file, 'w') as f:
-            f.write(code)
-        
-        # Compile the Java code
-        compile_process = subprocess.run(
-            ['javac', java_file], 
-            capture_output=True, 
-            text=True
-        )
-        
-        if compile_process.returncode != 0:
-            # If compilation failed, return the error
-            return None, compile_process.stderr
-        
-        # Run the compiled code
-        cmd = ['java', '-cp', tmpdir, class_name]
-        
-        # If inputs are provided, convert them to command-line args
-        if inputs is not None:
-            if not isinstance(inputs, (list, tuple)):
-                inputs = [inputs]  # Convert single input to list
-            
-            # Convert all inputs to strings for command line
-            str_inputs = [str(i) for i in inputs]
-            cmd.extend(str_inputs)
-        
-        # Run the program
-        run_process = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True
-        )
-        
-        if run_process.returncode != 0:
-            # If execution failed, return the error
-            return None, run_process.stderr
-        
-        # Return the output
-        return run_process.stdout.strip(), None
-
-def wrap_java_function(code, function_name, function_sig):
-    """
-    Wrap a Java function in a class with a main method to test it
-    
-    Args:
-        code: The Java function code
-        function_name: The name of the function
-        function_sig: The function signature (return type and parameters)
-    
-    Returns:
-        A complete Java class with a main method that calls the function
-    """
-    class_name = "Solution"
-    
-    # Extract return type and parameters from signature
-    parts = function_sig.split('(')
-    return_type = parts[0].split()[-1]  # Get the return type
-    params_str = parts[1].split(')')[0]
-    
-    # Build parameter declaration for main method
-    params = []
-    if params_str:
-        for p in params_str.split(','):
-            p = p.strip()
-            if p:
-                typ, name = p.split()
-                params.append((typ, name))
-    
-    # Generate code to call the function with test inputs
-    main_code = []
-    main_code.append(f"public static void main(String[] args) {{")
-    
-    # Create test cases
-    if not params:
-        # No parameters, simply call the function
-        main_code.append(f"    System.out.println({function_name}());")
-    else:
-        # Generate code to initialize parameters from args
-        for i, (typ, name) in enumerate(params):
-            # Add check for args length to prevent ArrayIndexOutOfBoundsException
-            main_code.append(f"    if (args.length <= {i}) {{")
-            main_code.append(f"        System.err.println(\"Error: Not enough arguments\");")
-            main_code.append(f"        System.exit(1);")
-            main_code.append(f"    }}")
-            
-            # Convert string arg to appropriate type
-            if typ == "int":
-                main_code.append(f"    {typ} {name} = Integer.parseInt(args[{i}]);")
-            elif typ == "double":
-                main_code.append(f"    {typ} {name} = Double.parseDouble(args[{i}]);")
-            elif typ == "String":
-                main_code.append(f"    {typ} {name} = args[{i}];")
-            elif typ == "boolean":
-                main_code.append(f"    {typ} {name} = Boolean.parseBoolean(args[{i}]);")
-        
-        # Generate code to call the function
-        main_code.append(f"    System.out.println({function_name}({', '.join(p[1] for p in params)}));")
-    
-    main_code.append("}")
-    
-    # Wrap everything in a class
-    wrapped_code = f"""
-public class {class_name} {{
-    // Student's function
-    {code}
-    
-    // Main method for testing
-    {chr(10).join('    ' + line for line in main_code)}
-}}
-"""
-    return wrapped_code, class_name
+import concurrent.futures
+import hashlib
+import re
 
 # --- Sample inputs for Java -------------------------------------------------
 _INPUT_SAMPLES = {
@@ -132,30 +16,226 @@ _INPUT_SAMPLES = {
              "Dune", "Blade Runner", "I, Robot", "Ender's Game", "Neuromancer"],
     'boolean': [True, False]
 }
-# Add special types for Java arrays and lists later
 
 def _clone(obj):
     return obj.copy() if isinstance(obj, np.ndarray) else deepcopy(obj)
 
-# Convert Python input types to Java types
-def _python_to_java_type(py_type):
-    type_map = {
-        'int': 'int',
-        'float': 'double',
-        'string': 'String',
-        'bool': 'boolean'
-    }
-    return type_map.get(py_type, py_type)
+# --- Optimized Java execution utilities -------------------------------------
+class CompiledJavaCache:
+    """Cache for compiled Java code to avoid recompilation"""
+    def __init__(self):
+        self.cache = {}
+    
+    def get_key(self, code):
+        """Generate a cache key from code"""
+        return hashlib.md5(code.encode()).hexdigest()
+    
+    def get(self, code):
+        """Get compiled class path if exists"""
+        return self.cache.get(self.get_key(code))
+    
+    def set(self, code, class_path):
+        """Store compiled class path"""
+        self.cache[self.get_key(code)] = class_path
 
-# Convert Python values to Java-friendly string representations
-def _python_to_java_value(value, java_type):
-    if java_type == 'int' or java_type == 'double':
-        return str(value)
-    elif java_type == 'String':
-        return f'"{value}"'  # Quoted string
-    elif java_type == 'boolean':
-        return str(value).lower()  # true or false
-    return str(value)
+# Global cache instance
+_compiled_cache = CompiledJavaCache()
+
+def parse_java_signature(signature):
+    """Parse a Java method signature to extract return type, method name, and parameters"""
+    # Remove public static modifiers
+    clean_sig = signature.replace('public', '').replace('static', '').strip()
+    
+    # Find the opening parenthesis
+    paren_index = clean_sig.find('(')
+    if paren_index == -1:
+        raise ValueError(f"Invalid signature: {signature}")
+    
+    # Everything before the parenthesis is return type + method name
+    before_paren = clean_sig[:paren_index].strip()
+    
+    # Split by spaces to separate return type from method name
+    parts = before_paren.split()
+    
+    if len(parts) == 0:
+        raise ValueError(f"Invalid signature: {signature}")
+    elif len(parts) == 1:
+        # Only method name, assume void return type
+        return_type = 'void'
+        method_name = parts[0]
+    else:
+        # Last part is method name, everything else is return type
+        method_name = parts[-1]
+        return_type = ' '.join(parts[:-1])
+    
+    # Extract parameters
+    params_start = clean_sig.find('(')
+    params_end = clean_sig.find(')')
+    if params_start != -1 and params_end != -1:
+        params_str = clean_sig[params_start+1:params_end]
+    else:
+        params_str = ""
+    
+    return return_type, method_name, params_str
+
+def create_test_harness(code, function_name, function_sig, test_cases, class_suffix=""):
+    """Create a Java test harness that runs all test cases in one execution"""
+    class_name = f"TestHarness{class_suffix}"
+    
+    # Parse the signature using our robust parser
+    return_type, parsed_name, params_str = parse_java_signature(function_sig)
+    
+    # print(f"DEBUG: Parsed signature - Return type: '{return_type}', Method: '{parsed_name}', Params: '{params_str}'")
+    
+    params = []
+    if params_str.strip():
+        for p in params_str.split(','):
+            p = p.strip()
+            if p:
+                parts = p.split()
+                if len(parts) >= 2:
+                    typ = ' '.join(parts[:-1])
+                    name = parts[-1]
+                    params.append((typ, name))
+    
+    # Generate test harness code
+    test_code = []
+    test_code.append("import java.util.*;")
+    test_code.append("")
+    test_code.append(f"public class {class_name} {{")
+    test_code.append("")
+    test_code.append("    // Function to test")
+    
+    # Add the function code
+    if code.strip().startswith("public static"):
+        for line in code.strip().split('\n'):
+            test_code.append(f"    {line}")
+    else:
+        test_code.append(f"    {function_sig} {{")
+        for line in code.strip().split('\n'):
+            test_code.append(f"        {line}")
+        test_code.append("    }")
+    
+    test_code.append("")
+    test_code.append("    public static void main(String[] args) {")
+    test_code.append("        // Run all test cases")
+    
+    for i, test_input in enumerate(test_cases):
+        test_code.append(f"        // Test case {i}")
+        test_code.append("        try {")
+        
+        # Prepare parameters
+        param_values = []
+        if params:
+            if not isinstance(test_input, (list, tuple)):
+                test_input = [test_input]
+            
+            for j, (typ, name) in enumerate(params):
+                if j < len(test_input):
+                    value = test_input[j]
+                    var_name = f"{name}_{i}"
+                    
+                    if typ == "int":
+                        test_code.append(f"            int {var_name} = {value};")
+                    elif typ == "double":
+                        if value == float('inf'):
+                            test_code.append(f"            double {var_name} = Double.POSITIVE_INFINITY;")
+                        elif value == float('-inf'):
+                            test_code.append(f"            double {var_name} = Double.NEGATIVE_INFINITY;")
+                        elif value != value:  # NaN check
+                            test_code.append(f"            double {var_name} = Double.NaN;")
+                        else:
+                            test_code.append(f"            double {var_name} = {value};")
+                    elif typ == "String":
+                        escaped_value = value.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
+                        test_code.append(f'            String {var_name} = "{escaped_value}";')
+                    elif typ == "boolean":
+                        test_code.append(f"            boolean {var_name} = {str(value).lower()};")
+                    
+                    param_values.append(var_name)
+        
+        # Generate function call with CORRECT return type
+        if param_values:
+            call = f"{function_name}({', '.join(param_values)})"
+        else:
+            call = f"{function_name}()"
+        
+        # Handle different return types - USE THE PARSED RETURN TYPE
+        if return_type == "void":
+            test_code.append(f"            {call};")
+            test_code.append(f'            System.out.println("TEST_{i}_RESULT:void");')
+        else:
+            # THIS IS THE KEY FIX - use return_type, not function_name!
+            test_code.append(f"            {return_type} result = {call};")
+            test_code.append(f'            System.out.println("TEST_{i}_RESULT:" + result);')
+        
+        test_code.append("        } catch (Exception e) {")
+        test_code.append(f'            System.out.println("TEST_{i}_ERROR:" + e.getClass().getName() + ": " + e.getMessage());')
+        test_code.append("        }")
+        test_code.append("")
+    
+    test_code.append("    }")
+    test_code.append("}")
+    
+    return '\n'.join(test_code), class_name
+
+def compile_and_run_harness(harness_code, class_name):
+    """Compile and run a test harness"""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        java_file = os.path.join(tmpdir, f"{class_name}.java")
+        with open(java_file, 'w') as f:
+            f.write(harness_code)
+        
+        # Debug: print generated code for Answer harness
+        # if "Answer" in class_name:
+        #    print(f"\nGenerated {class_name}.java:")
+        #    lines = harness_code.split('\n')
+        #    for i, line in enumerate(lines[:25]):  # Show first 25 lines
+        #        print(f"{i+1}: {line}")
+        #    if len(lines) > 25:
+        #        print("...")
+        
+        # Compile
+        compile_process = subprocess.run(
+            ['javac', java_file],
+            capture_output=True,
+            text=True
+        )
+        
+        if compile_process.returncode != 0:
+            return None, compile_process.stderr
+        
+        # Run
+        try:
+            run_process = subprocess.run(
+                ['java', '-cp', tmpdir, class_name],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            
+            if run_process.returncode != 0:
+                return None, run_process.stderr
+            
+            return run_process.stdout, None
+        except subprocess.TimeoutExpired:
+            return None, "Timeout: Code took too long to execute"
+
+def parse_harness_output(output):
+    """Parse the output from a test harness"""
+    results = {}
+    if output:
+        lines = output.strip().split('\n')
+        for line in lines:
+            if '_RESULT:' in line:
+                parts = line.split('_RESULT:', 1)
+                test_num = int(parts[0].split('_')[1])
+                results[test_num] = ('result', parts[1])
+            elif '_ERROR:' in line:
+                parts = line.split('_ERROR:', 1)
+                test_num = int(parts[0].split('_')[1])
+                results[test_num] = ('error', parts[1])
+    return results
 
 # --- Java Question class ----------------------------------------------------
 class JavaQuestion:
@@ -164,13 +244,12 @@ class JavaQuestion:
         self.function_name = function_name
         self.return_type = return_type
         self.parameters = parameters
-        self.param_types = param_types  # Java types as strings
+        self.param_types = param_types
         self.description = description
         self.answer_code = answer_code
         self.hint = hint
         self.test_inputs = test_inputs or self.generate_inputs()
-        self.sample_inputs = random.sample(self.test_inputs,
-                                         min(3, len(self.test_inputs)))
+        self.sample_inputs = random.sample(self.test_inputs, min(3, len(self.test_inputs)))
         
     def generate_signature(self):
         """Generate a Java function signature"""
@@ -182,31 +261,30 @@ class JavaQuestion:
         
     def generate_inputs(self, max_tests=10):
         """Generate test inputs for this function"""
-        # Map the Java types to our sample input types
-        java_to_py = {
-            'int': 'int',
-            'double': 'float',
-            'String': 'string',
-            'boolean': 'bool'
-        }
+        if not self.param_types:
+            return [[]]
+            
+        samples = []
+        for typ in self.param_types:
+            if typ in _INPUT_SAMPLES:
+                samples.append(_INPUT_SAMPLES[typ])
+            else:
+                samples.append([None])
         
-        sample_keys = [java_to_py.get(t, 'any') for t in self.param_types]
-        samples = [_INPUT_SAMPLES.get(k, []) for k in sample_keys]
-        
-        # Generate combinations of inputs
-        combos = list(itertools.product(*samples)) if samples else [[]]
-        chosen = random.sample(combos, min(max_tests, len(combos)))
-        
-        # Return as either single values or tuples depending on parameter count
-        return [args[0] if len(args) == 1 else args for args in chosen]
+        if len(samples) == 1:
+            return random.sample(samples[0], min(max_tests, len(samples[0])))
+        else:
+            combos = list(itertools.product(*samples))
+            return random.sample(combos, min(max_tests, len(combos)))
 
-# --- JavaPracticeTool class ------------------------------------------------
+# --- Optimized JavaPracticeTool class --------------------------------------
 class JavaPracticeTool:
     def __init__(self, questions=None, json_url=None):
         self.questions = (self._load_questions(json_url)
                          if json_url else questions or [])
         self.current_index = 0
         self.student_output = io.StringIO()
+        self._answer_results_cache = {}
         self._setup_widgets()
         self._show_directions()
         self._show_question()
@@ -348,38 +426,71 @@ class JavaPracticeTool:
         else:
             return 'null'
 
+    def _get_answer_results(self, q):
+        """Get cached answer results or compute them"""
+        # Convert test inputs to hashable format
+        hashable_inputs = []
+        for inp in q.test_inputs:
+            if isinstance(inp, (list, tuple)):
+                hashable_inputs.append(tuple(inp))
+            else:
+                hashable_inputs.append(inp)
+        cache_key = (q.function_name, tuple(hashable_inputs))
+        
+        if cache_key not in self._answer_results_cache:
+            # Create and run answer harness
+            func_sig = q.generate_signature()
+            answer_harness, answer_class = create_test_harness(
+                q.answer_code, q.function_name, func_sig, q.test_inputs, "Answer"
+            )
+            
+            output, error = compile_and_run_harness(answer_harness, answer_class)
+            if error:
+                print(f"Error compiling/running answer code for {q.function_name}:")
+                print(error)
+                self._answer_results_cache[cache_key] = None
+            else:
+                self._answer_results_cache[cache_key] = parse_harness_output(output)
+        
+        return self._answer_results_cache[cache_key]
+
     def _render_sample_table(self, q):
         """Display sample inputs and outputs"""
-        rows = []
+        # Get answer results
+        answer_results = self._get_answer_results(q)
         
-        for inp in q.sample_inputs:
-            # Prepare input for display
+        rows = []
+        for i, inp in enumerate(q.sample_inputs):
+            # Find the index of this input in test_inputs
+            test_index = None
+            for idx, test_inp in enumerate(q.test_inputs):
+                # Compare inputs handling both single values and tuples/lists
+                if isinstance(inp, (tuple, list)) and isinstance(test_inp, (tuple, list)):
+                    if len(inp) == len(test_inp) and all(a == b for a, b in zip(inp, test_inp)):
+                        test_index = idx
+                        break
+                elif inp == test_inp:
+                    test_index = idx
+                    break
+            
+            if test_index is None:
+                test_index = i
+            
+            # Format input for display
             if isinstance(inp, (tuple, list)):
                 display_input = repr(inp)
             else:
-                display_input = repr((inp,)) if q.parameters and inp is not None else "()"
+                display_input = repr((inp,)) if q.parameters else "()"
             
-            # Execute correct solution to get expected output
-            try:
-                # Wrap the answer code in a test class
-                func_sig = q.generate_signature()
-                wrapped_code, class_name = wrap_java_function(q.answer_code, q.function_name, func_sig)
-                
-                # Prepare the inputs for Java
-                args = []
-                if isinstance(inp, (tuple, list)):
-                    args = list(inp)  # Convert tuple to list for args
-                elif q.parameters and inp is not None:  # Single parameter
-                    args = [inp]
-                
-                # Run the Java code
-                output, error = compile_and_run_java(wrapped_code, class_name, args)
-                if error:
-                    out = f"Error: {error}"
+            # Get expected output
+            if answer_results and test_index in answer_results:
+                result_type, result_value = answer_results[test_index]
+                if result_type == 'error':
+                    out = f"Error: {result_value}"
                 else:
-                    out = output
-            except Exception as e:
-                out = f"Error: {e}"
+                    out = result_value
+            else:
+                out = "Error computing expected output"
             
             rows.append((display_input, html.escape(str(out))))
             
@@ -389,66 +500,127 @@ class JavaPracticeTool:
             display(HTML(df.to_html(index=False, escape=False)))
 
     def _run(self, _):
-        """Run the student's code"""
+        """Run the student's code - optimized version"""
         q = self.questions[self.current_index]
         self.program_output.clear_output()
-        self.student_output = io.StringIO()
         
         try:
-            # Prepare student's code
+            # Create test harnesses
             func_sig = q.generate_signature()
-            student_wrapped, student_class = wrap_java_function(self.code_input.value, q.function_name, func_sig)
-            answer_wrapped, answer_class = wrap_java_function(q.answer_code, q.function_name, func_sig)
             
-            # Test with all test inputs
+            # Student harness
+            student_harness, student_class = create_test_harness(
+                self.code_input.value, q.function_name, func_sig, q.test_inputs, "Student"
+            )
+            
+            # Get cached answer results
+            answer_results = self._get_answer_results(q)
+            
+            if answer_results is None:
+                # Error in answer code
+                results = [{
+                    'Result': 'Error',
+                    'Input': 'N/A',
+                    'Expected': 'Error in answer code',
+                    'Your Output': 'Cannot run tests'
+                }]
+                self._show_results(results)
+                return
+            
+            # Compile and run student code
+            student_output, student_error = compile_and_run_harness(student_harness, student_class)
+            
+            if student_error:
+                # Compilation or runtime error
+                error_msg = student_error.strip()
+                if 'error:' in error_msg.lower():
+                    # Extract just the relevant error message
+                    lines = error_msg.split('\n')
+                    error_lines = [l for l in lines if 'error:' in l.lower()]
+                    if error_lines:
+                        error_msg = '\n'.join(error_lines[:3])  # Show first 3 errors
+                
+                results = [{
+                    'Result': 'Compilation Error',
+                    'Input': 'N/A',
+                    'Expected': 'N/A',
+                    'Your Output': error_msg
+                }]
+                self._show_results(results)
+                return
+            
+            # Parse student results
+            student_results = parse_harness_output(student_output)
+            
+            # Compare results
             results = []
-            for inp in q.test_inputs:
-                # Prepare the arguments
-                args = []
-                if isinstance(inp, tuple) or isinstance(inp, list):
-                    args = list(inp)  # Convert tuple to list for command-line args
-                elif q.parameters:  # Single parameter
-                    args = [inp]
+            for i, inp in enumerate(q.test_inputs):
+                input_str = repr(inp) if isinstance(inp, (tuple, list)) else repr((inp,)) if q.parameters else "()"
                 
-                # Run the correct solution
-                exp_output, exp_error = compile_and_run_java(answer_wrapped, answer_class, args)
-                if exp_error:
-                    results.append({
-                        'Result': 'Error',
-                        'Input': repr(inp) if isinstance(inp, (tuple, list)) else repr((inp,)) if inp is not None else "()",
-                        'Expected': 'Error in answer code',
-                        'Your Output': 'N/A'
-                    })
-                    continue
-                
-                # Run the student's solution
-                std_output, std_error = compile_and_run_java(student_wrapped, student_class, args)
-                
-                if std_error:
-                    results.append({
-                        'Result': 'Error',
-                        'Input': repr(inp) if isinstance(inp, (tuple, list)) else repr((inp,)) if inp is not None else "()",
-                        'Expected': exp_output,
-                        'Your Output': f"Error: {std_error}"
-                    })
+                # Get expected output
+                if i in answer_results:
+                    exp_type, exp_value = answer_results[i]
+                    if exp_type == 'error':
+                        expected = f"Error: {exp_value}"
+                    else:
+                        expected = exp_value
                 else:
-                    # Compare outputs
-                    result = 'Pass' if std_output.strip() == exp_output.strip() else 'Fail'
-                    results.append({
-                        'Result': result,
-                        'Input': repr(inp) if isinstance(inp, (tuple, list)) else repr((inp,)) if inp is not None else "()",
-                        'Expected': exp_output,
-                        'Your Output': std_output
-                    })
+                    expected = "Missing output"
                 
+                # Get student output
+                if i in student_results:
+                    std_type, std_value = student_results[i]
+                    if std_type == 'error':
+                        result = 'Runtime Error'
+                        your_output = f"Error: {std_value}"
+                    else:
+                        your_output = std_value
+                        # Compare outputs
+                        result = 'Pass' if std_value == exp_value else 'Fail'
+                else:
+                    result = 'Missing Output'
+                    your_output = "No output produced"
+                
+                results.append({
+                    'Result': result,
+                    'Input': input_str,
+                    'Expected': expected,
+                    'Your Output': your_output
+                })
+            
             self._show_results(results)
             
-        except Exception as e:
-            # Handle any other errors
-            results = [{'Result': 'Error', 'Input': '', 'Expected': '', 'Your Output': str(e)}]
+            # Show any additional output
+            with self.program_output:
+                self.program_output.clear_output()
+                # Filter out test result lines
+                other_output = []
+                if student_output:
+                    for line in student_output.split('\n'):
+                        if not ('_RESULT:' in line or '_ERROR:' in line):
+                            other_output.append(line)
+                
+                if other_output and any(line.strip() for line in other_output):
+                    display(HTML(f"<pre>{chr(10).join(other_output)}</pre>"))
+                else:
+                    display(HTML("<i>No additional output.</i>"))
+                    
+        except subprocess.TimeoutExpired:
+            results = [{
+                'Result': 'Timeout',
+                'Input': 'N/A',
+                'Expected': 'N/A',
+                'Your Output': 'Code took too long to execute (possible infinite loop)'
+            }]
             self._show_results(results)
-        
-        self._show_program_output()
+        except Exception as e:
+            results = [{
+                'Result': 'Error',
+                'Input': 'N/A',
+                'Expected': 'N/A',
+                'Your Output': str(e)
+            }]
+            self._show_results(results)
 
     def _show_results(self, results):
         """Display test results"""
@@ -461,16 +633,36 @@ class JavaPracticeTool:
         with self.results_output:
             self.results_output.clear_output()
             display(HTML(f"<h4 style='color:{color}'>{status}</h4>"))
+            
+            # Color code the results
             df = pd.DataFrame(results)
-            display(HTML(df.to_html(index=False, escape=False)))
+            styled_results = []
+            for _, row in df.iterrows():
+                if row['Result'] == 'Pass':
+                    styled_results.append({
+                        'Result': f"<span style='color:green'>✓ Pass</span>",
+                        'Input': row['Input'],
+                        'Expected': row['Expected'],
+                        'Your Output': row['Your Output']
+                    })
+                elif row['Result'] in ['Compilation Error', 'Runtime Error', 'Timeout']:
+                    styled_results.append({
+                        'Result': f"<span style='color:red'>✗ {row['Result']}</span>",
+                        'Input': row['Input'],
+                        'Expected': row['Expected'],
+                        'Your Output': f"<span style='color:red'>{html.escape(row['Your Output'])}</span>"
+                    })
+                else:
+                    styled_results.append({
+                        'Result': f"<span style='color:red'>✗ {row['Result']}</span>",
+                        'Input': row['Input'],
+                        'Expected': row['Expected'],
+                        'Your Output': row['Your Output']
+                    })
+            
+            styled_df = pd.DataFrame(styled_results)
+            display(HTML(styled_df.to_html(index=False, escape=False)))
             display(widgets.HBox([self.results_retry, self.results_next]))
-
-    def _show_program_output(self):
-        """Display any program output"""
-        with self.program_output:
-            self.program_output.clear_output()
-            out = self.student_output.getvalue().strip()
-            display(HTML(f"<pre>{out}</pre>") if out else HTML("<i>No output.</i>"))
 
     def _reset(self, _):
         """Reset the current question"""
@@ -500,14 +692,6 @@ class JavaPracticeTool:
             self.current_index = idx
             self._show_question()
 
-# --- Java-specific imports for use in examples -----------------------------
-# Remove this class since we're using Python's float equivalents
-# class Double:
-#     """Mock Java Double class with constants"""
-#     POSITIVE_INFINITY = float('inf')
-#     NEGATIVE_INFINITY = float('-inf')
-#     NaN = float('nan')
-
 # --- Example questions -----------------------------------------------------
 def create_java_questions():
     """Create a list of Java practice questions"""
@@ -518,7 +702,7 @@ def create_java_questions():
             parameters=[],
             param_types=[],
             description="Write a function that returns the string 'Hello, World!'. This is your first function, so just return the exact text inside the quotes.",
-            answer_code="public static String helloWorld() {\n    return \"Hello, World!\";\n}",
+            answer_code='public static String helloWorld() {\n    return "Hello, World!";\n}',
             hint="You don't need any parameters for this function. Just use the return keyword with a String.",
             test_inputs=[[]]
         ),
@@ -530,7 +714,7 @@ def create_java_questions():
             description="Write a function that takes two integers and returns their sum. For example, addNumbers(3, 4) should return 7.",
             answer_code="public static int addNumbers(int a, int b) {\n    return a + b;\n}",
             hint="Use the + operator to add the two parameters together.",
-            test_inputs=[[3, 4], [10, 5], [0, 0]]
+            test_inputs=[(3, 4), (10, 5), (0, 0), (-5, 5), (100, -50)]
         ),
         JavaQuestion(
             function_name="alienGreeting",
@@ -538,7 +722,7 @@ def create_java_questions():
             parameters=["name"],
             param_types=["String"],
             description="Return a greeting message to an alien named 'name'. Format should be 'Welcome to Earth, [name]!'",
-            answer_code="public static String alienGreeting(String name) {\n    return \"Welcome to Earth, \" + name + \"!\";\n}",
+            answer_code='public static String alienGreeting(String name) {\n    return "Welcome to Earth, " + name + "!";\n}',
             hint="Use string concatenation with the + operator to create the greeting.",
             test_inputs=["Zorg", "E.T.", "Spock", "Klaatu", "Yoda"]
         ),
@@ -550,7 +734,7 @@ def create_java_questions():
             description="Calculate the total distance of two hyperspace jumps by adding them together.",
             answer_code="public static double calculateHyperspaceDistance(double distance1, double distance2) {\n    return distance1 + distance2;\n}",
             hint="Add the two distances together using the + operator.",
-            test_inputs=[[12.5, 7.8], [3.4, 5.6], [100.0, 200.0]]
+            test_inputs=[(12.5, 7.8), (3.4, 5.6), (100.0, 200.0), (0.0, 0.0)]
         ),
         JavaQuestion(
             function_name="doubleNumber",
@@ -560,16 +744,16 @@ def create_java_questions():
             description="Write a function that takes an integer and returns double its value. For example, doubleNumber(5) should return 10.",
             answer_code="public static int doubleNumber(int number) {\n    return number * 2;\n}",
             hint="Multiply the input by 2 using the * operator.",
-            test_inputs=[[5], [0], [100]]
+            test_inputs=[5, 0, 100, -10, 1]
         ),
         JavaQuestion(
             function_name="calculateEnergy",
             return_type="double",
             parameters=["mass"],
             param_types=["double"],
-            description="Calculate the energy equivalent of a mass using E=mc^2. c = 299792458.",
+            description="Calculate the energy equivalent of a mass using E=mc^2. Use c = 299792458.0 (speed of light in m/s).",
             answer_code="public static double calculateEnergy(double mass) {\n    double c = 299792458.0;\n    return mass * c * c;\n}",
-            hint="Use the formula E = mass * c squared.",
+            hint="Use the formula E = mass * c * c, where c is the speed of light.",
             test_inputs=[1.0, 0.5, 2.0, 0.1, 0.001]
         ),
         JavaQuestion(
@@ -580,7 +764,7 @@ def create_java_questions():
             description="Write a function that takes an integer and returns true if it's greater than zero, or false otherwise.",
             answer_code="public static boolean isPositive(int number) {\n    return number > 0;\n}",
             hint="Use the > operator to check if the number is greater than zero.",
-            test_inputs=[[5], [0], [-3]]
+            test_inputs=[5, 0, -3, 100, -100]
         ),
         JavaQuestion(
             function_name="joinPlanetNames",
@@ -588,9 +772,9 @@ def create_java_questions():
             parameters=["planet1", "planet2"],
             param_types=["String", "String"],
             description="Return the two planet names joined with ' and ' in between.",
-            answer_code="public static String joinPlanetNames(String planet1, String planet2) {\n    return planet1 + \" and \" + planet2;\n}",
+            answer_code='public static String joinPlanetNames(String planet1, String planet2) {\n    return planet1 + " and " + planet2;\n}',
             hint="Concatenate the strings with ' and ' in between using the + operator.",
-            test_inputs=[["Earth", "Mars"], ["Vulcan", "Krypton"], ["Tatooine", "Naboo"]]
+            test_inputs=[("Earth", "Mars"), ("Vulcan", "Krypton"), ("Tatooine", "Naboo")]
         ),
         JavaQuestion(
             function_name="calculateArea",
@@ -600,7 +784,7 @@ def create_java_questions():
             description="Write a function that calculates the area of a rectangle. It should take the length and width as parameters and return their product.",
             answer_code="public static int calculateArea(int length, int width) {\n    return length * width;\n}",
             hint="Multiply the length by the width using the * operator.",
-            test_inputs=[[4, 5], [10, 2], [7, 7]]
+            test_inputs=[(4, 5), (10, 2), (7, 7), (0, 5), (1, 1)]
         ),
         JavaQuestion(
             function_name="convertToCelsius",
@@ -608,9 +792,9 @@ def create_java_questions():
             parameters=["fahrenheit"],
             param_types=["double"],
             description="Write a function that converts a temperature from Fahrenheit to Celsius. The formula is: Celsius = (Fahrenheit - 32) * 5/9.",
-            answer_code="public static double convertToCelsius(double fahrenheit) {\n    return (fahrenheit - 32) * 5 / 9;\n}",
-            hint="First subtract 32 from the Fahrenheit temperature, then multiply by 5/9.",
-            test_inputs=[[32], [212], [68]]
+            answer_code="public static double convertToCelsius(double fahrenheit) {\n    return (fahrenheit - 32) * 5.0 / 9.0;\n}",
+            hint="First subtract 32 from the Fahrenheit temperature, then multiply by 5/9. Use 5.0 and 9.0 to ensure floating point division.",
+            test_inputs=[32.0, 212.0, 68.0, 0.0, -40.0]
         ),
         JavaQuestion(
             function_name="isAdult",
@@ -620,7 +804,7 @@ def create_java_questions():
             description="Write a function that checks if someone is an adult (18 or older). Return true if they are an adult, or false otherwise.",
             answer_code="public static boolean isAdult(int age) {\n    return age >= 18;\n}",
             hint="Use the >= operator to check if the age is greater than or equal to 18.",
-            test_inputs=[[20], [18], [15]]
+            test_inputs=[20, 18, 15, 0, 100]
         ),
         JavaQuestion(
             function_name="maxNumber",
@@ -630,7 +814,7 @@ def create_java_questions():
             description="Write a function that returns the larger of two integers. Use Java's Math.max() method.",
             answer_code="public static int maxNumber(int a, int b) {\n    return Math.max(a, b);\n}",
             hint="Use Java's Math.max() method which returns the largest of the given arguments.",
-            test_inputs=[[5, 10], [10, 5], [7, 7]]
+            test_inputs=[(5, 10), (10, 5), (7, 7), (-5, -10), (0, 0)]
         ),
         JavaQuestion(
             function_name="absoluteValue",
@@ -640,7 +824,7 @@ def create_java_questions():
             description="Write a function that returns the absolute value of an integer. Use Java's Math.abs() method.",
             answer_code="public static int absoluteValue(int number) {\n    return Math.abs(number);\n}",
             hint="Use Java's Math.abs() method which returns the absolute value of a number.",
-            test_inputs=[[-5], [5], [0]]
+            test_inputs=[-5, 5, 0, -100, 100]
         ),
         JavaQuestion(
             function_name="combineStrings",
@@ -648,9 +832,9 @@ def create_java_questions():
             parameters=["firstName", "lastName"],
             param_types=["String", "String"],
             description="Write a function that takes a person's first and last name, and returns their full name with a space in between.",
-            answer_code="public static String combineStrings(String firstName, String lastName) {\n    return firstName + \" \" + lastName;\n}",
+            answer_code='public static String combineStrings(String firstName, String lastName) {\n    return firstName + " " + lastName;\n}',
             hint="Concatenate the first name, a space, and the last name using the + operator.",
-            test_inputs=[["John", "Doe"], ["Jane", "Smith"], ["Albert", "Einstein"]]
+            test_inputs=[("John", "Doe"), ("Jane", "Smith"), ("Albert", "Einstein"), ("Marie", "Curie")]
         ),
     ]
 
