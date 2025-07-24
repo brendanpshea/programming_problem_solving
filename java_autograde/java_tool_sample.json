@@ -1,0 +1,54 @@
+{
+  "questions": [
+    {
+      "function_name": "greetUser",
+      "return_type": "String",
+      "parameters": ["name"],
+      "param_types": ["String"],
+      "description": "Write a function that takes a name and returns a greeting. The greeting should be 'Hello, [name]!'",
+      "answer_code": "public static String greetUser(String name) {\n    return \"Hello, \" + name + \"!\";\n}",
+      "hint": "Use string concatenation with + to combine 'Hello, ', the name, and '!'",
+      "test_inputs": ["Alice", "Bob", "Charlie", "Diana", "Eve"]
+    },
+    {
+      "function_name": "multiply",
+      "return_type": "int",
+      "parameters": ["x", "y"],
+      "param_types": ["int", "int"],
+      "description": "Write a function that multiplies two integers and returns the result.",
+      "answer_code": "public static int multiply(int x, int y) {\n    return x * y;\n}",
+      "hint": "Use the * operator to multiply the two numbers",
+      "test_inputs": [[2, 3], [5, 4], [0, 10], [-3, 4], [7, 7]]
+    },
+    {
+      "function_name": "isEven",
+      "return_type": "boolean",
+      "parameters": ["number"],
+      "param_types": ["int"],
+      "description": "Write a function that checks if a number is even. Return true if even, false if odd.",
+      "answer_code": "public static boolean isEven(int number) {\n    return number % 2 == 0;\n}",
+      "hint": "Use the modulo operator (%) to check if the remainder when divided by 2 is 0",
+      "test_inputs": [2, 3, 0, -4, 7, 100, 101]
+    },
+    {
+      "function_name": "getCircleArea",
+      "return_type": "double",
+      "parameters": ["radius"],
+      "param_types": ["double"],
+      "description": "Calculate the area of a circle given its radius. Use Math.PI for pi. Formula: area = π × radius²",
+      "answer_code": "public static double getCircleArea(double radius) {\n    return Math.PI * radius * radius;\n}",
+      "hint": "Use Math.PI and multiply it by radius squared (radius * radius)",
+      "test_inputs": [1.0, 2.0, 3.5, 0.0, 10.0]
+    },
+    {
+      "function_name": "findMax",
+      "return_type": "int",
+      "parameters": ["a", "b", "c"],
+      "param_types": ["int", "int", "int"],
+      "description": "Write a function that finds the maximum of three integers. You can use Math.max() or nested comparisons.",
+      "answer_code": "public static int findMax(int a, int b, int c) {\n    return Math.max(Math.max(a, b), c);\n}",
+      "hint": "You can use Math.max(Math.max(a, b), c) to find the maximum of three numbers",
+      "test_inputs": [[1, 2, 3], [3, 2, 1], [2, 3, 1], [5, 5, 5], [-1, -2, -3]]
+    }
+  ]
+}
