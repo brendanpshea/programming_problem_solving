@@ -1,0 +1,204 @@
+{
+  "questions": [
+    {
+      "function_name": "welcomeCustomer",
+      "return_type": "String",
+      "parameters": ["customerName"],
+      "param_types": ["String"],
+      "description": "Write a function that takes a customer's name and returns a welcome message. The message should be 'Welcome to BurgerPalace, [customerName]!'",
+      "answer_code": "public static String welcomeCustomer(String customerName) {\n    return \"Welcome to BurgerPalace, \" + customerName + \"!\";\n}",
+      "hint": "Use string concatenation with + to combine the welcome message, customer name, and exclamation mark",
+      "test_inputs": ["Sarah", "Mike", "Jessica", "David", "Emma"]
+    },
+    {
+      "function_name": "calculateTip",
+      "return_type": "double",
+      "parameters": ["billAmount"],
+      "param_types": ["double"],
+      "description": "Write a function that calculates a 15% tip for a given bill amount.",
+      "answer_code": "public static double calculateTip(double billAmount) {\n    return billAmount * 0.15;\n}",
+      "hint": "Multiply the bill amount by 0.15 to get 15% of the total",
+      "test_inputs": [20.0, 35.50, 12.75, 50.0, 8.25]
+    },
+    {
+      "function_name": "getBurgerPrice",
+      "return_type": "double",
+      "parameters": ["burgerType"],
+      "param_types": ["String"],
+      "description": "Write a function that returns the price of a burger. Classic Burger costs $8.99, Cheese Burger costs $9.99, and Deluxe Burger costs $12.99. Return 0.0 for unknown types.",
+      "answer_code": "public static double getBurgerPrice(String burgerType) {\n    if (burgerType.equals(\"Classic Burger\")) {\n        return 8.99;\n    } else if (burgerType.equals(\"Cheese Burger\")) {\n        return 9.99;\n    } else if (burgerType.equals(\"Deluxe Burger\")) {\n        return 12.99;\n    } else {\n        return 0.0;\n    }\n}",
+      "hint": "Use if-else statements or switch to check the burger type and return the corresponding price",
+      "test_inputs": ["Classic Burger", "Cheese Burger", "Deluxe Burger", "Veggie Burger", "BBQ Burger"]
+    },
+    {
+      "function_name": "isLargeOrder",
+      "return_type": "boolean",
+      "parameters": ["itemCount"],
+      "param_types": ["int"],
+      "description": "Write a function that determines if an order is large. An order is considered large if it has 5 or more items.",
+      "answer_code": "public static boolean isLargeOrder(int itemCount) {\n    return itemCount >= 5;\n}",
+      "hint": "Use the >= operator to check if itemCount is greater than or equal to 5",
+      "test_inputs": [3, 5, 1, 8, 4]
+    },
+    {
+      "function_name": "getDiscountMessage",
+      "return_type": "String",
+      "parameters": ["customerAge"],
+      "param_types": ["int"],
+      "description": "Write a function that returns a discount message based on age. Senior citizens (65+) get 'Senior discount: 10% off!', students (18-24) get 'Student discount: 5% off!', otherwise return 'No discount available.'",
+      "answer_code": "public static String getDiscountMessage(int customerAge) {\n    if (customerAge >= 65) {\n        return \"Senior discount: 10% off!\";\n    } else if (customerAge >= 18 && customerAge <= 24) {\n        return \"Student discount: 5% off!\";\n    } else {\n        return \"No discount available.\";\n    }\n}",
+      "hint": "Use if-else statements to check age ranges and return appropriate messages",
+      "test_inputs": [70, 22, 35, 17, 65]
+    },
+    {
+      "function_name": "calculateOrderTotal",
+      "return_type": "double",
+      "parameters": ["subtotal"],
+      "param_types": ["double"],
+      "description": "Write a function that calculates the total order amount including 8.5% tax.",
+      "answer_code": "public static double calculateOrderTotal(double subtotal) {\n    return subtotal * 1.085;\n}",
+      "hint": "Multiply the subtotal by 1.085 to add 8.5% tax (100% + 8.5% = 108.5% = 1.085)",
+      "test_inputs": [15.50, 25.00, 8.75, 42.30, 12.99]
+    },
+    {
+      "function_name": "getFriesSize",
+      "return_type": "String",
+      "parameters": ["ouncesOrdered"],
+      "param_types": ["int"],
+      "description": "Write a function that returns the fries size based on ounces. Small (4-6 oz), Medium (7-10 oz), Large (11-16 oz), or 'Invalid size' for other amounts.",
+      "answer_code": "public static String getFriesSize(int ouncesOrdered) {\n    if (ouncesOrdered >= 4 && ouncesOrdered <= 6) {\n        return \"Small\";\n    } else if (ouncesOrdered >= 7 && ouncesOrdered <= 10) {\n        return \"Medium\";\n    } else if (ouncesOrdered >= 11 && ouncesOrdered <= 16) {\n        return \"Large\";\n    } else {\n        return \"Invalid size\";\n    }\n}",
+      "hint": "Use if-else statements with && to check ranges of ounces",
+      "test_inputs": [5, 8, 12, 3, 20]
+    },
+    {
+      "function_name": "isRestaurantOpen",
+      "return_type": "boolean",
+      "parameters": ["currentHour"],
+      "param_types": ["int"],
+      "description": "Write a function that checks if the restaurant is open. The restaurant is open from 6 AM (6) to 11 PM (23). Use 24-hour format.",
+      "answer_code": "public static boolean isRestaurantOpen(int currentHour) {\n    return currentHour >= 6 && currentHour <= 23;\n}",
+      "hint": "Check if the hour is between 6 and 23 (inclusive) using && operator",
+      "test_inputs": [8, 15, 23, 2, 6]
+    },
+    {
+      "function_name": "getDrinkSize",
+      "return_type": "String",
+      "parameters": ["fluidOunces"],
+      "param_types": ["int"],
+      "description": "Write a function that returns drink size based on fluid ounces. Kids (8 oz), Small (12 oz), Medium (16 oz), Large (20 oz), Extra Large (32 oz). Return 'Custom size' for other amounts.",
+      "answer_code": "public static String getDrinkSize(int fluidOunces) {\n    if (fluidOunces == 8) {\n        return \"Kids\";\n    } else if (fluidOunces == 12) {\n        return \"Small\";\n    } else if (fluidOunces == 16) {\n        return \"Medium\";\n    } else if (fluidOunces == 20) {\n        return \"Large\";\n    } else if (fluidOunces == 32) {\n        return \"Extra Large\";\n    } else {\n        return \"Custom size\";\n    }\n}",
+      "hint": "Use if-else statements with == to check for exact fluid ounce amounts",
+      "test_inputs": [8, 16, 20, 24, 32]
+    },
+    {
+      "function_name": "calculateDeliveryFee",
+      "return_type": "double",
+      "parameters": ["distanceMiles"],
+      "param_types": ["double"],
+      "description": "Write a function that calculates delivery fee. Free delivery for distances under 2 miles, $2.99 for 2-5 miles, $4.99 for 5-10 miles, and $7.99 for distances over 10 miles.",
+      "answer_code": "public static double calculateDeliveryFee(double distanceMiles) {\n    if (distanceMiles < 2.0) {\n        return 0.0;\n    } else if (distanceMiles <= 5.0) {\n        return 2.99;\n    } else if (distanceMiles <= 10.0) {\n        return 4.99;\n    } else {\n        return 7.99;\n    }\n}",
+      "hint": "Use if-else statements to check distance ranges and return corresponding fees",
+      "test_inputs": [1.5, 3.2, 7.8, 12.0, 5.0]
+    },
+    {
+      "function_name": "getWaitTime",
+      "return_type": "int",
+      "parameters": ["ordersInQueue"],
+      "param_types": ["int"],
+      "description": "Write a function that estimates wait time in minutes. Each order takes 3 minutes to prepare. Return the total wait time.",
+      "answer_code": "public static int getWaitTime(int ordersInQueue) {\n    return ordersInQueue * 3;\n}",
+      "hint": "Multiply the number of orders by 3 to get the total wait time",
+      "test_inputs": [2, 5, 0, 8, 1]
+    },
+    {
+      "function_name": "isValidPhone",
+      "return_type": "boolean",
+      "parameters": ["phoneNumber"],
+      "param_types": ["String"],
+      "description": "Write a function that checks if a phone number is valid. A valid phone number has exactly 10 characters.",
+      "answer_code": "public static boolean isValidPhone(String phoneNumber) {\n    return phoneNumber.length() == 10;\n}",
+      "hint": "Use the .length() method to check if the string has exactly 10 characters",
+      "test_inputs": ["5551234567", "555123456", "15551234567", "5551234", "4567891230"]
+    },
+    {
+      "function_name": "getLoyaltyPoints",
+      "return_type": "int",
+      "parameters": ["dollarsSpent"],
+      "param_types": ["double"],
+      "description": "Write a function that calculates loyalty points. Customers earn 1 point for every dollar spent (rounded down to nearest integer).",
+      "answer_code": "public static int getLoyaltyPoints(double dollarsSpent) {\n    return (int) dollarsSpent;\n}",
+      "hint": "Cast the double to int to round down to the nearest whole number",
+      "test_inputs": [15.99, 25.50, 8.25, 50.00, 12.75]
+    },
+    {
+      "function_name": "getOrderStatus",
+      "return_type": "String",
+      "parameters": ["minutesWaited"],
+      "param_types": ["int"],
+      "description": "Write a function that returns order status based on wait time. 'Order ready!' for 0 minutes, 'Preparing...' for 1-5 minutes, 'Almost ready!' for 6-10 minutes, 'Delayed - sorry!' for over 10 minutes.",
+      "answer_code": "public static String getOrderStatus(int minutesWaited) {\n    if (minutesWaited == 0) {\n        return \"Order ready!\";\n    } else if (minutesWaited <= 5) {\n        return \"Preparing...\";\n    } else if (minutesWaited <= 10) {\n        return \"Almost ready!\";\n    } else {\n        return \"Delayed - sorry!\";\n    }\n}",
+      "hint": "Use if-else statements to check different time ranges",
+      "test_inputs": [0, 3, 7, 12, 5]
+    },
+    {
+      "function_name": "calculateChange",
+      "return_type": "double",
+      "parameters": ["amountPaid", "totalCost"],
+      "param_types": ["double", "double"],
+      "description": "Write a function that calculates the change to give back to a customer.",
+      "answer_code": "public static double calculateChange(double amountPaid, double totalCost) {\n    return amountPaid - totalCost;\n}",
+      "hint": "Subtract the total cost from the amount paid to get the change",
+      "test_inputs": [[20.0, 15.50], [25.0, 18.75], [10.0, 9.99], [50.0, 42.30], [15.0, 15.0]]
+    },
+    {
+      "function_name": "countVowelsInName",
+      "return_type": "int",
+      "parameters": ["customerName"],
+      "param_types": ["String"],
+      "description": "Write a function that counts the number of vowels (a, e, i, o, u) in a customer's name. Use a loop to check each character.",
+      "answer_code": "public static int countVowelsInName(String customerName) {\n    int count = 0;\n    String vowels = \"aeiouAEIOU\";\n    for (int i = 0; i < customerName.length(); i++) {\n        if (vowels.indexOf(customerName.charAt(i)) != -1) {\n            count++;\n        }\n    }\n    return count;\n}",
+      "hint": "Use a for loop to check each character and see if it's in the string 'aeiouAEIOU'",
+      "test_inputs": ["Alice", "Bob", "Charlie", "Diana", "Eugene"]
+    },
+    {
+      "function_name": "generateOrderNumber",
+      "return_type": "String",
+      "parameters": ["customerName"],
+      "param_types": ["String"],
+      "description": "Write a function that generates an order number by taking the first 3 characters of the customer's name (or the whole name if shorter) and adding '001' at the end.",
+      "answer_code": "public static String generateOrderNumber(String customerName) {\n    if (customerName.length() >= 3) {\n        return customerName.substring(0, 3).toUpperCase() + \"001\";\n    } else {\n        return customerName.toUpperCase() + \"001\";\n    }\n}",
+      "hint": "Use substring(0, 3) to get first 3 characters, or the whole name if shorter. Use toUpperCase() and concatenate with '001'",
+      "test_inputs": ["Alice", "Bob", "Charlie", "Ed", "Alexander"]
+    },
+    {
+      "function_name": "findCheapestItem",
+      "return_type": "double",
+      "parameters": ["price1", "price2", "price3"],
+      "param_types": ["double", "double", "double"],
+      "description": "Write a function that finds the cheapest price among three menu items.",
+      "answer_code": "public static double findCheapestItem(double price1, double price2, double price3) {\n    return Math.min(Math.min(price1, price2), price3);\n}",
+      "hint": "Use Math.min() function nested to compare all three prices",
+      "test_inputs": [[8.99, 12.50, 6.75], [15.25, 9.99, 11.50], [7.50, 7.50, 7.50], [20.00, 5.99, 18.75], [12.99, 8.50, 14.25]]
+    },
+    {
+      "function_name": "reverseOrderName",
+      "return_type": "String",
+      "parameters": ["itemName"],
+      "param_types": ["String"],
+      "description": "Write a function that reverses the characters in a menu item name. Use a loop to build the reversed string.",
+      "answer_code": "public static String reverseOrderName(String itemName) {\n    String reversed = \"\";\n    for (int i = itemName.length() - 1; i >= 0; i--) {\n        reversed += itemName.charAt(i);\n    }\n    return reversed;\n}",
+      "hint": "Use a for loop starting from the last character (length-1) and going backwards to 0",
+      "test_inputs": ["Burger", "Pizza", "Fries", "Shake", "Sandwich"]
+    },
+    {
+      "function_name": "calculateBulkDiscount",
+      "return_type": "double",
+      "parameters": ["originalPrice", "quantity"],
+      "param_types": ["double", "int"],
+      "description": "Write a function that calculates the total price with bulk discount. 5-9 items get 5% off, 10-19 items get 10% off, 20+ items get 15% off. No discount for less than 5 items.",
+      "answer_code": "public static double calculateBulkDiscount(double originalPrice, int quantity) {\n    double totalPrice = originalPrice * quantity;\n    if (quantity >= 20) {\n        return totalPrice * 0.85; // 15% off\n    } else if (quantity >= 10) {\n        return totalPrice * 0.90; // 10% off\n    } else if (quantity >= 5) {\n        return totalPrice * 0.95; // 5% off\n    } else {\n        return totalPrice; // no discount\n    }\n}",
+      "hint": "First calculate total price (originalPrice * quantity), then apply discount based on quantity ranges",
+      "test_inputs": [[5.99, 3], [8.50, 7], [12.99, 12], [6.75, 25], [9.99, 10]]
+    }
+  ]
+}
