@@ -1,0 +1,204 @@
+{
+  "questions": [
+    {
+      "function_name": "createOrderGreeting",
+      "return_type": "String",
+      "parameters": ["customerName", "orderNumber"],
+      "param_types": ["String", "int"],
+      "description": "Write a function that creates a greeting message using the customer's name and order number. Return 'Hello [customerName], your order number is [orderNumber]!'",
+      "answer_code": "public static String createOrderGreeting(String customerName, int orderNumber) {\n    return \"Hello \" + customerName + \", your order number is \" + orderNumber + \"!\";\n}",
+      "hint": "Use string concatenation with + to combine the text, customerName, order number, and punctuation",
+      "test_inputs": [["Sarah", 123], ["Mike", 456], ["Jessica", 789], ["David", 101], ["Emma", 999]]
+    },
+    {
+      "function_name": "addMenuPrices",
+      "return_type": "double",
+      "parameters": ["price1", "price2"],
+      "param_types": ["double", "double"],
+      "description": "Write a function that adds two menu item prices together and returns the total.",
+      "answer_code": "public static double addMenuPrices(double price1, double price2) {\n    return price1 + price2;\n}",
+      "hint": "Simply add the two double values using the + operator",
+      "test_inputs": [[8.99, 4.50], [12.75, 6.25], [5.99, 3.49], [15.00, 2.99], [7.50, 8.25]]
+    },
+    {
+      "function_name": "calculateMealDeal",
+      "return_type": "double",
+      "parameters": ["burgerPrice", "drinkPrice"],
+      "param_types": ["double", "double"],
+      "description": "Write a function that calculates a meal deal price. The meal deal gives $2.00 off when you buy a burger and drink together.",
+      "answer_code": "public static double calculateMealDeal(double burgerPrice, double drinkPrice) {\n    return burgerPrice + drinkPrice - 2.00;\n}",
+      "hint": "Add the two prices together, then subtract 2.00 for the discount",
+      "test_inputs": [[8.99, 2.50], [12.50, 3.25], [6.75, 1.99], [15.25, 4.00], [9.99, 2.75]]
+    },
+    {
+      "function_name": "isValidOrderTime",
+      "return_type": "boolean",
+      "parameters": ["currentHour", "currentMinute"],
+      "param_types": ["int", "int"],
+      "description": "Write a function that checks if an order can be placed. Orders are accepted from 6:00 AM to 10:30 PM (22:30). Return true if valid time, false otherwise.",
+      "answer_code": "public static boolean isValidOrderTime(int currentHour, int currentMinute) {\n    if (currentHour < 6 || currentHour > 22) {\n        return false;\n    }\n    if (currentHour == 22 && currentMinute > 30) {\n        return false;\n    }\n    return true;\n}",
+      "hint": "Use OR (||) to check if hour is too early or too late. Use AND (&&) to check the special case of 10:30 PM",
+      "test_inputs": [[8, 30], [22, 45], [6, 0], [23, 15], [22, 30]]
+    },
+    {
+      "function_name": "canGetDiscount",
+      "return_type": "boolean",
+      "parameters": ["isStudent", "isSenior"],
+      "param_types": ["boolean", "boolean"],
+      "description": "Write a function that determines if a customer can get a discount. Return true if they are either a student OR a senior citizen.",
+      "answer_code": "public static boolean canGetDiscount(boolean isStudent, boolean isSenior) {\n    return isStudent || isSenior;\n}",
+      "hint": "Use the OR operator (||) to check if either condition is true",
+      "test_inputs": [[true, false], [false, true], [true, true], [false, false], [true, false]]
+    },
+    {
+      "function_name": "isComboEligible",
+      "return_type": "boolean",
+      "parameters": ["hasBurger", "hasFries"],
+      "param_types": ["boolean", "boolean"],
+      "description": "Write a function that checks if an order is eligible for a combo deal. The customer must have BOTH a burger AND fries.",
+      "answer_code": "public static boolean isComboEligible(boolean hasBurger, boolean hasFries) {\n    return hasBurger && hasFries;\n}",
+      "hint": "Use the AND operator (&&) to check that both conditions are true",
+      "test_inputs": [[true, true], [true, false], [false, true], [false, false], [true, true]]
+    },
+    {
+      "function_name": "calculateTotalWithTip",
+      "return_type": "double",
+      "parameters": ["billAmount", "tipPercentage"],
+      "param_types": ["double", "double"],
+      "description": "Write a function that calculates the total bill including tip. The tip percentage is given as a decimal (e.g., 0.15 for 15%).",
+      "answer_code": "public static double calculateTotalWithTip(double billAmount, double tipPercentage) {\n    return billAmount + (billAmount * tipPercentage);\n}",
+      "hint": "Calculate the tip by multiplying billAmount by tipPercentage, then add it to the original bill",
+      "test_inputs": [[25.00, 0.18], [15.50, 0.20], [42.75, 0.15], [8.99, 0.10], [30.25, 0.22]]
+    },
+    {
+      "function_name": "isRushHour",
+      "return_type": "boolean",
+      "parameters": ["hour", "dayOfWeek"],
+      "param_types": ["int", "String"],
+      "description": "Write a function that determines if it's rush hour. Rush hour is 12-2 PM (12-14) on weekdays ('Monday' through 'Friday'), but NOT on weekends.",
+      "answer_code": "public static boolean isRushHour(int hour, String dayOfWeek) {\n    boolean isWeekday = !dayOfWeek.equals(\"Saturday\") && !dayOfWeek.equals(\"Sunday\");\n    boolean isLunchTime = hour >= 12 && hour <= 14;\n    return isWeekday && isLunchTime;\n}",
+      "hint": "Use NOT (!) with equals() to check if it's not weekend. Use AND (&&) to combine weekday check with time check",
+      "test_inputs": [[13, "Monday"], [13, "Saturday"], [11, "Tuesday"], [14, "Friday"], [12, "Sunday"]]
+    },
+    {
+      "function_name": "shouldOfferUpsell",
+      "return_type": "boolean",
+      "parameters": ["orderTotal", "itemCount"],
+      "param_types": ["double", "int"],
+      "description": "Write a function that determines if we should offer an upsell. Offer upsell if the order total is less than $15 OR if they have fewer than 3 items.",
+      "answer_code": "public static boolean shouldOfferUpsell(double orderTotal, int itemCount) {\n    return orderTotal < 15.0 || itemCount < 3;\n}",
+      "hint": "Use the OR operator (||) to check if either the total is low or item count is low",
+      "test_inputs": [[12.50, 4], [18.75, 2], [8.99, 5], [20.00, 1], [14.99, 3]]
+    },
+    {
+      "function_name": "calculateGroupDiscount",
+      "return_type": "double",
+      "parameters": ["totalAmount", "groupSize"],
+      "param_types": ["double", "int"],
+      "description": "Write a function that applies group discounts. Groups of 5+ people get 10% off, groups of 10+ get 15% off. Return the discounted total.",
+      "answer_code": "public static double calculateGroupDiscount(double totalAmount, int groupSize) {\n    if (groupSize >= 10) {\n        return totalAmount * 0.85; // 15% off\n    } else if (groupSize >= 5) {\n        return totalAmount * 0.90; // 10% off\n    } else {\n        return totalAmount; // no discount\n    }\n}",
+      "hint": "Use if-else statements to check group size ranges and apply appropriate discounts",
+      "test_inputs": [[50.00, 12], [30.00, 6], [25.00, 3], [75.00, 8], [100.00, 15]]
+    },
+    {
+      "function_name": "isValidCoupon",
+      "return_type": "boolean",
+      "parameters": ["couponCode", "orderAmount"],
+      "param_types": ["String", "double"],
+      "description": "Write a function that validates a coupon. The coupon 'SAVE10' is valid for orders over $20, and 'STUDENT5' is valid for any order amount.",
+      "answer_code": "public static boolean isValidCoupon(String couponCode, double orderAmount) {\n    if (couponCode.equals(\"SAVE10\") && orderAmount > 20.0) {\n        return true;\n    } else if (couponCode.equals(\"STUDENT5\")) {\n        return true;\n    } else {\n        return false;\n    }\n}",
+      "hint": "Use equals() to check coupon codes and AND (&&) to combine code check with amount requirement",
+      "test_inputs": [["SAVE10", 25.00], ["SAVE10", 15.00], ["STUDENT5", 8.50], ["INVALID", 30.00], ["STUDENT5", 50.00]]
+    },
+    {
+      "function_name": "determineDeliveryZone",
+      "return_type": "String",
+      "parameters": ["distance", "traffic"],
+      "param_types": ["double", "String"],
+      "description": "Write a function that determines delivery zone. Zone 1 (0-3 miles with 'Light' traffic), Zone 2 (0-3 miles with 'Heavy' traffic OR 3-8 miles with any traffic), Zone 3 (8+ miles). Return the zone name.",
+      "answer_code": "public static String determineDeliveryZone(double distance, String traffic) {\n    if (distance <= 3.0 && traffic.equals(\"Light\")) {\n        return \"Zone 1\";\n    } else if ((distance <= 3.0 && traffic.equals(\"Heavy\")) || (distance > 3.0 && distance <= 8.0)) {\n        return \"Zone 2\";\n    } else {\n        return \"Zone 3\";\n    }\n}",
+      "hint": "Use AND (&&) for conditions that must both be true, and OR (||) for alternative conditions. Use parentheses to group conditions clearly",
+      "test_inputs": [[2.5, "Light"], [2.5, "Heavy"], [5.0, "Light"], [10.0, "Heavy"], [3.0, "Medium"]]
+    },
+    {
+      "function_name": "canProcessPayment",
+      "return_type": "boolean",
+      "parameters": ["paymentMethod", "amount"],
+      "param_types": ["String", "double"],
+      "description": "Write a function that checks if payment can be processed. Cash is always accepted. Credit cards are only accepted for amounts over $5.00. Gift cards are only accepted for amounts under $100.00.",
+      "answer_code": "public static boolean canProcessPayment(String paymentMethod, double amount) {\n    if (paymentMethod.equals(\"Cash\")) {\n        return true;\n    } else if (paymentMethod.equals(\"Credit\") && amount > 5.00) {\n        return true;\n    } else if (paymentMethod.equals(\"Gift Card\") && amount < 100.00) {\n        return true;\n    } else {\n        return false;\n    }\n}",
+      "hint": "Check each payment method separately and use AND (&&) to combine method check with amount restrictions",
+      "test_inputs": [["Cash", 3.50], ["Credit", 25.00], ["Credit", 4.00], ["Gift Card", 75.00], ["Gift Card", 150.00]]
+    },
+    {
+      "function_name": "isSpecialOffer",
+      "return_type": "boolean",
+      "parameters": ["dayOfWeek", "hour"],
+      "param_types": ["String", "int"],
+      "description": "Write a function that checks for special offers. Happy hour is Monday-Friday from 2-5 PM, Weekend brunch is Saturday-Sunday from 9-12 PM. Return true if either offer applies.",
+      "answer_code": "public static boolean isSpecialOffer(String dayOfWeek, int hour) {\n    boolean isWeekday = !dayOfWeek.equals(\"Saturday\") && !dayOfWeek.equals(\"Sunday\");\n    boolean isHappyHour = isWeekday && hour >= 14 && hour <= 17;\n    boolean isWeekend = dayOfWeek.equals(\"Saturday\") || dayOfWeek.equals(\"Sunday\");\n    boolean isBrunchTime = isWeekend && hour >= 9 && hour <= 12;\n    return isHappyHour || isBrunchTime;\n}",
+      "hint": "Use NOT (!) to check if it's not weekend, use OR (||) to check if it's weekend, then combine conditions with AND (&&)",
+      "test_inputs": [["Monday", 15], ["Saturday", 10], ["Tuesday", 8], ["Sunday", 11], ["Friday", 16]]
+    },
+    {
+      "function_name": "calculateLoyaltyBonus",
+      "return_type": "int",
+      "parameters": ["currentPoints", "amountSpent"],
+      "param_types": ["int", "double"],
+      "description": "Write a function that calculates loyalty bonus points. Customers earn 1 point per dollar spent. If they already have 100+ points, they get double points for this purchase.",
+      "answer_code": "public static int calculateLoyaltyBonus(int currentPoints, double amountSpent) {\n    int basePoints = (int) amountSpent;\n    if (currentPoints >= 100) {\n        return basePoints * 2;\n    } else {\n        return basePoints;\n    }\n}",
+      "hint": "First calculate base points by casting amountSpent to int, then check if current points qualify for bonus",
+      "test_inputs": [[75, 15.50], [120, 25.00], [50, 8.75], [150, 12.99], [99, 20.00]]
+    },
+    {
+      "function_name": "shouldSuggestDessert",
+      "return_type": "boolean",
+      "parameters": ["hasMainCourse", "orderValue"],
+      "param_types": ["boolean", "double"],
+      "description": "Write a function that determines if we should suggest dessert. Suggest dessert if the customer has a main course AND their order value is over $10, OR if their order value is over $25 (regardless of main course).",
+      "answer_code": "public static boolean shouldSuggestDessert(boolean hasMainCourse, double orderValue) {\n    return (hasMainCourse && orderValue > 10.0) || orderValue > 25.0;\n}",
+      "hint": "Use parentheses to group the AND condition, then use OR (||) to combine with the high-value condition",
+      "test_inputs": [[true, 15.00], [false, 30.00], [true, 8.50], [false, 12.00], [true, 28.00]]
+    },
+    {
+      "function_name": "isItemAvailable",
+      "return_type": "boolean",
+      "parameters": ["stockLevel", "timeOfDay"],
+      "param_types": ["int", "String"],
+      "description": "Write a function that checks item availability. Items are available if stock level is greater than 0. However, breakfast items are only available during 'Morning' time, and late-night items are only available during 'Night' time.",
+      "answer_code": "public static boolean isItemAvailable(int stockLevel, String timeOfDay) {\n    boolean hasStock = stockLevel > 0;\n    boolean isRegularHours = !timeOfDay.equals(\"Morning\") && !timeOfDay.equals(\"Night\");\n    boolean isBreakfastTime = timeOfDay.equals(\"Morning\");\n    boolean isLateNightTime = timeOfDay.equals(\"Night\");\n    \n    return hasStock && (isRegularHours || isBreakfastTime || isLateNightTime);\n}",
+      "hint": "First check if there's stock, then use NOT (!) to identify regular hours, and OR (||) to allow any time period",
+      "test_inputs": [[5, "Afternoon"], [0, "Morning"], [3, "Morning"], [2, "Night"], [1, "Evening"]]
+    },
+    {
+      "function_name": "calculateDynamicPrice",
+      "return_type": "double",
+      "parameters": ["basePrice", "demandLevel"],
+      "param_types": ["double", "String"],
+      "description": "Write a function that calculates dynamic pricing. 'Low' demand gives 10% discount, 'Normal' demand keeps original price, 'High' demand adds 20% surcharge.",
+      "answer_code": "public static double calculateDynamicPrice(double basePrice, String demandLevel) {\n    if (demandLevel.equals(\"Low\")) {\n        return basePrice * 0.90; // 10% discount\n    } else if (demandLevel.equals(\"High\")) {\n        return basePrice * 1.20; // 20% surcharge\n    } else {\n        return basePrice; // Normal price\n    }\n}",
+      "hint": "Use if-else statements to check demand levels and apply appropriate multipliers",
+      "test_inputs": [[10.00, "Low"], [15.50, "High"], [8.99, "Normal"], [12.75, "Low"], [20.00, "High"]]
+    },
+    {
+      "function_name": "validateOrderLimits",
+      "return_type": "boolean",
+      "parameters": ["quantity", "customerType"],
+      "param_types": ["int", "String"],
+      "description": "Write a function that validates order quantity limits. Regular customers can order up to 10 items, VIP customers can order up to 50 items, Staff can order unlimited items.",
+      "answer_code": "public static boolean validateOrderLimits(int quantity, String customerType) {\n    if (customerType.equals(\"Staff\")) {\n        return true;\n    } else if (customerType.equals(\"VIP\") && quantity <= 50) {\n        return true;\n    } else if (customerType.equals(\"Regular\") && quantity <= 10) {\n        return true;\n    } else {\n        return false;\n    }\n}",
+      "hint": "Check each customer type and use AND (&&) to combine type check with quantity limits",
+      "test_inputs": [[8, "Regular"], [25, "VIP"], [100, "Staff"], [15, "Regular"], [60, "VIP"]]
+    },
+    {
+      "function_name": "determineWaitTimeMultiplier",
+      "return_type": "double",
+      "parameters": ["baseWaitTime", "orderComplexity"],
+      "param_types": ["int", "String"],
+      "description": "Write a function that calculates actual wait time using a complexity multiplier. 'Simple' orders use 0.8x multiplier, 'Standard' orders use 1.0x, 'Complex' orders use 1.5x multiplier.",
+      "answer_code": "public static double determineWaitTimeMultiplier(int baseWaitTime, String orderComplexity) {\n    if (orderComplexity.equals(\"Simple\")) {\n        return baseWaitTime * 0.8;\n    } else if (orderComplexity.equals(\"Complex\")) {\n        return baseWaitTime * 1.5;\n    } else {\n        return baseWaitTime * 1.0; // Standard\n    }\n}",
+      "hint": "Use if-else statements to check complexity levels and multiply baseWaitTime by appropriate multipliers",
+      "test_inputs": [[10, "Simple"], [15, "Complex"], [12, "Standard"], [8, "Simple"], [20, "Complex"]]
+    }
+  ]
+}
