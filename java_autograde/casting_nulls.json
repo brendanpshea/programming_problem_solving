@@ -1,0 +1,204 @@
+{
+  "questions": [
+    {
+      "function_name": "convertCrewSize",
+      "return_type": "int",
+      "parameters": ["crewSizeDouble"],
+      "param_types": ["double"],
+      "description": "Write a function that converts a crew size from double to int. The USS Enterprise has 430.0 crew members, but we need it as a whole number.",
+      "answer_code": "public static int convertCrewSize(double crewSizeDouble) {\n    return (int) crewSizeDouble;\n}",
+      "hint": "Use (int) before the variable name to cast a double to an int",
+      "test_inputs": [430.0, 150.7, 1000.9, 75.3, 200.0]
+    },
+    {
+      "function_name": "parseStarshipSpeed",
+      "return_type": "double",
+      "parameters": ["speedString"],
+      "param_types": ["String"],
+      "description": "Write a function that converts a starship's warp speed from String to double. Return 0.0 if the string is null.",
+      "answer_code": "public static double parseStarshipSpeed(String speedString) {\n    if (speedString == null) {\n        return 0.0;\n    }\n    return Double.parseDouble(speedString);\n}",
+      "hint": "Check if the parameter is null using == null. Use Double.parseDouble() to convert String to double",
+      "test_inputs": ["9.5", "2.3", null, "8.0", "1.2"]
+    },
+    {
+      "function_name": "getJediName",
+      "return_type": "String",
+      "parameters": ["jediName"],
+      "param_types": ["String"],
+      "description": "Write a function that returns a Jedi's name. If the name is null, return 'Unknown Jedi'.",
+      "answer_code": "public static String getJediName(String jediName) {\n    if (jediName == null) {\n        return \"Unknown Jedi\";\n    }\n    return jediName;\n}",
+      "hint": "Use == null to check if a String is null, then return a default value or the original string",
+      "test_inputs": ["Luke Skywalker", null, "Obi-Wan Kenobi", "Yoda", null]
+    },
+    {
+      "function_name": "roundWarpFactor",
+      "return_type": "long",
+      "parameters": ["warpSpeed"],
+      "param_types": ["double"],
+      "description": "Write a function that converts a warp speed to a whole number using long. Warp 9.75 should become 9.",
+      "answer_code": "public static long roundWarpFactor(double warpSpeed) {\n    return (long) warpSpeed;\n}",
+      "hint": "Use (long) to cast a double to a long integer type",
+      "test_inputs": [9.75, 2.1, 8.99, 1.0, 5.67]
+    },
+    {
+      "function_name": "getDalekThreatLevel",
+      "return_type": "int",
+      "parameters": ["threatString"],
+      "param_types": ["String"],
+      "description": "Write a function that parses a Dalek threat level from String to int. If the string is null or empty, return -1 to indicate 'unknown threat'.",
+      "answer_code": "public static int getDalekThreatLevel(String threatString) {\n    if (threatString == null || threatString.isEmpty()) {\n        return -1;\n    }\n    return Integer.parseInt(threatString);\n}",
+      "hint": "Check for null with == null and empty with .isEmpty(). Use || for OR logic. Use Integer.parseInt() to convert String to int",
+      "test_inputs": ["10", null, "", "5", "8"]
+    },
+    {
+      "function_name": "calculateTardisAge",
+      "return_type": "float",
+      "parameters": ["ageInYears"],
+      "param_types": ["int"],
+      "description": "Write a function that converts the TARDIS age from years (int) to centuries (float). Divide by 100.0 to get centuries.",
+      "answer_code": "public static float calculateTardisAge(int ageInYears) {\n    return (float) (ageInYears / 100.0);\n}",
+      "hint": "Divide by 100.0 (double), then cast the result to float using (float)",
+      "test_inputs": [900, 2000, 1200, 500, 1963]
+    },
+    {
+      "function_name": "getSaberColor",
+      "return_type": "String",
+      "parameters": ["colorCode"],
+      "param_types": ["Integer"],
+      "description": "Write a function that returns lightsaber color based on Integer code. 1='Blue', 2='Green', 3='Red'. Return 'Unknown' for null or other values.",
+      "answer_code": "public static String getSaberColor(Integer colorCode) {\n    if (colorCode == null) {\n        return \"Unknown\";\n    }\n    if (colorCode == 1) {\n        return \"Blue\";\n    } else if (colorCode == 2) {\n        return \"Green\";\n    } else if (colorCode == 3) {\n        return \"Red\";\n    } else {\n        return \"Unknown\";\n    }\n}",
+      "hint": "Note that Integer (wrapper class) can be null, unlike int (primitive). Check for null first, then check values",
+      "test_inputs": [1, 2, 3, null, 5]
+    },
+    {
+      "function_name": "parsePhaser",
+      "return_type": "Double",
+      "parameters": ["phaserSetting"],
+      "param_types": ["String"],
+      "description": "Write a function that parses a phaser setting string to Double wrapper class. Return null if the input string is null or if parsing fails.",
+      "answer_code": "public static Double parsePhaser(String phaserSetting) {\n    if (phaserSetting == null) {\n        return null;\n    }\n    try {\n        return Double.parseDouble(phaserSetting);\n    } catch (NumberFormatException e) {\n        return null;\n    }\n}",
+      "hint": "Use try-catch to handle NumberFormatException. Return null for both null input and parsing errors",
+      "test_inputs": ["3.5", null, "invalid", "10.0", "2.7"]
+    },
+    {
+      "function_name": "getShipNameLength",
+      "return_type": "int",
+      "parameters": ["shipName"],
+      "param_types": ["String"],
+      "description": "Write a function that returns the length of a starship name. Return 0 if the name is null.",
+      "answer_code": "public static int getShipNameLength(String shipName) {\n    if (shipName == null) {\n        return 0;\n    }\n    return shipName.length();\n}",
+      "hint": "Always check for null before calling methods on String objects to avoid NullPointerException",
+      "test_inputs": ["USS Enterprise", null, "Millennium Falcon", "TARDIS", null]
+    },
+    {
+      "function_name": "convertForceLevel",
+      "return_type": "byte",
+      "parameters": ["forceStrength"],
+      "param_types": ["int"],
+      "description": "Write a function that converts Force strength from int to byte (range -128 to 127). This represents a Jedi's midi-chlorian count in thousands.",
+      "answer_code": "public static byte convertForceLevel(int forceStrength) {\n    return (byte) forceStrength;\n}",
+      "hint": "Use (byte) to cast int to byte. Be aware that values outside -128 to 127 will wrap around",
+      "test_inputs": [100, 50, 200, -10, 127]
+    },
+    {
+      "function_name": "safeDivideWarp",
+      "return_type": "Double",
+      "parameters": ["distance", "warpFactor"],
+      "param_types": ["Double", "Double"],
+      "description": "Write a function that safely divides distance by warp factor. Return null if either parameter is null or if warp factor is 0.",
+      "answer_code": "public static Double safeDivideWarp(Double distance, Double warpFactor) {\n    if (distance == null || warpFactor == null || warpFactor == 0.0) {\n        return null;\n    }\n    return distance / warpFactor;\n}",
+      "hint": "Check if either wrapper class parameter is null, and also check for division by zero",
+      "test_inputs": [[100.0, 2.0], [null, 5.0], [50.0, null], [75.0, 0.0], [200.0, 4.0]]
+    },
+    {
+      "function_name": "getCybermanID",
+      "return_type": "String",
+      "parameters": ["idNumber"],
+      "param_types": ["Long"],
+      "description": "Write a function that creates a Cyberman ID string. Format: 'CYB-[number]'. Return 'CYB-UNKNOWN' if the Long is null.",
+      "answer_code": "public static String getCybermanID(Long idNumber) {\n    if (idNumber == null) {\n        return \"CYB-UNKNOWN\";\n    }\n    return \"CYB-\" + idNumber;\n}",
+      "hint": "Check if the Long wrapper class is null, then use string concatenation with the number",
+      "test_inputs": [12345L, null, 67890L, 999L, null]
+    },
+    {
+      "function_name": "parseStormtrooperRank",
+      "return_type": "Integer",
+      "parameters": ["rankString"],
+      "param_types": ["String"],
+      "description": "Write a function that parses a Stormtrooper rank to Integer. Return null for null input, empty strings, or invalid numbers.",
+      "answer_code": "public static Integer parseStormtrooperRank(String rankString) {\n    if (rankString == null || rankString.trim().isEmpty()) {\n        return null;\n    }\n    try {\n        return Integer.parseInt(rankString.trim());\n    } catch (NumberFormatException e) {\n        return null;\n    }\n}",
+      "hint": "Use trim() to remove whitespace, check for empty after trimming, and use try-catch for parsing",
+      "test_inputs": ["501", null, "  ", "TK421", "  99  "]
+    },
+    {
+      "function_name": "castToShort",
+      "return_type": "short",
+      "parameters": ["rebelCount"],
+      "param_types": ["long"],
+      "description": "Write a function that casts the number of rebel fighters from long to short. The Death Star sensors can only track up to 32,767 ships.",
+      "answer_code": "public static short castToShort(long rebelCount) {\n    return (short) rebelCount;\n}",
+      "hint": "Use (short) to cast long to short. Values outside the short range (-32,768 to 32,767) will wrap around",
+      "test_inputs": [1000L, 50000L, 32767L, -1000L, 100000L]
+    },
+    {
+      "function_name": "getDoctorIncarnation",
+      "return_type": "String",
+      "parameters": ["incarnationNum", "actorName"],
+      "param_types": ["Integer", "String"],
+      "description": "Write a function that creates a Doctor description. Format: 'The [number] Doctor ([actor])'. Return 'Unknown Doctor' if either parameter is null.",
+      "answer_code": "public static String getDoctorIncarnation(Integer incarnationNum, String actorName) {\n    if (incarnationNum == null || actorName == null) {\n        return \"Unknown Doctor\";\n    }\n    return \"The \" + incarnationNum + \" Doctor (\" + actorName + \")\";\n}",
+      "hint": "Check if either parameter is null using ||, then build the string with concatenation",
+      "test_inputs": [[10, "David Tennant"], [null, "Tom Baker"], [4, null], [11, "Matt Smith"], [null, null]]
+    },
+    {
+      "function_name": "calculateHyperspaceJump",
+      "return_type": "Float",
+      "parameters": ["parsecs", "modifier"],
+      "param_types": ["String", "Float"],
+      "description": "Write a function that calculates hyperspace distance. Parse parsecs string to float, multiply by modifier. Return null if parsecs can't be parsed or modifier is null.",
+      "answer_code": "public static Float calculateHyperspaceJump(String parsecs, Float modifier) {\n    if (modifier == null) {\n        return null;\n    }\n    try {\n        float distance = Float.parseFloat(parsecs);\n        return distance * modifier;\n    } catch (NumberFormatException | NullPointerException e) {\n        return null;\n    }\n}",
+      "hint": "Check modifier for null, use try-catch to handle both NumberFormatException and NullPointerException",
+      "test_inputs": [["12.5", 2.0f], [null, 1.5f], ["invalid", 3.0f], ["8.0", null], ["15.7", 0.5f]]
+    },
+    {
+      "function_name": "getVulcanLogicLevel",
+      "return_type": "int",
+      "parameters": ["logicString"],
+      "param_types": ["String"],
+      "description": "Write a function that converts Vulcan logic level string to int. Return Integer.MAX_VALUE for null (representing infinite logic), or 0 for parsing errors.",
+      "answer_code": "public static int getVulcanLogicLevel(String logicString) {\n    if (logicString == null) {\n        return Integer.MAX_VALUE;\n    }\n    try {\n        return Integer.parseInt(logicString);\n    } catch (NumberFormatException e) {\n        return 0;\n    }\n}",
+      "hint": "Use Integer.MAX_VALUE for the special null case, and handle parsing exceptions differently than null",
+      "test_inputs": ["95", null, "logical", "100", "75"]
+    },
+    {
+      "function_name": "safeCastToInt",
+      "return_type": "Integer",
+      "parameters": ["deathStarPower"],
+      "param_types": ["Long"],
+      "description": "Write a function that safely casts Death Star power level from Long to Integer. Return null if input is null or if the value is outside Integer range (-2,147,483,648 to 2,147,483,647).",
+      "answer_code": "public static Integer safeCastToInt(Long deathStarPower) {\n    if (deathStarPower == null) {\n        return null;\n    }\n    if (deathStarPower < Integer.MIN_VALUE || deathStarPower > Integer.MAX_VALUE) {\n        return null;\n    }\n    return (int) deathStarPower.longValue();\n}",
+      "hint": "Check for null, then check if the long value is within Integer.MIN_VALUE and Integer.MAX_VALUE range",
+      "test_inputs": [1000000L, null, 3000000000L, -5000000000L, 50000L]
+    },
+    {
+      "function_name": "parseTimeVortexEnergy",
+      "return_type": "Double",
+      "parameters": ["energyReading", "calibrationFactor"],
+      "param_types": ["Object", "Double"],
+      "description": "Write a function that parses time vortex energy from an Object (could be String, Integer, or Double) and multiplies by calibration factor. Return null for null inputs or unparseable objects.",
+      "answer_code": "public static Double parseTimeVortexEnergy(Object energyReading, Double calibrationFactor) {\n    if (energyReading == null || calibrationFactor == null) {\n        return null;\n    }\n    try {\n        double energy;\n        if (energyReading instanceof String) {\n            energy = Double.parseDouble((String) energyReading);\n        } else if (energyReading instanceof Integer) {\n            energy = ((Integer) energyReading).doubleValue();\n        } else if (energyReading instanceof Double) {\n            energy = (Double) energyReading;\n        } else {\n            return null;\n        }\n        return energy * calibrationFactor;\n    } catch (Exception e) {\n        return null;\n    }\n}",
+      "hint": "Use instanceof to check object types, then cast appropriately. Use try-catch to handle any casting or parsing errors",
+      "test_inputs": [["42.5", 2.0], [100, 1.5], [75.3, 0.8], [null, 2.0], ["invalid", 1.0]]
+    },
+    {
+      "function_name": "calculateWarpCoreBreach",
+      "return_type": "String",
+      "parameters": ["safetyLevel", "powerOutput"],
+      "param_types": ["Byte", "Integer"],
+      "description": "Write a function that determines warp core status. If either parameter is null, return 'SENSORS_OFFLINE'. If safety < 10 OR power > 1000, return 'CRITICAL_BREACH'. Otherwise return 'STABLE'.",
+      "answer_code": "public static String calculateWarpCoreBreach(Byte safetyLevel, Integer powerOutput) {\n    if (safetyLevel == null || powerOutput == null) {\n        return \"SENSORS_OFFLINE\";\n    }\n    if (safetyLevel < 10 || powerOutput > 1000) {\n        return \"CRITICAL_BREACH\";\n    }\n    return \"STABLE\";\n}",
+      "hint": "Check both wrapper classes for null first, then use logical operators with the unwrapped values",
+      "test_inputs": [[50, 800], [null, 900], [15, null], [5, 1200], [25, 500]]
+    }
+  ]
+}
