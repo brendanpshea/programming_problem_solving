@@ -136,9 +136,14 @@ def create_test_harness(code, function_name, function_sig, test_cases, class_suf
                     var_name = f"{name}_{i}"
                     
                     if typ == "int":
-                        test_code.append(f"            int {var_name} = {value};")
+                        if value is None:
+                            test_code.append(f"            int {var_name} = 0;")  # Or handle differently
+                        else:
+                            test_code.append(f"            int {var_name} = {value};")
                     elif typ == "double":
-                        if value == float('inf'):
+                        if value is None:
+                            test_code.append(f"            double {var_name} = 0.0;")  # Or handle differently
+                        elif value == float('inf'):
                             test_code.append(f"            double {var_name} = Double.POSITIVE_INFINITY;")
                         elif value == float('-inf'):
                             test_code.append(f"            double {var_name} = Double.NEGATIVE_INFINITY;")
@@ -147,10 +152,16 @@ def create_test_harness(code, function_name, function_sig, test_cases, class_suf
                         else:
                             test_code.append(f"            double {var_name} = {value};")
                     elif typ == "String":
-                        escaped_value = value.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
-                        test_code.append(f'            String {var_name} = "{escaped_value}";')
+                        if value is None:
+                            test_code.append(f'            String {var_name} = null;')
+                        else:
+                            escaped_value = value.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
+                            test_code.append(f'            String {var_name} = "{escaped_value}";')
                     elif typ == "boolean":
-                        test_code.append(f"            boolean {var_name} = {str(value).lower()};")
+                        if value is None:
+                            test_code.append(f"            boolean {var_name} = false;")  # Or handle differently
+                        else:
+                            test_code.append(f"            boolean {var_name} = {str(value).lower()};")
                     
                     param_values.append(var_name)
         
@@ -835,6 +846,16 @@ def create_java_questions():
             answer_code='public static String combineStrings(String firstName, String lastName) {\n    return firstName + " " + lastName;\n}',
             hint="Concatenate the first name, a space, and the last name using the + operator.",
             test_inputs=[("John", "Doe"), ("Jane", "Smith"), ("Albert", "Einstein"), ("Marie", "Curie")]
+        ),
+        JavaQuestion(
+            function_name="getStringLength",
+            return_type="int",
+            parameters=["text"],
+            param_types=["String"],
+            description="Write a function that returns the length of a string. If the string is null, return 0.",
+            answer_code='public static int getStringLength(String text) {\n    if (text == null) {\n        return 0;\n    }\n    return text.length();\n}',
+            hint="Check if the string is null before calling .length(). Use == null to check for null.",
+            test_inputs=["hello", "", "Java Programming", None, "a", None]
         ),
     ]
 
