@@ -118,7 +118,7 @@
       "description": "Write a function that creates a Cyberman ID string. Format: 'CYB-[number]'. Return 'CYB-UNKNOWN' if the Long is null.",
       "answer_code": "public static String getCybermanID(Long idNumber) {\n    if (idNumber == null) {\n        return \"CYB-UNKNOWN\";\n    }\n    return \"CYB-\" + idNumber;\n}",
       "hint": "Check if the Long wrapper class is null, then use string concatenation with the number",
-      "test_inputs": [12345L, null, 67890L, 999L, null]
+      "test_inputs": [12345, null, 67890, 999, null]
     },
     {
       "function_name": "parseStormtrooperRank",
@@ -138,7 +138,7 @@
       "description": "Write a function that casts the number of rebel fighters from long to short. The Death Star sensors can only track up to 32,767 ships.",
       "answer_code": "public static short castToShort(long rebelCount) {\n    return (short) rebelCount;\n}",
       "hint": "Use (short) to cast long to short. Values outside the short range (-32,768 to 32,767) will wrap around",
-      "test_inputs": [1000L, 50000L, 32767L, -1000L, 100000L]
+      "test_inputs": [1000, 50000, 32767, -1000, 100000]
     },
     {
       "function_name": "getDoctorIncarnation",
@@ -158,7 +158,7 @@
       "description": "Write a function that calculates hyperspace distance. Parse parsecs string to float, multiply by modifier. Return null if parsecs can't be parsed or modifier is null.",
       "answer_code": "public static Float calculateHyperspaceJump(String parsecs, Float modifier) {\n    if (modifier == null) {\n        return null;\n    }\n    try {\n        float distance = Float.parseFloat(parsecs);\n        return distance * modifier;\n    } catch (NumberFormatException | NullPointerException e) {\n        return null;\n    }\n}",
       "hint": "Check modifier for null, use try-catch to handle both NumberFormatException and NullPointerException",
-      "test_inputs": [["12.5", 2.0f], [null, 1.5f], ["invalid", 3.0f], ["8.0", null], ["15.7", 0.5f]]
+      "test_inputs": [["12.5", 2.0], [null, 1.5], ["invalid", 3.0], ["8.0", null], ["15.7", 0.5]]
     },
     {
       "function_name": "getVulcanLogicLevel",
@@ -178,7 +178,7 @@
       "description": "Write a function that safely casts Death Star power level from Long to Integer. Return null if input is null or if the value is outside Integer range (-2,147,483,648 to 2,147,483,647).",
       "answer_code": "public static Integer safeCastToInt(Long deathStarPower) {\n    if (deathStarPower == null) {\n        return null;\n    }\n    if (deathStarPower < Integer.MIN_VALUE || deathStarPower > Integer.MAX_VALUE) {\n        return null;\n    }\n    return (int) deathStarPower.longValue();\n}",
       "hint": "Check for null, then check if the long value is within Integer.MIN_VALUE and Integer.MAX_VALUE range",
-      "test_inputs": [1000000L, null, 3000000000L, -5000000000L, 50000L]
+      "test_inputs": [1000000, null, 3000000000, -5000000000, 50000]
     },
     {
       "function_name": "parseTimeVortexEnergy",
