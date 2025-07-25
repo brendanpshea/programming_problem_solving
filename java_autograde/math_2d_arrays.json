@@ -1,0 +1,204 @@
+{
+  "questions": [
+    {
+      "function_name": "getStarshipLength",
+      "return_type": "int",
+      "parameters": ["starshipGrid"],
+      "param_types": ["int[][]"],
+      "description": "Write a function that returns the number of rows in a 2D starship grid. The USS Enterprise bridge layout is represented as a 2D array.",
+      "answer_code": "public static int getStarshipLength(int[][] starshipGrid) {\n    return starshipGrid.length;\n}",
+      "hint": "Use .length on the 2D array to get the number of rows (first dimension)",
+      "test_inputs": [[[1, 2, 3], [4, 5, 6]], [[1], [2]], [[1, 2], [3, 4], [5, 6]], [[7, 8, 9, 10]], [[1, 2, 3], [4, 5, 6], [7, 8, 9]]]
+    },
+    {
+      "function_name": "getStarshipWidth",
+      "return_type": "int",
+      "parameters": ["starshipGrid"],
+      "param_types": ["int[][]"],
+      "description": "Write a function that returns the number of columns in a 2D starship grid (assuming all rows have the same length).",
+      "answer_code": "public static int getStarshipWidth(int[][] starshipGrid) {\n    return starshipGrid[0].length;\n}",
+      "hint": "Use starshipGrid[0].length to get the number of columns in the first row",
+      "test_inputs": [[[1, 2, 3], [4, 5, 6]], [[1], [2]], [[1, 2], [3, 4]], [[7, 8, 9, 10]], [[1, 2, 3, 4, 5]]]
+    },
+    {
+      "function_name": "getDeathStarPower",
+      "return_type": "int",
+      "parameters": ["powerGrid", "row", "col"],
+      "param_types": ["int[][]", "int", "int"],
+      "description": "Write a function that returns the power level at a specific coordinate in the Death Star's power grid.",
+      "answer_code": "public static int getDeathStarPower(int[][] powerGrid, int row, int col) {\n    return powerGrid[row][col];\n}",
+      "hint": "Use powerGrid[row][col] to access a specific element in a 2D array",
+      "test_inputs": [[[10, 20], [30, 40]], 1, 0]
+    },
+    {
+      "function_name": "calculateDistance",
+      "return_type": "double",
+      "parameters": ["x1", "y1", "x2", "y2"],
+      "param_types": ["double", "double", "double", "double"],
+      "description": "Write a function that calculates the distance between two points in space using the distance formula: sqrt((x2-x1)² + (y2-y1)²).",
+      "answer_code": "public static double calculateDistance(double x1, double y1, double x2, double y2) {\n    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));\n}",
+      "hint": "Use Math.sqrt() for square root and Math.pow(value, 2) to square numbers",
+      "test_inputs": [[0.0, 0.0, 3.0, 4.0], [1.0, 1.0, 4.0, 5.0], [0.0, 0.0, 0.0, 0.0], [-1.0, -1.0, 2.0, 3.0], [5.0, 7.0, 8.0, 11.0]]
+    },
+    {
+      "function_name": "roundWarpSpeed",
+      "return_type": "long",
+      "parameters": ["warpFactor"],
+      "param_types": ["double"],
+      "description": "Write a function that rounds a warp speed to the nearest whole number using Math.round().",
+      "answer_code": "public static long roundWarpSpeed(double warpFactor) {\n    return Math.round(warpFactor);\n}",
+      "hint": "Math.round() returns a long when given a double, and rounds to the nearest integer",
+      "test_inputs": [9.7, 2.3, 8.5, 1.1, 5.9]
+    },
+    {
+      "function_name": "setTardisCoordinate",
+      "return_type": "void",
+      "parameters": ["timeGrid", "row", "col", "timeValue"],
+      "param_types": ["int[][]", "int", "int", "int"],
+      "description": "Write a function that sets a specific coordinate in the TARDIS time grid to a new time value.",
+      "answer_code": "public static void setTardisCoordinate(int[][] timeGrid, int row, int col, int timeValue) {\n    timeGrid[row][col] = timeValue;\n}",
+      "hint": "Use timeGrid[row][col] = value to set a specific element in a 2D array",
+      "test_inputs": [[[1, 2], [3, 4]], 0, 1, 99]
+    },
+    {
+      "function_name": "getMaxForceLevel",
+      "return_type": "int",
+      "parameters": ["forceLevel1", "forceLevel2"],
+      "param_types": ["int", "int"],
+      "description": "Write a function that returns the higher Force level between two Jedi using Math.max().",
+      "answer_code": "public static int getMaxForceLevel(int forceLevel1, int forceLevel2) {\n    return Math.max(forceLevel1, forceLevel2);\n}",
+      "hint": "Math.max(a, b) returns the larger of two values",
+      "test_inputs": [[95, 87], [45, 72], [100, 100], [23, 89], [67, 34]]
+    },
+    {
+      "function_name": "findFirstCrewMember",
+      "return_type": "int",
+      "parameters": ["bridgeLayout"],
+      "param_types": ["int[][]"],
+      "description": "Write a function that finds the first non-zero crew member ID in the bridge layout (search row by row, left to right). Return -1 if none found.",
+      "answer_code": "public static int findFirstCrewMember(int[][] bridgeLayout) {\n    for (int row = 0; row < bridgeLayout.length; row++) {\n        for (int col = 0; col < bridgeLayout[row].length; col++) {\n            if (bridgeLayout[row][col] != 0) {\n                return bridgeLayout[row][col];\n            }\n        }\n    }\n    return -1;\n}",
+      "hint": "Use nested for loops to iterate through rows and columns. Check each element and return the first non-zero value",
+      "test_inputs": [[[0, 0, 5], [0, 3, 0]], [[0, 0], [0, 0]], [[1, 2], [3, 4]], [[0, 0, 0], [0, 0, 7]], [[2, 0], [0, 0]]]
+    },
+    {
+      "function_name": "calculateHypotenuse",
+      "return_type": "double",
+      "parameters": ["sideA", "sideB"],
+      "param_types": ["double", "double"],
+      "description": "Write a function that calculates the hypotenuse of a right triangle using the Pythagorean theorem. This helps calculate the diagonal distance across a starship deck.",
+      "answer_code": "public static double calculateHypotenuse(double sideA, double sideB) {\n    return Math.sqrt(sideA * sideA + sideB * sideB);\n}",
+      "hint": "Use Math.sqrt() and the formula: hypotenuse = sqrt(a² + b²)",
+      "test_inputs": [[3.0, 4.0], [5.0, 12.0], [8.0, 6.0], [1.0, 1.0], [9.0, 12.0]]
+    },
+    {
+      "function_name": "getAbsolutePowerLevel",
+      "return_type": "int",
+      "parameters": ["powerReading"],
+      "param_types": ["int"],
+      "description": "Write a function that returns the absolute value of a Death Star power reading using Math.abs(). Negative readings indicate power drain.",
+      "answer_code": "public static int getAbsolutePowerLevel(int powerReading) {\n    return Math.abs(powerReading);\n}",
+      "hint": "Math.abs() returns the absolute value (always positive) of a number",
+      "test_inputs": [-50, 75, -100, 0, 42]
+    },
+    {
+      "function_name": "sumStarshipRow",
+      "return_type": "int",
+      "parameters": ["shipGrid", "rowIndex"],
+      "param_types": ["int[][]", "int"],
+      "description": "Write a function that calculates the sum of all values in a specific row of the starship grid.",
+      "answer_code": "public static int sumStarshipRow(int[][] shipGrid, int rowIndex) {\n    int sum = 0;\n    for (int col = 0; col < shipGrid[rowIndex].length; col++) {\n        sum += shipGrid[rowIndex][col];\n    }\n    return sum;\n}",
+      "hint": "Use a for loop to iterate through columns in the specified row and add each value to a sum variable",
+      "test_inputs": [[[1, 2, 3], [4, 5, 6]], 1]
+    },
+    {
+      "function_name": "calculateAngleToTarget",
+      "return_type": "double",
+      "parameters": ["deltaX", "deltaY"],
+      "param_types": ["double", "double"],
+      "description": "Write a function that calculates the angle (in radians) to a target using Math.atan2(). This helps TIE fighters aim at rebel ships.",
+      "answer_code": "public static double calculateAngleToTarget(double deltaX, double deltaY) {\n    return Math.atan2(deltaY, deltaX);\n}",
+      "hint": "Math.atan2(y, x) calculates the angle from the origin to point (x,y) in radians",
+      "test_inputs": [[1.0, 1.0], [0.0, 1.0], [1.0, 0.0], [-1.0, 1.0], [3.0, 4.0]]
+    },
+    {
+      "function_name": "countDaleks",
+      "return_type": "int",
+      "parameters": ["scanGrid"],
+      "param_types": ["int[][]"],
+      "description": "Write a function that counts how many Daleks (represented by the number 1) are detected in the scan grid.",
+      "answer_code": "public static int countDaleks(int[][] scanGrid) {\n    int count = 0;\n    for (int row = 0; row < scanGrid.length; row++) {\n        for (int col = 0; col < scanGrid[row].length; col++) {\n            if (scanGrid[row][col] == 1) {\n                count++;\n            }\n        }\n    }\n    return count;\n}",
+      "hint": "Use nested for loops to check every element in the 2D array and count how many equal 1",
+      "test_inputs": [[[1, 0, 1], [0, 1, 0], [1, 1, 0]], [[0, 0], [0, 0]], [[1, 1], [1, 1]], [[1, 0, 0], [0, 0, 1]], [[0, 1, 0], [1, 0, 1], [0, 1, 0]]]
+    },
+    {
+      "function_name": "calculateSineWave",
+      "return_type": "double",
+      "parameters": ["angle"],
+      "param_types": ["double"],
+      "description": "Write a function that calculates the sine of an angle (in radians) using Math.sin(). This helps calculate orbital patterns around planets.",
+      "answer_code": "public static double calculateSineWave(double angle) {\n    return Math.sin(angle);\n}",
+      "hint": "Math.sin() takes an angle in radians and returns the sine value (-1 to 1)",
+      "test_inputs": [0.0, 1.5708, 3.14159, 4.71239, 6.28318]
+    },
+    {
+      "function_name": "findMaxInGrid",
+      "return_type": "int",
+      "parameters": ["energyGrid"],
+      "param_types": ["int[][]"],
+      "description": "Write a function that finds the maximum energy level in the entire 2D grid using nested loops.",
+      "answer_code": "public static int findMaxInGrid(int[][] energyGrid) {\n    int max = energyGrid[0][0];\n    for (int row = 0; row < energyGrid.length; row++) {\n        for (int col = 0; col < energyGrid[row].length; col++) {\n            if (energyGrid[row][col] > max) {\n                max = energyGrid[row][col];\n            }\n        }\n    }\n    return max;\n}",
+      "hint": "Initialize max with the first element, then use nested loops to compare each element with the current max",
+      "test_inputs": [[[5, 2, 8], [1, 9, 3]], [[10, 20], [30, 15]], [[1]], [[7, 7], [7, 7]], [[-5, -2], [-10, -1]]]
+    },
+    {
+      "function_name": "calculatePowerOfTwo",
+      "return_type": "double",
+      "parameters": ["exponent"],
+      "param_types": ["int"],
+      "description": "Write a function that calculates 2 raised to the given exponent using Math.pow(). This represents the number of possible hyperspace routes.",
+      "answer_code": "public static double calculatePowerOfTwo(int exponent) {\n    return Math.pow(2, exponent);\n}",
+      "hint": "Math.pow(base, exponent) raises base to the power of exponent. Use 2 as the base",
+      "test_inputs": [3, 0, 5, 1, 10]
+    },
+    {
+      "function_name": "calculateSquareRoot",
+      "return_type": "double",
+      "parameters": ["radarRange"],
+      "param_types": ["double"],
+      "description": "Write a function that calculates the square root of a Death Star's radar range using Math.sqrt().",
+      "answer_code": "public static double calculateSquareRoot(double radarRange) {\n    return Math.sqrt(radarRange);\n}",
+      "hint": "Math.sqrt() returns the square root of a number",
+      "test_inputs": [16.0, 25.0, 9.0, 100.0, 49.0]
+    },
+    {
+      "function_name": "getRandomStarCoordinate",
+      "return_type": "double",
+      "parameters": ["maxRange"],
+      "param_types": ["double"],
+      "description": "Write a function that generates a random coordinate for a star within a given range using Math.random(). Formula: Math.random() * maxRange.",
+      "answer_code": "public static double getRandomStarCoordinate(double maxRange) {\n    return Math.random() * maxRange;\n}",
+      "hint": "Math.random() returns a value between 0.0 and 1.0. Multiply by maxRange to scale it",
+      "test_inputs": [100.0, 50.0, 10.0, 1000.0, 25.5]
+    },
+    {
+      "function_name": "fillGridWithValue",
+      "return_type": "void",
+      "parameters": ["grid", "fillValue"],
+      "param_types": ["int[][]", "int"],
+      "description": "Write a function that fills an entire 2D grid with a specific value. This resets all TARDIS coordinates to a default time value.",
+      "answer_code": "public static void fillGridWithValue(int[][] grid, int fillValue) {\n    for (int row = 0; row < grid.length; row++) {\n        for (int col = 0; col < grid[row].length; col++) {\n            grid[row][col] = fillValue;\n        }\n    }\n}",
+      "hint": "Use nested for loops to iterate through every position in the 2D array and set each element to fillValue",
+      "test_inputs": [[[1, 2], [3, 4]], 0]
+    },
+    {
+      "function_name": "calculateMinValue",
+      "return_type": "int",
+      "parameters": ["value1", "value2"],
+      "param_types": ["int", "int"],
+      "description": "Write a function that returns the smaller of two shield power levels using Math.min().",
+      "answer_code": "public static int calculateMinValue(int value1, int value2) {\n    return Math.min(value1, value2);\n}",
+      "hint": "Math.min(a, b) returns the smaller of two values",
+      "test_inputs": [[50, 75], [100, 25], [42, 42], [10, 90], [88, 33]]
+    }
+  ]
+}
