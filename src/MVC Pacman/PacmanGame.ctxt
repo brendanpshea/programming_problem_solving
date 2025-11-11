@@ -1,0 +1,12 @@
+#BlueJ class context
+comment0.target=PacmanGame
+comment0.text=\r\n\ MAIN\ CLASS\:\ Entry\ point\ for\ the\ Pacman\ game\r\n\ Demonstrates\ the\ MVC\ pattern\ by\:\r\n\ 1.\ Creating\ the\ Model\ (game\ state\ and\ logic)\r\n\ 2.\ Creating\ the\ View\ (visual\ representation)\r\n\ 3.\ Creating\ the\ Controller\ (input\ handling\ and\ coordination)\r\n\ 4.\ Wiring\ them\ together\r\n
+comment1.params=args
+comment1.target=void\ main(java.lang.String[])
+comment2.params=
+comment2.target=void\ run()
+comment3.params=
+comment3.target=void\ createAndShowGUI()
+comment4.params=
+comment4.target=void\ showInstructions()
+numComments=5

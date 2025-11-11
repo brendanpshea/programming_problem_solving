@@ -1,0 +1,22 @@
+#BlueJ class context
+comment0.target=PacmanView
+comment0.text=\r\n\ VIEW\:\ Handles\ all\ rendering\ and\ display\r\n\ -\ Draws\ the\ game\ board\r\n\ -\ Renders\ Pacman,\ ghosts,\ walls,\ and\ pellets\r\n\ -\ Displays\ score\ and\ game\ status\r\n\ Does\ NOT\ contain\ game\ logic\ or\ handle\ input\ directly\r\n
+comment1.params=model
+comment1.target=PacmanView(PacmanModel)
+comment2.params=g
+comment2.target=void\ paintComponent(java.awt.Graphics)
+comment3.params=g
+comment3.target=void\ drawMaze(java.awt.Graphics)
+comment4.params=g
+comment4.target=void\ drawPellets(java.awt.Graphics)
+comment5.params=g
+comment5.target=void\ drawPacman(java.awt.Graphics)
+comment6.params=g
+comment6.target=void\ drawGhosts(java.awt.Graphics)
+comment7.params=g
+comment7.target=void\ drawScore(java.awt.Graphics)
+comment8.params=g
+comment8.target=void\ drawGameStatus(java.awt.Graphics)
+comment9.params=g\ message\ color
+comment9.target=void\ drawCenteredMessage(java.awt.Graphics,\ java.lang.String,\ java.awt.Color)
+numComments=10
