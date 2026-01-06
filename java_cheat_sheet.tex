@@ -1,0 +1,1232 @@
+\documentclass[10pt,letterpaper,twocolumn]{article}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{amssymb}
+
+% Colors
+\definecolor{codebg}{RGB}{245,245,245}
+\definecolor{codegreen}{RGB}{0,128,0}
+\definecolor{codepurple}{RGB}{128,0,128}
+\definecolor{codeblue}{RGB}{0,0,180}
+\definecolor{sectioncolor}{RGB}{25,84,123}
+
+% Code listing style
+\lstset{
+    language=Java,
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{codebg},
+    keywordstyle=\color{codeblue}\bfseries,
+    stringstyle=\color{codegreen},
+    commentstyle=\color{gray}\itshape,
+    breaklines=true,
+    frame=single,
+    framesep=2pt,
+    xleftmargin=3pt,
+    xrightmargin=3pt,
+    aboveskip=4pt,
+    belowskip=4pt,
+    showstringspaces=false,
+    tabsize=2,
+    morekeywords={var, record, sealed, permits}
+}
+
+% Section formatting
+\titleformat{\section}{\large\bfseries\color{sectioncolor}}{\thesection}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{sectioncolor!80}}{\thesubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{8pt}{4pt}
+\titlespacing*{\subsection}{0pt}{6pt}{2pt}
+
+% Compact lists
+\setlist{nosep, leftmargin=*}
+
+% Table column types
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textbf{Java Programming Cheat Sheet}}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries\color{sectioncolor} Java Programming Cheat Sheet}\\[2pt]
+{\small Comprehensive Reference Guide -- Classic Video Game Edition}
+\end{center}
+
+\vspace{-8pt}
+\hrule
+\vspace{6pt}
+
+%==============================================================================
+\section{Basic Data Types \& Control Structures}
+%==============================================================================
+
+\subsection{Primitive Data Types}
+
+\begin{tabularx}{\columnwidth}{l l L}
+\toprule
+\textbf{Type} & \textbf{Size} & \textbf{Range / Notes} \\
+\midrule
+\texttt{byte} & 8-bit & $-128$ to $127$ \\
+\texttt{short} & 16-bit & $-32{,}768$ to $32{,}767$ \\
+\texttt{int} & 32-bit & $\pm 2.1$ billion \\
+\texttt{long} & 64-bit & Use \texttt{L} suffix \\
+\texttt{float} & 32-bit & Use \texttt{f} suffix \\
+\texttt{double} & 64-bit & Default decimal \\
+\texttt{char} & 16-bit & Unicode character \\
+\texttt{boolean} & 1-bit & \texttt{true} / \texttt{false} \\
+\bottomrule
+\end{tabularx}
+
+\begin{lstlisting}
+int score = 999999;
+double health = 100.0;
+char grade = 'A';
+boolean gameOver = false;
+long highScore = 9999999999L;
+\end{lstlisting}
+
+\subsection{Variable Declaration}
+
+\begin{tabularx}{\columnwidth}{l L}
+\toprule
+\textbf{Syntax} & \textbf{Description} \\
+\midrule
+\texttt{int x = 5;} & Explicit type \\
+\texttt{var x = 5;} & Type inference (Java 10+) \\
+\texttt{final int X = 5;} & Constant (immutable) \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Operators}
+
+\begin{tabularx}{\columnwidth}{l L}
+\toprule
+\textbf{Category} & \textbf{Operators} \\
+\midrule
+Arithmetic & \texttt{+ - * / \% ++ --} \\
+Relational & \texttt{== != < > <= >=} \\
+Logical & \texttt{\&\& || !} \\
+Assignment & \texttt{= += -= *= /= \%=} \\
+Bitwise & \texttt{\& | \^{} \~{} << >> >>>} \\
+Ternary & \texttt{condition ? a : b} \\
+\bottomrule
+\end{tabularx}
+
+\begin{lstlisting}
+// Pac-Man power pellet logic
+String status = isPoweredUp ? "HUNTING" : "FLEEING";
+lives += (score % 10000 == 0) ? 1 : 0;
+\end{lstlisting}
+
+\subsection{Control Structures}
+
+\textbf{If-Else Statement:}
+\begin{lstlisting}
+if (lives > 0) {
+    continueGame();
+} else if (hasExtraLife) {
+    respawn();
+} else {
+    gameOver();
+}
+\end{lstlisting}
+
+\textbf{Switch Statement (Traditional):}
+\begin{lstlisting}
+switch (direction) {
+    case "UP":    mario.jump(); break;
+    case "DOWN":  mario.crouch(); break;
+    case "LEFT":  mario.moveLeft(); break;
+    case "RIGHT": mario.moveRight(); break;
+    default:      mario.idle();
+}
+\end{lstlisting}
+
+\textbf{Switch Expression (Java 14+):}
+\begin{lstlisting}
+String action = switch (buttonPressed) {
+    case 'A' -> "JUMP";
+    case 'B' -> "ATTACK";
+    case 'X', 'Y' -> "SPECIAL";
+    default -> "IDLE";
+};
+\end{lstlisting}
+
+\subsection{Loops}
+
+\begin{tabularx}{\columnwidth}{l L}
+\toprule
+\textbf{Type} & \textbf{Use Case} \\
+\midrule
+\texttt{for} & Known iteration count \\
+\texttt{for-each} & Iterate collections/arrays \\
+\texttt{while} & Unknown count, pre-check \\
+\texttt{do-while} & At least one execution \\
+\bottomrule
+\end{tabularx}
+
+\begin{lstlisting}
+// Spawn 10 Space Invaders
+for (int i = 0; i < 10; i++) {
+    enemies[i] = new Invader(i * 50, 100);
+}
+
+// Process all bullets
+for (Bullet b : activeBullets) {
+    b.move();
+}
+
+// Game loop
+while (!gameOver) {
+    update();
+    render();
+}
+
+// Menu selection
+do {
+    choice = getInput();
+} while (!isValidChoice(choice));
+\end{lstlisting}
+
+\textbf{Loop Control:}
+\begin{tabularx}{\columnwidth}{l L}
+\toprule
+\texttt{break;} & Exit loop immediately \\
+\texttt{continue;} & Skip to next iteration \\
+\texttt{break label;} & Exit labeled outer loop \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Arrays}
+
+\begin{lstlisting}
+// Declaration and initialization
+int[] scores = new int[5];
+int[] levels = {1, 2, 3, 4, 5};
+String[] bosses = {"Bowser", "Ganon", "Dracula"};
+
+// 2D array (game grid)
+char[][] tetrisBoard = new char[20][10];
+
+// Array operations
+int length = scores.length;
+Arrays.sort(scores);
+Arrays.fill(scores, 0);
+int[] copy = Arrays.copyOf(scores, 10);
+\end{lstlisting}
+
+%==============================================================================
+\section{OOP \& Inheritance}
+%==============================================================================
+
+\subsection{Class Structure}
+
+\begin{lstlisting}
+public class Enemy {
+    // Fields (instance variables)
+    private String name;
+    private int health;
+    private static int enemyCount = 0;
+    
+    // Constructor
+    public Enemy(String name, int health) {
+        this.name = name;
+        this.health = health;
+        enemyCount++;
+    }
+    
+    // Overloaded constructor
+    public Enemy(String name) {
+        this(name, 100); // Constructor chaining
+    }
+    
+    // Default constructor
+    public Enemy() {
+        this("Goomba", 50);
+    }
+    
+    // Instance method
+    public void takeDamage(int damage) {
+        health -= damage;
+        if (health <= 0) die();
+    }
+    
+    // Static method
+    public static int getEnemyCount() {
+        return enemyCount;
+    }
+    
+    // Getters and Setters
+    public String getName() { return name; }
+    public void setName(String name) { 
+        this.name = name; 
+    }
+}
+\end{lstlisting}
+
+\subsection{Access Modifiers}
+
+\begin{tabularx}{\columnwidth}{l C C C C}
+\toprule
+\textbf{Modifier} & \textbf{Class} & \textbf{Pkg} & \textbf{Sub} & \textbf{World} \\
+\midrule
+\texttt{public} & \checkmark & \checkmark & \checkmark & \checkmark \\
+\texttt{protected} & \checkmark & \checkmark & \checkmark & \\
+\textit{(default)} & \checkmark & \checkmark & & \\
+\texttt{private} & \checkmark & & & \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Inheritance}
+
+\begin{lstlisting}
+public class Character {
+    protected int x, y;
+    protected int health;
+    
+    public void move(int dx, int dy) {
+        x += dx;
+        y += dy;
+    }
+}
+
+public class Player extends Character {
+    private int score;
+    
+    public Player(int startX, int startY) {
+        super(); // Call parent constructor
+        this.x = startX;
+        this.y = startY;
+        this.health = 100;
+    }
+    
+    @Override
+    public void move(int dx, int dy) {
+        super.move(dx, dy); // Call parent method
+        checkCollision();
+    }
+}
+\end{lstlisting}
+
+\subsection{Abstract Classes}
+
+\begin{lstlisting}
+public abstract class PowerUp {
+    protected int duration;
+    
+    // Abstract method (must be implemented)
+    public abstract void activate(Player p);
+    
+    // Concrete method
+    public boolean isExpired() {
+        return duration <= 0;
+    }
+}
+
+public class StarPower extends PowerUp {
+    @Override
+    public void activate(Player p) {
+        p.setInvincible(true);
+        duration = 10;
+    }
+}
+\end{lstlisting}
+
+\subsection{Interfaces}
+
+\begin{lstlisting}
+public interface Collidable {
+    // Constants (public static final)
+    int MAX_COLLISION_CHECKS = 100;
+    
+    // Abstract methods
+    boolean checkCollision(GameObject other);
+    void onCollision(GameObject other);
+    
+    // Default method (Java 8+)
+    default boolean isActive() {
+        return true;
+    }
+    
+    // Static method
+    static double distance(Collidable a, Collidable b) {
+        // Calculate distance...
+        return 0.0;
+    }
+}
+
+public class Bullet implements Collidable, Drawable {
+    @Override
+    public boolean checkCollision(GameObject other) {
+        // Implementation
+    }
+    
+    @Override
+    public void onCollision(GameObject other) {
+        // Implementation
+    }
+}
+\end{lstlisting}
+
+\subsection{Records (Java 16+)}
+
+\begin{lstlisting}
+// Immutable data class
+public record HighScore(String player, int score, 
+                        String game) {
+    // Compact constructor for validation
+    public HighScore {
+        if (score < 0) 
+            throw new IllegalArgumentException();
+    }
+}
+
+// Usage
+var record = new HighScore("AAA", 999999, "Galaga");
+String name = record.player(); // Auto-generated getter
+\end{lstlisting}
+
+\subsection{Enums}
+
+\begin{lstlisting}
+public enum Direction {
+    UP(0, -1), DOWN(0, 1), 
+    LEFT(-1, 0), RIGHT(1, 0);
+    
+    private final int dx, dy;
+    
+    Direction(int dx, int dy) {
+        this.dx = dx;
+        this.dy = dy;
+    }
+    
+    public int getDx() { return dx; }
+    public int getDy() { return dy; }
+}
+
+// Usage
+Direction dir = Direction.UP;
+player.move(dir.getDx(), dir.getDy());
+\end{lstlisting}
+
+\subsection{Key OOP Keywords}
+
+\begin{tabularx}{\columnwidth}{l L}
+\toprule
+\textbf{Keyword} & \textbf{Purpose} \\
+\midrule
+\texttt{this} & Reference to current object \\
+\texttt{super} & Reference to parent class \\
+\texttt{final} & Prevent override/inheritance \\
+\texttt{static} & Class-level member \\
+\texttt{abstract} & No implementation \\
+\texttt{instanceof} & Type checking \\
+\bottomrule
+\end{tabularx}
+
+\begin{lstlisting}
+// instanceof with pattern matching (Java 16+)
+if (entity instanceof Enemy e) {
+    e.takeDamage(10); // e is auto-cast
+}
+\end{lstlisting}
+
+%==============================================================================
+\section{Exceptions}
+%==============================================================================
+
+\subsection{Exception Hierarchy}
+
+\begin{tabularx}{\columnwidth}{l L}
+\toprule
+\textbf{Type} & \textbf{Description} \\
+\midrule
+\texttt{Throwable} & Base class for all \\
+\texttt{Error} & Serious problems (don't catch) \\
+\texttt{Exception} & Recoverable problems \\
+\texttt{RuntimeException} & Unchecked exceptions \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Common Exceptions}
+
+\begin{tabularx}{\columnwidth}{l L}
+\toprule
+\textbf{Exception} & \textbf{Cause} \\
+\midrule
+\texttt{NullPointerException} & Null reference access \\
+\texttt{ArrayIndexOutOfBounds} & Invalid array index \\
+\texttt{IllegalArgumentException} & Bad method argument \\
+\texttt{NumberFormatException} & Invalid number parsing \\
+\texttt{IOException} & I/O operation failure \\
+\texttt{FileNotFoundException} & File doesn't exist \\
+\texttt{ClassCastException} & Invalid type cast \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Try-Catch-Finally}
+
+\begin{lstlisting}
+public void loadGame(String filename) {
+    try {
+        SaveFile save = readFile(filename);
+        player.loadState(save);
+    } catch (FileNotFoundException e) {
+        System.out.println("Save not found!");
+        startNewGame();
+    } catch (IOException e) {
+        System.out.println("Error: " + e.getMessage());
+    } finally {
+        // Always executes
+        showMainMenu();
+    }
+}
+\end{lstlisting}
+
+\subsection{Try-With-Resources}
+
+\begin{lstlisting}
+// Auto-closes resources implementing AutoCloseable
+try (BufferedReader reader = 
+        new BufferedReader(new FileReader(file));
+     BufferedWriter writer = 
+        new BufferedWriter(new FileWriter(out))) {
+    
+    String highScore = reader.readLine();
+    writer.write("Score: " + highScore);
+    
+} catch (IOException e) {
+    e.printStackTrace();
+}
+\end{lstlisting}
+
+\subsection{Throwing Exceptions}
+
+\begin{lstlisting}
+public void setLives(int lives) {
+    if (lives < 0) {
+        throw new IllegalArgumentException(
+            "Lives cannot be negative");
+    }
+    this.lives = lives;
+}
+
+// Method that throws checked exception
+public void saveGame(String file) throws IOException {
+    // ... file operations
+}
+\end{lstlisting}
+
+\subsection{Custom Exceptions}
+
+\begin{lstlisting}
+public class GameOverException extends Exception {
+    private final int finalScore;
+    
+    public GameOverException(String msg, int score) {
+        super(msg);
+        this.finalScore = score;
+    }
+    
+    public int getFinalScore() {
+        return finalScore;
+    }
+}
+
+// Usage
+if (lives <= 0) {
+    throw new GameOverException("No lives left!", score);
+}
+\end{lstlisting}
+
+\subsection{Multi-Catch \& Rethrow}
+
+\begin{lstlisting}
+try {
+    loadLevel(levelNumber);
+} catch (FileNotFoundException | ParseException e) {
+    // Handle multiple exceptions
+    logger.error("Load failed", e);
+    throw new GameException("Level load failed", e);
+}
+\end{lstlisting}
+
+%==============================================================================
+\section{Collections Framework}
+%==============================================================================
+
+\subsection{Collection Interfaces}
+
+\begin{tabularx}{\columnwidth}{l L}
+\toprule
+\textbf{Interface} & \textbf{Description} \\
+\midrule
+\texttt{Collection} & Root interface \\
+\texttt{List} & Ordered, allows duplicates \\
+\texttt{Set} & No duplicates \\
+\texttt{Queue} & FIFO ordering \\
+\texttt{Deque} & Double-ended queue \\
+\texttt{Map} & Key-value pairs \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Common Implementations}
+
+\begin{tabularx}{\columnwidth}{l l L}
+\toprule
+\textbf{Interface} & \textbf{Class} & \textbf{Notes} \\
+\midrule
+\texttt{List} & \texttt{ArrayList} & Fast random access \\
+ & \texttt{LinkedList} & Fast insert/delete \\
+\texttt{Set} & \texttt{HashSet} & No order \\
+ & \texttt{TreeSet} & Sorted \\
+ & \texttt{LinkedHashSet} & Insertion order \\
+\texttt{Map} & \texttt{HashMap} & No order \\
+ & \texttt{TreeMap} & Sorted by key \\
+ & \texttt{LinkedHashMap} & Insertion order \\
+\texttt{Queue} & \texttt{PriorityQueue} & Heap-based \\
+ & \texttt{ArrayDeque} & Stack/queue \\
+\bottomrule
+\end{tabularx}
+
+\subsection{List Operations}
+
+\begin{lstlisting}
+// Creation
+List<Enemy> enemies = new ArrayList<>();
+List<String> items = List.of("Sword", "Shield"); // immutable
+
+// Adding elements
+enemies.add(new Goomba());
+enemies.add(0, new Koopa()); // Insert at index
+enemies.addAll(moreEnemies);
+
+// Accessing elements
+Enemy first = enemies.get(0);
+int size = enemies.size();
+boolean empty = enemies.isEmpty();
+
+// Searching
+boolean hasGoomba = enemies.contains(goomba);
+int index = enemies.indexOf(goomba);
+
+// Removing
+enemies.remove(0);        // By index
+enemies.remove(goomba);   // By object
+enemies.clear();          // Remove all
+
+// Iterating
+for (Enemy e : enemies) { e.update(); }
+enemies.forEach(e -> e.update());
+\end{lstlisting}
+
+\subsection{Set Operations}
+
+\begin{lstlisting}
+Set<String> collected = new HashSet<>();
+collected.add("Star");
+collected.add("Mushroom");
+collected.add("Star"); // Ignored (duplicate)
+
+// Set operations
+Set<String> bonus = Set.of("Flower", "Star");
+collected.retainAll(bonus); // Intersection
+collected.addAll(bonus);    // Union
+collected.removeAll(bonus); // Difference
+\end{lstlisting}
+
+\subsection{Map Operations}
+
+\begin{lstlisting}
+Map<String, Integer> highScores = new HashMap<>();
+
+// Adding entries
+highScores.put("ACE", 999999);
+highScores.putIfAbsent("NEW", 0);
+
+// Accessing
+int score = highScores.get("ACE");
+int safe = highScores.getOrDefault("ZZZ", 0);
+boolean hasPlayer = highScores.containsKey("ACE");
+
+// Updating
+highScores.replace("ACE", 1000000);
+highScores.merge("ACE", 100, Integer::sum);
+highScores.compute("ACE", (k, v) -> v + 100);
+
+// Iterating
+for (Map.Entry<String, Integer> e : 
+        highScores.entrySet()) {
+    System.out.println(e.getKey() + ": " + e.getValue());
+}
+
+highScores.forEach((name, sc) -> 
+    System.out.println(name + ": " + sc));
+\end{lstlisting}
+
+\subsection{Queue \& Deque Operations}
+
+\begin{lstlisting}
+Queue<Command> inputQueue = new LinkedList<>();
+inputQueue.offer(jumpCommand);  // Add to tail
+Command next = inputQueue.poll(); // Remove head
+Command peek = inputQueue.peek(); // View head
+
+Deque<State> undoStack = new ArrayDeque<>();
+undoStack.push(currentState);   // Stack push
+State prev = undoStack.pop();   // Stack pop
+\end{lstlisting}
+
+\subsection{Utility Methods (Collections class)}
+
+\begin{lstlisting}
+Collections.sort(scores);
+Collections.reverse(enemies);
+Collections.shuffle(deck);
+int max = Collections.max(scores);
+int min = Collections.min(scores);
+Collections.fill(list, defaultValue);
+Collections.frequency(list, item);
+List<T> sync = Collections.synchronizedList(list);
+List<T> immutable = Collections.unmodifiableList(list);
+\end{lstlisting}
+
+%==============================================================================
+\section{Random \& Math}
+%==============================================================================
+
+\subsection{Math Class Methods}
+
+\begin{tabularx}{\columnwidth}{l L}
+\toprule
+\textbf{Method} & \textbf{Description} \\
+\midrule
+\texttt{Math.abs(x)} & Absolute value \\
+\texttt{Math.max(a, b)} & Larger of two values \\
+\texttt{Math.min(a, b)} & Smaller of two values \\
+\texttt{Math.pow(base, exp)} & Exponentiation \\
+\texttt{Math.sqrt(x)} & Square root \\
+\texttt{Math.cbrt(x)} & Cube root \\
+\texttt{Math.round(x)} & Round to nearest \\
+\texttt{Math.floor(x)} & Round down \\
+\texttt{Math.ceil(x)} & Round up \\
+\texttt{Math.log(x)} & Natural logarithm \\
+\texttt{Math.log10(x)} & Base-10 logarithm \\
+\texttt{Math.sin/cos/tan(x)} & Trig functions (radians) \\
+\texttt{Math.toRadians(deg)} & Degrees to radians \\
+\texttt{Math.toDegrees(rad)} & Radians to degrees \\
+\texttt{Math.random()} & Random [0.0, 1.0) \\
+\texttt{Math.PI} & Pi constant \\
+\texttt{Math.E} & Euler's number \\
+\bottomrule
+\end{tabularx}
+
+\begin{lstlisting}
+// Calculate distance between game objects
+double distance = Math.sqrt(
+    Math.pow(enemy.x - player.x, 2) + 
+    Math.pow(enemy.y - player.y, 2)
+);
+
+// Clamp health between 0 and max
+health = Math.max(0, Math.min(health, maxHealth));
+
+// Angle to target (for enemy AI)
+double angle = Math.atan2(
+    player.y - enemy.y, 
+    player.x - enemy.x
+);
+\end{lstlisting}
+
+\subsection{Random Class}
+
+\begin{lstlisting}
+import java.util.Random;
+
+Random rand = new Random();       // Random seed
+Random seeded = new Random(42L); // Fixed seed
+
+// Random numbers
+int damage = rand.nextInt(10);      // 0-9
+int diceRoll = rand.nextInt(6) + 1; // 1-6
+int loot = rand.nextInt(50, 101);   // 50-100 (Java 17+)
+double chance = rand.nextDouble();  // 0.0-1.0
+boolean crit = rand.nextBoolean();  // true/false
+
+// Gaussian distribution
+double stat = rand.nextGaussian() * 10 + 50; // mean=50, sd=10
+\end{lstlisting}
+
+\subsection{Common Random Patterns}
+
+\begin{lstlisting}
+// Random spawn position
+int spawnX = rand.nextInt(screenWidth);
+int spawnY = rand.nextInt(screenHeight);
+
+// Percentage chance (30% critical hit)
+if (rand.nextDouble() < 0.30) {
+    damage *= 2;
+}
+
+// Random element from array
+Enemy[] types = {new Goomba(), new Koopa(), new Boo()};
+Enemy spawned = types[rand.nextInt(types.length)];
+
+// Shuffle (e.g., deck of cards)
+List<Card> deck = new ArrayList<>(allCards);
+Collections.shuffle(deck);
+
+// Weighted random selection
+int roll = rand.nextInt(100);
+if (roll < 60) return "COMMON";
+else if (roll < 90) return "RARE";
+else return "LEGENDARY";
+\end{lstlisting}
+
+%==============================================================================
+\section{Streams \& Lambdas}
+%==============================================================================
+
+\subsection{Lambda Expressions}
+
+\begin{tabularx}{\columnwidth}{L L}
+\toprule
+\textbf{Lambda Syntax} & \textbf{Equivalent} \\
+\midrule
+\texttt{x -> x * 2} & Single param, expression \\
+\texttt{(x, y) -> x + y} & Multiple params \\
+\texttt{() -> 42} & No parameters \\
+\texttt{(x) -> \{ return x * 2; \}} & Block with return \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Functional Interfaces}
+
+\begin{tabularx}{\columnwidth}{l l L}
+\toprule
+\textbf{Interface} & \textbf{Method} & \textbf{Signature} \\
+\midrule
+\texttt{Predicate<T>} & \texttt{test} & T $\rightarrow$ boolean \\
+\texttt{Function<T,R>} & \texttt{apply} & T $\rightarrow$ R \\
+\texttt{Consumer<T>} & \texttt{accept} & T $\rightarrow$ void \\
+\texttt{Supplier<T>} & \texttt{get} & () $\rightarrow$ T \\
+\texttt{Comparator<T>} & \texttt{compare} & (T,T) $\rightarrow$ int \\
+\texttt{UnaryOperator<T>} & \texttt{apply} & T $\rightarrow$ T \\
+\texttt{BiFunction<T,U,R>} & \texttt{apply} & (T,U) $\rightarrow$ R \\
+\bottomrule
+\end{tabularx}
+
+\begin{lstlisting}
+Predicate<Enemy> isAlive = e -> e.getHealth() > 0;
+Function<Enemy, Integer> getScore = Enemy::getPoints;
+Consumer<Enemy> damage = e -> e.takeDamage(10);
+Supplier<Enemy> spawner = Goomba::new;
+Comparator<Enemy> byHealth = 
+    Comparator.comparing(Enemy::getHealth);
+\end{lstlisting}
+
+\subsection{Method References}
+
+\begin{tabularx}{\columnwidth}{l L}
+\toprule
+\textbf{Type} & \textbf{Syntax} \\
+\midrule
+Static method & \texttt{ClassName::staticMethod} \\
+Instance method & \texttt{object::instanceMethod} \\
+Arbitrary instance & \texttt{ClassName::instanceMethod} \\
+Constructor & \texttt{ClassName::new} \\
+\bottomrule
+\end{tabularx}
+
+\begin{lstlisting}
+enemies.forEach(System.out::println);
+enemies.sort(Comparator.comparing(Enemy::getHealth));
+List<Goomba> goombas = 
+    positions.stream().map(Goomba::new).toList();
+\end{lstlisting}
+
+\subsection{Creating Streams}
+
+\begin{lstlisting}
+// From collections
+Stream<Enemy> stream = enemies.stream();
+Stream<Enemy> parallel = enemies.parallelStream();
+
+// From arrays
+Stream<String> arr = Arrays.stream(items);
+
+// Factory methods
+Stream<String> of = Stream.of("A", "B", "C");
+Stream<Integer> range = IntStream.range(1, 11).boxed();
+Stream<Double> gen = Stream.generate(Math::random).limit(10);
+Stream<Integer> iter = Stream.iterate(0, n -> n + 1).limit(10);
+\end{lstlisting}
+
+\subsection{Intermediate Operations}
+
+\begin{tabularx}{\columnwidth}{l L}
+\toprule
+\textbf{Operation} & \textbf{Description} \\
+\midrule
+\texttt{filter(pred)} & Keep matching elements \\
+\texttt{map(func)} & Transform elements \\
+\texttt{flatMap(func)} & Flatten nested streams \\
+\texttt{distinct()} & Remove duplicates \\
+\texttt{sorted()} & Natural order sort \\
+\texttt{sorted(comp)} & Custom comparator sort \\
+\texttt{limit(n)} & First n elements \\
+\texttt{skip(n)} & Skip first n elements \\
+\texttt{peek(consumer)} & Debug/side effects \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Terminal Operations}
+
+\begin{tabularx}{\columnwidth}{l L}
+\toprule
+\textbf{Operation} & \textbf{Returns} \\
+\midrule
+\texttt{forEach(consumer)} & void \\
+\texttt{toList()} & List<T> \\
+\texttt{toArray()} & Object[] \\
+\texttt{collect(collector)} & Varies \\
+\texttt{count()} & long \\
+\texttt{reduce(identity, op)} & T \\
+\texttt{min(comp) / max(comp)} & Optional<T> \\
+\texttt{findFirst() / findAny()} & Optional<T> \\
+\texttt{anyMatch(pred)} & boolean \\
+\texttt{allMatch(pred)} & boolean \\
+\texttt{noneMatch(pred)} & boolean \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Stream Examples}
+
+\begin{lstlisting}
+// Get total score from defeated enemies
+int totalScore = enemies.stream()
+    .filter(e -> e.getHealth() <= 0)
+    .mapToInt(Enemy::getPoints)
+    .sum();
+
+// Find strongest enemy
+Optional<Enemy> boss = enemies.stream()
+    .max(Comparator.comparing(Enemy::getHealth));
+
+// Get names of top 3 players
+List<String> top3 = players.stream()
+    .sorted(Comparator.comparing(Player::getScore).reversed())
+    .limit(3)
+    .map(Player::getName)
+    .toList();
+
+// Group enemies by type
+Map<String, List<Enemy>> byType = enemies.stream()
+    .collect(Collectors.groupingBy(Enemy::getType));
+
+// Partition into alive/dead
+Map<Boolean, List<Enemy>> partition = enemies.stream()
+    .collect(Collectors.partitioningBy(
+        e -> e.getHealth() > 0));
+
+// Join names with comma
+String roster = players.stream()
+    .map(Player::getName)
+    .collect(Collectors.joining(", "));
+\end{lstlisting}
+
+\subsection{Collectors Summary}
+
+\begin{lstlisting}
+Collectors.toList()
+Collectors.toSet()
+Collectors.toMap(keyFunc, valueFunc)
+Collectors.joining(", ")
+Collectors.groupingBy(classifier)
+Collectors.partitioningBy(predicate)
+Collectors.counting()
+Collectors.summingInt(mapper)
+Collectors.averagingDouble(mapper)
+Collectors.maxBy(comparator)
+Collectors.summarizingInt(mapper)
+\end{lstlisting}
+
+%==============================================================================
+\section{Basic Swing (GUI)}
+%==============================================================================
+
+\subsection{Core Components}
+
+\begin{tabularx}{\columnwidth}{l L}
+\toprule
+\textbf{Component} & \textbf{Purpose} \\
+\midrule
+\texttt{JFrame} & Main application window \\
+\texttt{JPanel} & Container/drawing surface \\
+\texttt{JButton} & Clickable button \\
+\texttt{JLabel} & Display text/images \\
+\texttt{JTextField} & Single-line text input \\
+\texttt{JTextArea} & Multi-line text input \\
+\texttt{JCheckBox} & Toggle option \\
+\texttt{JRadioButton} & Exclusive option \\
+\texttt{JComboBox} & Drop-down selection \\
+\texttt{JList} & Scrollable list \\
+\texttt{JSlider} & Numeric slider \\
+\texttt{JMenuBar} & Menu system \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Basic Window Setup}
+
+\begin{lstlisting}
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class PacManGame extends JFrame {
+    public PacManGame() {
+        setTitle("Pac-Man");
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null); // Center
+        setResizable(false);
+        
+        GamePanel panel = new GamePanel();
+        add(panel);
+        
+        setVisible(true);
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> 
+            new PacManGame()
+        );
+    }
+}
+\end{lstlisting}
+
+\subsection{Layout Managers}
+
+\begin{tabularx}{\columnwidth}{l L}
+\toprule
+\textbf{Layout} & \textbf{Behavior} \\
+\midrule
+\texttt{FlowLayout} & Left-to-right, wraps \\
+\texttt{BorderLayout} & 5 regions (N/S/E/W/Center) \\
+\texttt{GridLayout} & Equal-sized grid cells \\
+\texttt{BoxLayout} & Single row or column \\
+\texttt{GridBagLayout} & Flexible grid (complex) \\
+\texttt{null} & Manual positioning \\
+\bottomrule
+\end{tabularx}
+
+\begin{lstlisting}
+JPanel controlPanel = new JPanel(new FlowLayout());
+JPanel mainPanel = new JPanel(new BorderLayout());
+JPanel gridPanel = new JPanel(new GridLayout(3, 3));
+
+mainPanel.add(scoreLabel, BorderLayout.NORTH);
+mainPanel.add(gameCanvas, BorderLayout.CENTER);
+mainPanel.add(controlPanel, BorderLayout.SOUTH);
+\end{lstlisting}
+
+\subsection{Event Handling}
+
+\begin{lstlisting}
+// Button click (lambda)
+JButton startBtn = new JButton("START GAME");
+startBtn.addActionListener(e -> startGame());
+
+// Keyboard input
+addKeyListener(new KeyAdapter() {
+    @Override
+    public void keyPressed(KeyEvent e) {
+        switch(e.getKeyCode()) {
+            case KeyEvent.VK_UP -> player.moveUp();
+            case KeyEvent.VK_DOWN -> player.moveDown();
+            case KeyEvent.VK_LEFT -> player.moveLeft();
+            case KeyEvent.VK_RIGHT -> player.moveRight();
+            case KeyEvent.VK_SPACE -> player.shoot();
+        }
+    }
+});
+
+// Key bindings (better for games)
+InputMap im = panel.getInputMap(
+    JComponent.WHEN_IN_FOCUSED_WINDOW);
+ActionMap am = panel.getActionMap();
+im.put(KeyStroke.getKeyStroke("UP"), "moveUp");
+am.put("moveUp", new AbstractAction() {
+    public void actionPerformed(ActionEvent e) {
+        player.moveUp();
+    }
+});
+
+// Mouse input
+addMouseListener(new MouseAdapter() {
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        int x = e.getX();
+        int y = e.getY();
+        handleClick(x, y);
+    }
+});
+\end{lstlisting}
+
+\subsection{Custom Painting}
+
+\begin{lstlisting}
+class GamePanel extends JPanel {
+    private Player pacman;
+    private List<Ghost> ghosts;
+    private int[][] maze;
+    
+    public GamePanel() {
+        setBackground(Color.BLACK);
+        setPreferredSize(new Dimension(800, 600));
+        setFocusable(true);
+        
+        // Game loop timer
+        Timer timer = new Timer(16, e -> {
+            update();  // Game logic
+            repaint(); // Trigger paint
+        });
+        timer.start();
+    }
+    
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        
+        // Enable antialiasing
+        g2d.setRenderingHint(
+            RenderingHints.KEY_ANTIALIASING,
+            RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        drawMaze(g2d);
+        drawPacman(g2d);
+        drawGhosts(g2d);
+        drawScore(g2d);
+    }
+    
+    private void drawPacman(Graphics2D g) {
+        g.setColor(Color.YELLOW);
+        g.fillArc(pacman.x, pacman.y, 30, 30, 
+                  45, 270); // Pac-Man shape
+    }
+    
+    private void drawScore(Graphics2D g) {
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.drawString("Score: " + score, 10, 25);
+    }
+}
+\end{lstlisting}
+
+\subsection{Graphics2D Methods}
+
+\begin{tabularx}{\columnwidth}{l L}
+\toprule
+\textbf{Method} & \textbf{Description} \\
+\midrule
+\texttt{setColor(Color)} & Set drawing color \\
+\texttt{fillRect(x,y,w,h)} & Filled rectangle \\
+\texttt{drawRect(x,y,w,h)} & Rectangle outline \\
+\texttt{fillOval(x,y,w,h)} & Filled ellipse \\
+\texttt{drawOval(x,y,w,h)} & Ellipse outline \\
+\texttt{fillArc(...)} & Filled arc/pie slice \\
+\texttt{drawLine(x1,y1,x2,y2)} & Line segment \\
+\texttt{drawString(str,x,y)} & Text at position \\
+\texttt{drawImage(img,x,y,obs)} & Render image \\
+\texttt{setFont(Font)} & Set text font \\
+\texttt{setStroke(Stroke)} & Line thickness/style \\
+\texttt{rotate/translate/scale} & Transformations \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Loading and Drawing Images}
+
+\begin{lstlisting}
+// Load image
+BufferedImage sprite = ImageIO.read(
+    getClass().getResource("/sprites/mario.png"));
+
+// Draw image
+g.drawImage(sprite, x, y, null);
+
+// Draw scaled image
+g.drawImage(sprite, x, y, width, height, null);
+
+// Draw portion of sprite sheet
+g.drawImage(sprite, 
+    destX, destY, destX + w, destY + h,  // Dest
+    srcX, srcY, srcX + w, srcY + h,       // Source
+    null);
+\end{lstlisting}
+
+\subsection{Dialog Boxes}
+
+\begin{lstlisting}
+// Message dialog
+JOptionPane.showMessageDialog(frame, 
+    "Game Over! Score: " + score);
+
+// Yes/No dialog
+int choice = JOptionPane.showConfirmDialog(frame,
+    "Play again?", "Game Over",
+    JOptionPane.YES_NO_OPTION);
+if (choice == JOptionPane.YES_OPTION) {
+    restartGame();
+}
+
+// Input dialog
+String name = JOptionPane.showInputDialog(frame,
+    "Enter your name for high score:");
+
+// Custom option dialog
+String[] options = {"Easy", "Medium", "Hard"};
+int difficulty = JOptionPane.showOptionDialog(frame,
+    "Select difficulty:", "New Game",
+    JOptionPane.DEFAULT_OPTION,
+    JOptionPane.QUESTION_MESSAGE,
+    null, options, options[1]);
+\end{lstlisting}
+
+\subsection{Timer for Animation/Game Loop}
+
+\begin{lstlisting}
+// Swing Timer (runs on EDT)
+Timer gameTimer = new Timer(16, e -> { // ~60 FPS
+    updateGame();
+    gamePanel.repaint();
+});
+gameTimer.start();
+gameTimer.stop();
+
+// One-shot timer
+Timer delay = new Timer(3000, e -> showBoss());
+delay.setRepeats(false);
+delay.start();
+\end{lstlisting}
+
+\vspace{6pt}
+\hrule
+\vspace{4pt}
+\begin{center}
+\small\textit{Created for RCTC Java Programming Course}
+\end{center}
+
+\end{document}
