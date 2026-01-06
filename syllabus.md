@@ -23,9 +23,6 @@
 - MATH 1115
 - College-level reading
 
-## Welcome! 👋
-
-Welcome to COMP 2243: Programming and Problem Solving! I'm your instructor, Brendan Shea (I prefer "Brendan." "Dr. Shea" or "Prof. Shea" work if you are feeling formal). If you have short questions (not answered here), email is generally the best way to get ahold of me. For more detailed questions about the class, I'd encourage you to talk to me during office hours (either in person or over the phone), or to set up an appointment.
 
 ## Course Description 📖
 
@@ -89,7 +86,7 @@ This course contributes to meeting the following RCTC Core Outcome(s):
 
 Your final grade is a weighted average of the following:
 
-**Coding Quizzes (Online) or In-Class Activities (F2F) - 20%**
+**Web-Proctored Quizzes (Online) OR In-Class Activities (F2F) - 20%**
 
 Online students will have weekly, webcam-proctored quizzes (of multiple-choice and coding questions). Face-to-face students will have activities and quizzes.
 
@@ -115,7 +112,7 @@ Your work should be your own---please don't use your classmates, friends, parent
 
 ### Policy on Generative AI 🤖
 
-I encourage you to use generative AI (ChatGPT, Gemini, Bing, Claude, etc.) to help you understand class content when needed (and mastering these tools will be important to almost any career path), and to work on your own projects (I've used it in my own projects, including for this course!). However, the use of generative AI is **ABSOLUTELY FORBIDDEN** when it comes to answering questions on quizzes or exams.
+I encourage you to use generative AI (ChatGPT, Gemini, CoPilot, Claude, etc.) to help you understand class content when needed (and mastering these tools will be important to almost any career path), and to work on your own projects (I've used it in my own projects, including for this course!). However, the use of generative AI is **ABSOLUTELY FORBIDDEN** when it comes to answering questions on quizzes or exams.
 
 ## Using Perusall 📝
 
