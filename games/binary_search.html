@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Search: Predict the State</title>
+    <style>
+        :root { --java-bg: #2d2d2d; --java-text: #f8f8f2; --java-highlight: #44475a; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 950px; width: 100%; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        .array-container { display: flex; gap: 8px; margin: 30px 0; justify-content: center; height: 100px; align-items: flex-end; }
+        .cell-wrapper { display: flex; flex-direction: column; align-items: center; width: 55px; }
+        .cell { width: 45px; height: 45px; border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-weight: bold; border-radius: 6px; background: white; transition: 0.3s; }
+        .index-label { font-size: 0.75rem; color: #777; margin-top: 4px; }
+        .pointer-label { font-size: 0.85rem; font-weight: bold; color: #d32f2f; height: 20px; }
+
+        .active { border-color: #2196f3; background: #e3f2fd; }
+        .discarded { opacity: 0.25; }
+        .mid-highlight { background-color: #ffb74d; border-color: #f57c00; }
+        .found { background-color: #4caf50; color: white; transform: translateY(-5px); }
+
+        .panels { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; }
+        .code-block { background: var(--java-bg); color: var(--java-text); padding: 15px; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.9rem; }
+        .line { display: block; padding: 2px 8px; border-radius: 3px; border-left: 3px solid transparent; }
+        .line-highlight { background: var(--java-highlight); border-left-color: #ff79c6; }
+        
+        .interaction-panel { background: #fffde7; border: 2px solid #fff59d; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; gap: 10px; }
+        .stats { font-family: monospace; font-size: 1rem; background: #eee; padding: 10px; border-radius: 4px; margin-bottom: 10px; }
+        
+        input[type="number"] { padding: 8px; width: 80px; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; }
+        .feedback { font-weight: bold; min-height: 24px; }
+        .correct { color: #2e7d32; }
+        .incorrect { color: #d32f2f; }
+        
+        .controls { margin-top: 20px; display: flex; gap: 10px; }
+        button { padding: 10px 18px; border-radius: 6px; border: none; background: #2196f3; color: white; font-weight: bold; cursor: pointer; }
+        button:disabled { background: #ccc; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Java Trace Challenge: Binary Search</h2>
+    <p>Target Value: <b id="target-val">--</b></p>
+
+    <div id="visualizer" class="array-container"></div>
+
+    <div class="panels">
+        <div class="code-block">
+            <span class="line" id="line1">int low = 0;</span>
+            <span class="line" id="line2">int high = arr.length - 1;</span>
+            <span class="line" id="line3">while (low <= high) {</span>
+            <span class="line" id="line4">&nbsp;&nbsp;int mid = low + (high - low) / 2;</span>
+            <span class="line" id="line5">&nbsp;&nbsp;if (arr[mid] == target) return mid;</span>
+            <span class="line" id="line6">&nbsp;&nbsp;if (arr[mid] < target) low = mid + 1;</span>
+            <span class="line" id="line7">&nbsp;&nbsp;else high = mid - 1;</span>
+            <span class="line" id="line8">}</span>
+            <span class="line" id="line9">return -1;</span>
+        </div>
+
+        <div class="interaction-panel">
+            <div class="stats">
+                Current State:<br>
+                low: <span id="s-low">?</span> | high: <span id="s-high">?</span> | mid: <span id="s-mid">?</span>
+            </div>
+            
+            <div id="question-area">
+                <p id="prompt-text">Press Start to begin the trace.</p>
+                <div id="input-row" style="display:none;">
+                    <label id="variable-label">Enter value:</label>
+                    <input type="number" id="user-predict" placeholder="?">
+                    <button onclick="checkAnswer()">Check Answer</button>
+                </div>
+            </div>
+            <div id="feedback" class="feedback"></div>
+            <button id="next-btn" onclick="advanceStep()" style="display:none; background: #4caf50;">Next Line &rarr;</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="initGame()">New Array / Restart</button>
+    </div>
+</div>
+
+<script>
+    let data = [], low, high, mid, target, currentLine = 1, isComplete = false;
+    let expectedValue = null;
+
+    function initGame() {
+        data = Array.from({length: 10}, () => Math.floor(Math.random() * 90) + 10).sort((a, b) => a - b);
+        target = Math.random() > 0.4 ? data[Math.floor(Math.random() * 10)] : Math.floor(Math.random() * 90) + 10;
+        low = undefined; high = undefined; mid = undefined;
+        currentLine = 1; isComplete = false;
+        
+        document.getElementById('target-val').innerText = target;
+        document.getElementById('next-btn').style.display = "none";
+        document.getElementById('feedback').innerText = "";
+        prepareQuestion();
+        render();
+    }
+
+    function render() {
+        const container = document.getElementById('visualizer');
+        container.innerHTML = '';
+        data.forEach((val, i) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'cell-wrapper';
+            const pointer = document.createElement('div');
+            pointer.className = 'pointer-label';
+            let p = [];
+            if(i === low) p.push('L'); if(i === high) p.push('H'); if(i === mid) p.push('M');
+            pointer.innerText = p.join(',');
+
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.innerText = val;
+            if (low !== undefined && high !== undefined) {
+                if (i < low || i > high) cell.classList.add('discarded');
+                else cell.classList.add('active');
+            }
+            if (i === mid) cell.classList.add('mid-highlight');
+            if (isComplete && val === target && i === mid) cell.classList.add('found');
+            
+            wrapper.append(pointer, cell);
+            const idx = document.createElement('div'); idx.className='index-label'; idx.innerText=`[${i}]`;
+            wrapper.appendChild(idx);
+            container.appendChild(wrapper);
+        });
+        document.getElementById('s-low').innerText = low ?? '?';
+        document.getElementById('s-high').innerText = high ?? '?';
+        document.getElementById('s-mid').innerText = mid ?? '?';
+        
+        document.querySelectorAll('.line').forEach(l => l.classList.remove('line-highlight'));
+        document.getElementById('line' + currentLine).classList.add('line-highlight');
+    }
+
+    function prepareQuestion() {
+        const row = document.getElementById('input-row');
+        const prompt = document.getElementById('prompt-text');
+        const label = document.getElementById('variable-label');
+        document.getElementById('user-predict').value = '';
+        document.getElementById('feedback').innerText = '';
+        row.style.display = 'block';
+
+        switch(currentLine) {
+            case 1: prompt.innerText = "Step 1: Initialize 'low'."; label.innerText = "Value of low:"; expectedValue = 0; break;
+            case 2: prompt.innerText = "Step 2: Initialize 'high'."; label.innerText = "Value of high:"; expectedValue = data.length - 1; break;
+            case 3: prompt.innerText = "Check the loop condition: (low <= high)."; label.innerText = "Is it true (1) or false (0)?"; expectedValue = (low <= high) ? 1 : 0; break;
+            case 4: prompt.innerText = "Calculate the middle index."; label.innerText = "Value of mid:"; expectedValue = Math.floor(low + (high - low) / 2); break;
+            case 5: prompt.innerText = "Compare arr[mid] to target."; label.innerText = `Value of arr[${mid}]:`; expectedValue = data[mid]; break;
+            case 6: prompt.innerText = "Is arr[mid] < target?"; label.innerText = "Yes (1) or No (0)?"; expectedValue = (data[mid] < target) ? 1 : 0; break;
+            case 7: prompt.innerText = "Update high."; label.innerText = "New value of high:"; expectedValue = mid - 1; break;
+            case 8: prompt.innerText = "Loop ends."; row.style.display = 'none'; advanceStep(); break;
+            case 9: prompt.innerText = "Return -1."; label.innerText = "Returning:"; expectedValue = -1; break;
+        }
+    }
+
+    function checkAnswer() {
+        const userVal = parseInt(document.getElementById('user-predict').value);
+        const fb = document.getElementById('feedback');
+        if (userVal === expectedValue) {
+            fb.innerText = "Correct! Click Next.";
+            fb.className = "feedback correct";
+            document.getElementById('next-btn').style.display = 'inline-block';
+            document.getElementById('input-row').style.display = 'none';
+        } else {
+            fb.innerText = "Try again. Think like a Java compiler!";
+            fb.className = "feedback incorrect";
+        }
+    }
+
+    function advanceStep() {
+        // Apply the logic of the line we just predicted
+        if (currentLine === 1) low = 0;
+        else if (currentLine === 2) high = data.length - 1;
+        else if (currentLine === 4) /* mid already calculated for prediction */;
+        else if (currentLine === 5 && data[mid] === target) isComplete = true;
+        else if (currentLine === 6 && data[mid] < target) low = mid + 1;
+        else if (currentLine === 7) high = mid - 1;
+        
+        // Determine next line
+        if (isComplete && currentLine === 5) { /* stop */ }
+        else if (currentLine === 3 && low > high) currentLine = 9;
+        else if (currentLine === 5) currentLine = 6;
+        else if (currentLine === 6 && data[mid] < target) currentLine = 3;
+        else if (currentLine === 6) currentLine = 7;
+        else if (currentLine === 7) currentLine = 3;
+        else if (currentLine === 9) isComplete = true;
+        else currentLine++;
+
+        document.getElementById('next-btn').style.display = 'none';
+        if (!isComplete) prepareQuestion();
+        else {
+            document.getElementById('prompt-text').innerText = "Trace Complete!";
+            document.getElementById('input-row').style.display = 'none';
+        }
+        render();
+    }
+
+    initGame();
+</script>
+</body>
+</html>
