@@ -3,31 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Java Search: Predict the State</title>
+    <title>Binary Search: The Sorting Requirement</title>
     <style>
         :root { --java-bg: #2d2d2d; --java-text: #f8f8f2; --java-highlight: #44475a; }
         body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { max-width: 950px; width: 100%; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
+        /* Array Styles */
         .array-container { display: flex; gap: 8px; margin: 30px 0; justify-content: center; height: 100px; align-items: flex-end; }
         .cell-wrapper { display: flex; flex-direction: column; align-items: center; width: 55px; }
-        .cell { width: 45px; height: 45px; border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-weight: bold; border-radius: 6px; background: white; transition: 0.3s; }
+        .cell { width: 45px; height: 45px; border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-weight: bold; border-radius: 6px; background: white; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .index-label { font-size: 0.75rem; color: #777; margin-top: 4px; }
         .pointer-label { font-size: 0.85rem; font-weight: bold; color: #d32f2f; height: 20px; }
 
+        /* Logic States */
+        .unsorted { border-style: dashed; border-color: #f44336; }
         .active { border-color: #2196f3; background: #e3f2fd; }
         .discarded { opacity: 0.25; }
         .mid-highlight { background-color: #ffb74d; border-color: #f57c00; }
         .found { background-color: #4caf50; color: white; transform: translateY(-5px); }
 
+        /* Layout */
         .panels { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; }
-        .code-block { background: var(--java-bg); color: var(--java-text); padding: 15px; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.9rem; }
+        .code-block { background: var(--java-bg); color: var(--java-text); padding: 15px; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.9rem; opacity: 0.5; transition: 0.3s; }
+        .code-active { opacity: 1; border: 2px solid #4caf50; }
         .line { display: block; padding: 2px 8px; border-radius: 3px; border-left: 3px solid transparent; }
         .line-highlight { background: var(--java-highlight); border-left-color: #ff79c6; }
         
         .interaction-panel { background: #fffde7; border: 2px solid #fff59d; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; gap: 10px; }
         .stats { font-family: monospace; font-size: 1rem; background: #eee; padding: 10px; border-radius: 4px; margin-bottom: 10px; }
         
+        .step0-banner { background: #ffebee; color: #b71c1c; padding: 10px; border-radius: 4px; font-weight: bold; text-align: center; margin-bottom: 15px; }
         input[type="number"] { padding: 8px; width: 80px; font-size: 1rem; border: 1px solid #ccc; border-radius: 4px; }
         .feedback { font-weight: bold; min-height: 24px; }
         .correct { color: #2e7d32; }
@@ -41,13 +47,14 @@
 <body>
 
 <div class="container">
-    <h2>Java Trace Challenge: Binary Search</h2>
+    <h2>Java Binary Search Trace: The Sorting Rule</h2>
+    <div id="step0-msg" class="step0-banner">⚠️ STEP 0: Binary Search requires a SORTED array.</div>
     <p>Target Value: <b id="target-val">--</b></p>
 
     <div id="visualizer" class="array-container"></div>
 
     <div class="panels">
-        <div class="code-block">
+        <div class="code-block" id="java-code">
             <span class="line" id="line1">int low = 0;</span>
             <span class="line" id="line2">int high = arr.length - 1;</span>
             <span class="line" id="line3">while (low <= high) {</span>
@@ -61,16 +68,20 @@
 
         <div class="interaction-panel">
             <div class="stats">
-                Current State:<br>
                 low: <span id="s-low">?</span> | high: <span id="s-high">?</span> | mid: <span id="s-mid">?</span>
             </div>
             
             <div id="question-area">
-                <p id="prompt-text">Press Start to begin the trace.</p>
+                <p id="prompt-text">Checking Pre-conditions...</p>
                 <div id="input-row" style="display:none;">
                     <label id="variable-label">Enter value:</label>
                     <input type="number" id="user-predict" placeholder="?">
                     <button onclick="checkAnswer()">Check Answer</button>
+                </div>
+                <div id="sort-row" style="display:none;">
+                    <p>Can we start Binary Search now? (1 for Yes, 0 for No)</p>
+                    <input type="number" id="sort-check">
+                    <button onclick="checkSortRequirement()">Verify Requirement</button>
                 </div>
             </div>
             <div id="feedback" class="feedback"></div>
@@ -79,60 +90,105 @@
     </div>
 
     <div class="controls">
-        <button onclick="initGame()">New Array / Restart</button>
+        <button onclick="initGame()">Restart with Unsorted Data</button>
     </div>
 </div>
 
 <script>
-    let data = [], low, high, mid, target, currentLine = 1, isComplete = false;
+    let data = [], sortedData = [], low, high, mid, target, currentLine = 0, isComplete = false;
     let expectedValue = null;
+    let isSorted = false;
 
     function initGame() {
-        data = Array.from({length: 10}, () => Math.floor(Math.random() * 90) + 10).sort((a, b) => a - b);
-        target = Math.random() > 0.4 ? data[Math.floor(Math.random() * 10)] : Math.floor(Math.random() * 90) + 10;
+        // Generate random unsorted data
+        data = Array.from({length: 8}, () => Math.floor(Math.random() * 90) + 10);
+        sortedData = [...data].sort((a, b) => a - b);
+        
+        target = Math.random() > 0.4 ? sortedData[Math.floor(Math.random() * 8)] : 99;
+        
         low = undefined; high = undefined; mid = undefined;
-        currentLine = 1; isComplete = false;
+        currentLine = 0; isComplete = false; isSorted = false;
         
         document.getElementById('target-val').innerText = target;
         document.getElementById('next-btn').style.display = "none";
+        document.getElementById('java-code').classList.remove('code-active');
+        document.getElementById('step0-msg').style.display = 'block';
         document.getElementById('feedback').innerText = "";
-        prepareQuestion();
+        
+        showSortQuestion();
         render();
     }
 
     function render() {
         const container = document.getElementById('visualizer');
         container.innerHTML = '';
-        data.forEach((val, i) => {
+        const currentArray = isSorted ? sortedData : data;
+
+        currentArray.forEach((val, i) => {
             const wrapper = document.createElement('div');
             wrapper.className = 'cell-wrapper';
             const pointer = document.createElement('div');
             pointer.className = 'pointer-label';
-            let p = [];
-            if(i === low) p.push('L'); if(i === high) p.push('H'); if(i === mid) p.push('M');
-            pointer.innerText = p.join(',');
+            
+            if (isSorted) {
+                let p = [];
+                if(i === low) p.push('L'); if(i === high) p.push('H'); if(i === mid) p.push('M');
+                pointer.innerText = p.join(',');
+            }
 
             const cell = document.createElement('div');
             cell.className = 'cell';
             cell.innerText = val;
-            if (low !== undefined && high !== undefined) {
-                if (i < low || i > high) cell.classList.add('discarded');
-                else cell.classList.add('active');
+            
+            if (!isSorted) cell.classList.add('unsorted');
+            else {
+                if (low !== undefined && high !== undefined) {
+                    if (i < low || i > high) cell.classList.add('discarded');
+                    else cell.classList.add('active');
+                }
+                if (i === mid) cell.classList.add('mid-highlight');
+                if (isComplete && val === target && i === mid) cell.classList.add('found');
             }
-            if (i === mid) cell.classList.add('mid-highlight');
-            if (isComplete && val === target && i === mid) cell.classList.add('found');
             
             wrapper.append(pointer, cell);
             const idx = document.createElement('div'); idx.className='index-label'; idx.innerText=`[${i}]`;
             wrapper.appendChild(idx);
             container.appendChild(wrapper);
         });
+
         document.getElementById('s-low').innerText = low ?? '?';
         document.getElementById('s-high').innerText = high ?? '?';
         document.getElementById('s-mid').innerText = mid ?? '?';
         
         document.querySelectorAll('.line').forEach(l => l.classList.remove('line-highlight'));
-        document.getElementById('line' + currentLine).classList.add('line-highlight');
+        if (currentLine > 0) document.getElementById('line' + currentLine).classList.add('line-highlight');
+    }
+
+    function showSortQuestion() {
+        document.getElementById('sort-row').style.display = 'block';
+        document.getElementById('input-row').style.display = 'none';
+        document.getElementById('prompt-text').innerText = "Look at the array. Is it ready for Binary Search?";
+    }
+
+    function checkSortRequirement() {
+        const val = parseInt(document.getElementById('sort-check').value);
+        const fb = document.getElementById('feedback');
+        if (val === 0) {
+            fb.innerText = "Correct! It must be sorted first. Sorting now...";
+            fb.className = "feedback correct";
+            setTimeout(() => {
+                isSorted = true;
+                currentLine = 1;
+                document.getElementById('sort-row').style.display = 'none';
+                document.getElementById('java-code').classList.add('code-active');
+                document.getElementById('step0-msg').style.display = 'none';
+                render();
+                prepareQuestion();
+            }, 1500);
+        } else {
+            fb.innerText = "Careful! Look at the order of the numbers.";
+            fb.className = "feedback incorrect";
+        }
     }
 
     function prepareQuestion() {
@@ -144,15 +200,14 @@
         row.style.display = 'block';
 
         switch(currentLine) {
-            case 1: prompt.innerText = "Step 1: Initialize 'low'."; label.innerText = "Value of low:"; expectedValue = 0; break;
-            case 2: prompt.innerText = "Step 2: Initialize 'high'."; label.innerText = "Value of high:"; expectedValue = data.length - 1; break;
-            case 3: prompt.innerText = "Check the loop condition: (low <= high)."; label.innerText = "Is it true (1) or false (0)?"; expectedValue = (low <= high) ? 1 : 0; break;
-            case 4: prompt.innerText = "Calculate the middle index."; label.innerText = "Value of mid:"; expectedValue = Math.floor(low + (high - low) / 2); break;
-            case 5: prompt.innerText = "Compare arr[mid] to target."; label.innerText = `Value of arr[${mid}]:`; expectedValue = data[mid]; break;
-            case 6: prompt.innerText = "Is arr[mid] < target?"; label.innerText = "Yes (1) or No (0)?"; expectedValue = (data[mid] < target) ? 1 : 0; break;
-            case 7: prompt.innerText = "Update high."; label.innerText = "New value of high:"; expectedValue = mid - 1; break;
-            case 8: prompt.innerText = "Loop ends."; row.style.display = 'none'; advanceStep(); break;
-            case 9: prompt.innerText = "Return -1."; label.innerText = "Returning:"; expectedValue = -1; break;
+            case 1: prompt.innerText = "Step 1: Initialize 'low'."; label.innerText = "low = "; expectedValue = 0; break;
+            case 2: prompt.innerText = "Step 2: Initialize 'high'."; label.innerText = "high = "; expectedValue = sortedData.length - 1; break;
+            case 3: prompt.innerText = "Check the loop: (low <= high)."; label.innerText = "True (1) or False (0)?"; expectedValue = (low <= high) ? 1 : 0; break;
+            case 4: prompt.innerText = "Calculate mid: low + (high-low)/2"; label.innerText = "mid = "; expectedValue = Math.floor(low + (high - low) / 2); break;
+            case 5: prompt.innerText = `Compare arr[${mid}] to target.`; label.innerText = `Value at arr[${mid}]:`; expectedValue = sortedData[mid]; break;
+            case 6: prompt.innerText = `Is ${sortedData[mid]} < ${target}?`; label.innerText = "Yes (1) or No (0)?"; expectedValue = (sortedData[mid] < target) ? 1 : 0; break;
+            case 7: prompt.innerText = "Update high."; label.innerText = "New high = "; expectedValue = mid - 1; break;
+            case 9: prompt.innerText = "Loop failed. Returning -1."; label.innerText = "Return value:"; expectedValue = -1; break;
         }
     }
 
@@ -160,30 +215,27 @@
         const userVal = parseInt(document.getElementById('user-predict').value);
         const fb = document.getElementById('feedback');
         if (userVal === expectedValue) {
-            fb.innerText = "Correct! Click Next.";
+            fb.innerText = "Correct! Proceed.";
             fb.className = "feedback correct";
             document.getElementById('next-btn').style.display = 'inline-block';
             document.getElementById('input-row').style.display = 'none';
         } else {
-            fb.innerText = "Try again. Think like a Java compiler!";
+            fb.innerText = "Incorrect. Trace the Java logic carefully.";
             fb.className = "feedback incorrect";
         }
     }
 
     function advanceStep() {
-        // Apply the logic of the line we just predicted
         if (currentLine === 1) low = 0;
-        else if (currentLine === 2) high = data.length - 1;
-        else if (currentLine === 4) /* mid already calculated for prediction */;
-        else if (currentLine === 5 && data[mid] === target) isComplete = true;
-        else if (currentLine === 6 && data[mid] < target) low = mid + 1;
+        else if (currentLine === 2) high = sortedData.length - 1;
+        else if (currentLine === 5 && sortedData[mid] === target) isComplete = true;
+        else if (currentLine === 6 && sortedData[mid] < target) low = mid + 1;
         else if (currentLine === 7) high = mid - 1;
         
-        // Determine next line
         if (isComplete && currentLine === 5) { /* stop */ }
         else if (currentLine === 3 && low > high) currentLine = 9;
         else if (currentLine === 5) currentLine = 6;
-        else if (currentLine === 6 && data[mid] < target) currentLine = 3;
+        else if (currentLine === 6 && sortedData[mid] < target) currentLine = 3;
         else if (currentLine === 6) currentLine = 7;
         else if (currentLine === 7) currentLine = 3;
         else if (currentLine === 9) isComplete = true;
