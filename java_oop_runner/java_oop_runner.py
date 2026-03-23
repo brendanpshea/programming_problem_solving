@@ -33,10 +33,12 @@ from IPython.display import display, HTML, clear_output
 
 _CSS = """
 <style>
-.oop-runner-title   { font-size:1.3em; font-weight:700; color:#1a73e8; margin-bottom:4px; }
+.oop-runner-title   { font-size:1.3em; font-weight:700; color:#1a73e8;
+                      margin-bottom:4px; }
 .oop-runner-desc    { background:#f8f9fa; border-left:4px solid #1a73e8;
-                      padding:10px 14px; margin:6px 0 10px 0; white-space:pre-wrap;
-                      font-family: monospace; font-size: 0.95em; line-height:1.5; }
+                      padding:12px 16px; margin:0; white-space:pre-wrap;
+                      font-family: monospace; font-size: 0.9em; line-height:1.5;
+                      overflow-y:auto; }
 .oop-runner-pass    { color:#0d7d2c; font-weight:600; }
 .oop-runner-fail    { color:#c62828; font-weight:600; }
 .oop-runner-compile { color:#c62828; }
@@ -193,32 +195,43 @@ def load_problem(source):
         with open(source) as f:
             problem = json.load(f)
 
-    # ---- Header ----
+    # ---- Title (full width above everything) ----
     title_w = widgets.HTML(
         f'{_CSS}'
         f'<div class="oop-runner-title">{problem["title"]}</div>'
-        f'<div class="oop-runner-desc">{problem["description"]}</div>'
     )
 
-    # ---- Code editor ----
+    # ---- Left panel: scrollable instructions ----
+    desc_w = widgets.HTML(
+        f'{_CSS}'
+        f'<div class="oop-runner-desc">{problem["description"]}</div>',
+        layout=widgets.Layout(
+            width="100%",
+            height="500px",
+            overflow_y="auto",
+            border="1px solid #ddd",
+            border_radius="4px",
+        ),
+    )
+    left_panel = widgets.VBox(
+        [widgets.HTML('<b style="font-size:0.95em;">📋 Instructions</b>'), desc_w],
+        layout=widgets.Layout(width="48%", min_width="300px"),
+    )
+
+    # ---- Right panel: code editor + button + results ----
     starter = problem.get("starter_code", "// Write your code here\n")
     code_area = widgets.Textarea(
         value=starter,
         placeholder="Type your Java code here...",
-        layout=widgets.Layout(width="100%", height="300px"),
+        layout=widgets.Layout(width="100%", height="500px"),
     )
-    code_area.style = {"font_family": "monospace"}
-    # Colab's Textarea doesn't support style.font_family everywhere,
-    # but the monospace placeholder still helps signal "code goes here."
 
-    # ---- Submit button ----
     submit_btn = widgets.Button(
         description="▶  Submit & Test",
         button_style="primary",
         layout=widgets.Layout(width="180px", height="36px"),
     )
 
-    # ---- Output area ----
     output_area = widgets.Output()
 
     def _on_submit(_):
@@ -237,14 +250,27 @@ def load_problem(source):
 
     submit_btn.on_click(_on_submit)
 
-    # ---- Layout ----
-    display(widgets.VBox([
-        title_w,
-        widgets.Label("Your Java code:"),
-        code_area,
-        submit_btn,
-        output_area,
-    ]))
+    right_panel = widgets.VBox(
+        [
+            widgets.HTML('<b style="font-size:0.95em;">✏️ Your Java Code</b>'),
+            code_area,
+            submit_btn,
+            output_area,
+        ],
+        layout=widgets.Layout(width="50%", min_width="300px"),
+    )
+
+    # ---- Assemble: title on top, panels side-by-side ----
+    side_by_side = widgets.HBox(
+        [left_panel, right_panel],
+        layout=widgets.Layout(
+            width="100%",
+            justify_content="space-between",
+            gap="16px",
+        ),
+    )
+
+    display(widgets.VBox([title_w, side_by_side]))
 
 
 # ──────────────────────────────────────────────
