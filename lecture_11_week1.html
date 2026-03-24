@@ -648,6 +648,49 @@ graph TD
 </section>
 
 <!-- ═══════════════════════════════════════════
+     PART 3.5 — EARLY JAVA SANITY CHECK
+═══════════════════════════════════════════ -->
+<section>
+
+  <section>
+    <div class="part-header">
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 3.5 &nbsp;·&nbsp; 8 MINUTES</p>
+      <h2 style="margin:0.2em 0">Early Java Sanity Check</h2>
+    </div>
+    <br>
+    <p style="color:#aaa">Verify Java + VS Code work before we talk about Git</p>
+  </section>
+
+  <section>
+    <h3>HelloWorld.java (Local Quick Test)</h3>
+    <pre><code class="language-java" data-trim>
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+    </code></pre>
+    <div class="two-col" style="font-size:0.82em;margin-top:0.5em">
+      <div class="os-box">
+        <p><strong>Run with VS Code button</strong></p>
+        <p style="color:#aaa">Click the green run/play button in the editor.</p>
+      </div>
+      <div class="os-box">
+        <p><strong>Run with terminal</strong></p>
+        <div class="cmd-block" style="font-size:0.84em">
+          <span class="prompt">$ </span>javac HelloWorld.java<br>
+          <span class="prompt">$ </span>java HelloWorld
+        </div>
+      </div>
+    </div>
+    <div class="callout callout-blue" style="margin-top:0.5em">
+      This is a tooling check only. We will create the real repository workflow in the next part.
+    </div>
+  </section>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
      PART 4 — GITHUB
 ═══════════════════════════════════════════ -->
 <section>
@@ -698,9 +741,9 @@ graph TD
     <h3>The Git Mental Model</h3>
     <div class="mermaid">
 graph LR
-    A["📝 Edit files<br/>on your machine"] -->|"git add ."| B["📬 Staging area<br/>(changes queued)"]
-    B -->|"git commit -m '...'"| C["🗂️ Local repository<br/>(snapshot saved locally)"]
-    C -->|git push| D["☁️ GitHub<br/>(remote — visible to anyone you share with)"]
+    A["Edit files on your machine"] -->|"git add ."| B["Staging area (changes queued)"]
+    B -->|"git commit -m '...'"| C["Local repository (snapshot saved)"]
+    C -->|git push| D["GitHub remote repository"]
     D -->|git clone / git pull| A
     style A fill:#1e3a5f,stroke:#4299e1,color:#fff
     style B fill:#1a3a2e,stroke:#48c78e,color:#fff
@@ -918,18 +961,19 @@ graph LR
   <section>
     <div class="part-header">
       <p style="color:#aaa;margin:0;font-size:0.7em">PART 6 &nbsp;·&nbsp; 10 MINUTES</p>
-      <h2 style="margin:0.2em 0">Your First Java Program</h2>
+      <h2 style="margin:0.2em 0">Hello Snake in Your Cloned Repo</h2>
     </div>
     <br>
-    <p style="color:#aaa">Running Java in VS Code — both ways</p>
+    <p style="color:#aaa">Now connect Java practice directly to the Snake project workflow</p>
   </section>
 
   <section>
-    <h3>HelloWorld.java — Every Line Explained</h3>
+    <h3>Create HelloSnake.java in snake-game</h3>
     <pre><code class="language-java" data-trim>
-public class HelloWorld {
+public class HelloSnake {
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
+        System.out.println("Hello, Snake!");
+        System.out.println("Week 1 project starts now.");
     }
 }
     </code></pre>
@@ -937,8 +981,8 @@ public class HelloWorld {
       <thead><tr><th>Line</th><th>What it means</th></tr></thead>
       <tbody>
         <tr>
-          <td><code>public class HelloWorld</code></td>
-          <td>Defines the class. The filename <strong>must</strong> be <code>HelloWorld.java</code> — Java enforces this, capital H and W included</td>
+          <td><code>public class HelloSnake</code></td>
+          <td>Class name must match filename exactly: <code>HelloSnake.java</code></td>
         </tr>
         <tr>
           <td><code>public static void main(String[] args)</code></td>
@@ -946,7 +990,7 @@ public class HelloWorld {
         </tr>
         <tr>
           <td><code>System.out.println(...)</code></td>
-          <td>Prints text to the terminal, followed by a newline; <code>print</code> (no <em>ln</em>) skips the newline</td>
+          <td>Prints text to terminal. This verifies your cloned project runs Java code before adding Swing.</td>
         </tr>
       </tbody>
     </table>
@@ -958,7 +1002,7 @@ public class HelloWorld {
   </section>
 
   <section>
-    <h3>Two Ways to Run It</h3>
+    <h3>Run HelloSnake and Commit via VS Code</h3>
     <div class="two-col" style="font-size:0.85em">
       <div class="os-box">
         <p>▶️ <strong>Green Play Button</strong></p>
@@ -970,18 +1014,16 @@ public class HelloWorld {
       <div class="os-box">
         <p>💻 <strong>Terminal (manual)</strong></p>
         <div class="cmd-block" style="font-size:0.85em">
-          <span class="prompt">$ </span>javac HelloWorld.java<br>
-          <span class="prompt">$ </span>java HelloWorld
+          <span class="prompt">$ </span>javac HelloSnake.java<br>
+          <span class="prompt">$ </span>java HelloSnake
         </div>
         <p style="color:#aaa;font-size:0.82em">Two steps: compile → run<br>
-        You'll see a <code>HelloWorld.class</code> file appear — that's the bytecode</p>
+        You'll see <code>HelloSnake.class</code> appear — bytecode generated correctly</p>
       </div>
     </div>
     <br>
     <div class="callout callout-blue fragment">
-      <strong>javac</strong> compiles <code>.java</code> source into <code>.class</code> bytecode.
-      <strong>java</strong> runs the bytecode via the JVM.
-      The play button does both automatically — but it's good to know what's happening underneath.
+      In class default flow: create repository on GitHub, clone in VS Code, create <code>HelloSnake.java</code>, run it, then commit from Source Control.
     </div>
     <aside class="notes">
       Run it both ways live. Show the HelloWorld.class file that appears when you compile manually.
@@ -989,25 +1031,20 @@ public class HelloWorld {
     </aside>
   </section>
 
-  <section>
-    <h3>A Slightly More Interesting Example</h3>
+    <section>
+    <h3>Bridge to Snake: Add a Tiny Prompt-Ready Scaffold</h3>
     <pre><code class="language-java" data-trim>
-public class HelloWorld {
+  public class HelloSnake {
     public static void main(String[] args) {
-        String[] games = {"Snake", "Space Invaders", "Pac-Man"};
-        for (String game : games) {
-            if (game.equals("Snake")) {
-                System.out.println(game + " ← we're building this first");
-            } else {
-                System.out.println(game);
-            }
-        }
+      int gridSize = 20;
+      int cellSize = 30;
+      System.out.println("Snake setup: " + gridSize + "x" + gridSize + " grid");
+      System.out.println("Cell size: " + cellSize + " px");
     }
 }
     </code></pre>
     <div class="callout fragment" style="margin-top:0.6em">
-      You don't need to copy this. The point: arrays, loops, and conditionals — Java you already know —
-      work exactly the same way here as everywhere. This environment is not special.
+      This creates continuity: the same file evolves from console output to Swing window in Prompt 1.
     </div>
     <aside class="notes">
       Run it quickly. Students recognize the constructs. Then immediately move to the commit step —
@@ -1016,10 +1053,10 @@ public class HelloWorld {
   </section>
 
   <section>
-    <h3>Your First Real Commit 🎉</h3>
+    <h3>Commit in Your snake-game Repository 🎉</h3>
     <div class="cmd-block">
       <span class="prompt">$ </span>git add .<br>
-      <span class="prompt">$ </span>git commit -m "Add HelloWorld.java — first Java file"<br>
+      <span class="prompt">$ </span>git commit -m "Add HelloSnake.java in cloned snake-game repo"<br>
       <span class="prompt">$ </span>git push
     </div>
     <br>
@@ -1034,7 +1071,7 @@ public class HelloWorld {
       </div>
       <div class="callout">
         ✅ <strong>Async checkpoint 4:</strong><br>
-        Run <code>HelloWorld.java</code> and push it to GitHub before continuing
+        In cloned <code>snake-game</code>, run <code>HelloSnake.java</code> and push it before continuing
       </div>
     </div>
     <aside class="notes">
@@ -1357,7 +1394,8 @@ graph TD
     <div class="step-box">📌 After Part 2 — run <code>java -version</code> in a terminal. See the version number.</div>
     <div class="step-box">📌 After Part 3 — confirm Extension Pack for Java is installed in VS Code</div>
     <div class="step-box">📌 After Part 4 — create your GitHub repo (<code>snake-game</code>) and clone it locally</div>
-    <div class="step-box">📌 After Part 6 — run <code>HelloWorld.java</code> and push it to GitHub</div>
+    <div class="step-box">📌 After Part 3.5 — run <code>HelloWorld.java</code> as a local setup check</div>
+    <div class="step-box">📌 After Part 6 — in <code>snake-game</code>, run <code>HelloSnake.java</code> and push to GitHub</div>
     <div class="step-box">📌 After Part 7 — run Prompt 1, add the output to your repo, write the first PROMPTS.md entry</div>
     <br>
     <div class="callout callout-blue">
@@ -1430,6 +1468,7 @@ graph TD
     startOnLoad: false,
     theme: 'dark',
     themeVariables: {
+      fontFamily:         'Arial, Helvetica, sans-serif',
       primaryColor:       '#1e3a5f',
       primaryTextColor:   '#ffffff',
       primaryBorderColor: '#4299e1',
@@ -1447,9 +1486,22 @@ graph TD
     flowchart: { htmlLabels: true, curve: 'basis' }
   });
 
-  // Render mermaid diagrams when a slide becomes visible
-  Reveal.on('ready',       () => mermaid.run({ querySelector: '.mermaid' }));
-  Reveal.on('slidechanged', () => mermaid.run({ querySelector: '.mermaid' }));
+  // Render only diagrams inside the current slide to avoid hidden-layout geometry errors.
+  function renderMermaidInSlide(slideEl) {
+    if (!slideEl) return;
+    const pending = slideEl.querySelectorAll('.mermaid:not([data-processed="true"])');
+    if (pending.length > 0) {
+      mermaid.run({ nodes: pending });
+    }
+  }
+
+  Reveal.on('ready', (event) => {
+    renderMermaidInSlide(event.currentSlide);
+  });
+
+  Reveal.on('slidechanged', (event) => {
+    renderMermaidInSlide(event.currentSlide);
+  });
 
   // ── Title-slide snake grid decoration ────────
   (function buildSnakeGrid() {
