@@ -229,6 +229,9 @@
   <div class="callout callout-blue" style="margin-top:0.8em">
     By the end of class: working dev environment, first Java program on GitHub using VS Code workflow, Prompt 1 run live, and a clear Snake build plan.
   </div>
+  <div class="callout" style="margin-top:0.4em">
+    These slides are meant to be readable on their own. When a term appears for the first time, treat that slide as the definition, not just a reminder from lecture.
+  </div>
   <aside class="notes">Quick roadmap. Don't linger. Tell students: every part today has a hands-on checkpoint. Async students: pause the recording at each checkpoint label.</aside>
 </section>
 
@@ -350,6 +353,9 @@
         <p style="color:#aaa">It reduces friction. Fewer tool jumps means faster feedback, fewer mistakes, and easier experimentation.</p>
       </div>
     </div>
+    <div class="callout callout-blue" style="margin-top:0.5em">
+      In this course, VS Code is functioning as an IDE even though it starts life as a lightweight editor. Extensions add the Java, Git, terminal, and AI capabilities that make it an integrated environment.
+    </div>
     <div class="workflow-step"><span class="number-circle">1</span><div><strong>Edit</strong> code in one place</div></div>
     <div class="workflow-step"><span class="number-circle">2</span><div><strong>Run</strong> and see output immediately</div></div>
     <div class="workflow-step"><span class="number-circle">3</span><div><strong>Debug</strong> errors without leaving the environment</div></div>
@@ -369,6 +375,9 @@
     </table>
     <div class="callout callout-blue" style="margin-top:0.5em">
       Git does not care about “projects” in the human sense. It tracks file changes and snapshots over time.
+    </div>
+    <div class="callout" style="margin-top:0.4em">
+      That is why Git is so useful with AI-assisted programming: if an experiment goes badly, you are not relying on memory. You can return to a named snapshot instead.
     </div>
   </section>
 
@@ -397,6 +406,9 @@
     <div class="callout callout-red" style="margin-top:0.5em">
       An LLM produces plausible output. It does not know whether your program is correct until you test it.
     </div>
+    <div class="callout" style="margin-top:0.4em">
+      Put differently: the model gives you candidate code. The compiler, runtime, and your own reasoning decide whether that candidate is actually acceptable.
+    </div>
   </section>
 
   <section>
@@ -421,6 +433,9 @@ graph LR
       <div class="callout callout-green">
         Target behavior: treat AI output as draft 1, then test and iterate.
       </div>
+    </div>
+    <div class="callout" style="margin-top:0.4em">
+      This loop is the real intellectual center of the course. The game is the medium; the loop is the transferable skill.
     </div>
   </section>
 
@@ -728,6 +743,9 @@ public class HelloWorld {
     <div class="callout callout-blue" style="margin-top:0.5em">
       This is a tooling check only. We will create the real repository workflow in the next part.
     </div>
+    <div class="callout" style="margin-top:0.4em">
+      The reason for doing this before Git is simple: if Java or VS Code is broken, version control will not fix that. First confirm the machine can compile and run Java at all.
+    </div>
   </section>
 
 </section>
@@ -795,6 +813,9 @@ graph LR
     <div class="callout fragment" style="font-size:0.8em;margin-top:0.5em">
       You only <code>clone</code> once (to get the repo onto your machine). After that, the loop is:
       <strong>edit → add → commit → push</strong>, repeated.
+    </div>
+    <div class="callout" style="margin-top:0.4em">
+      Students often confuse <strong>commit</strong> and <strong>push</strong>. A commit saves history on your machine. A push sends that saved history to GitHub.
     </div>
     <aside class="notes">
       Walk through each node. Students often confuse "commit" (local) with "push" (GitHub).
@@ -925,6 +946,9 @@ graph LR
     <div class="callout callout-green" style="margin-top:0.5em">
       Transition: Part 5 starts from the assumption that <code>snake-game</code> is already cloned and open in VS Code.
     </div>
+    <div class="callout" style="margin-top:0.4em">
+      This matters because the next code you write should already live in the repository you will submit. That keeps your actual work, your Git history, and your prompt log in one place from the start.
+    </div>
   </section>
 
 </section>
@@ -941,6 +965,9 @@ graph LR
     </div>
     <br>
     <p style="color:#aaa">You now have <code>snake-game</code> open in VS Code. Next, add the first Java file inside that real repository.</p>
+    <div class="callout" style="margin-top:0.6em">
+      This is the first moment where the workflow becomes fully authentic: code, repository, editor, and later AI prompting are all happening in the same project context.
+    </div>
   </section>
 
   <section>
@@ -970,6 +997,9 @@ public class HelloSnake {
         </tr>
       </tbody>
     </table>
+    <div class="callout" style="margin-top:0.5em">
+      We are not using Swing yet here on purpose. A tiny console program is easier to verify, easier to commit, and gives you a stable first checkpoint inside the real repository.
+    </div>
   </section>
 
   <section>
@@ -996,6 +1026,9 @@ public class HelloSnake {
     </div>
     <div class="callout" style="margin-top:0.4em">
       ✅ Async checkpoint: in cloned <code>snake-game</code>, run <code>HelloSnake.java</code> and push it.
+    </div>
+    <div class="callout callout-green" style="margin-top:0.4em">
+      Once this works, you know three things are true at once: Java runs, VS Code is configured, and your GitHub workflow is functioning end to end.
     </div>
   </section>
 
@@ -1039,6 +1072,9 @@ public class SnakeStarter extends JPanel {
     <div class="callout">
       Inline AI is best for short, local edits where file structure is already fixed.
     </div>
+    <div class="callout callout-blue" style="margin-top:0.4em">
+      Reading tip: if you can clearly describe the next 1-3 lines of code yourself, inline AI is usually the right tool.
+    </div>
   </section>
 
   <section>
@@ -1065,6 +1101,9 @@ public class SnakeStarter extends JPanel {
           <li>Prompt constraints respected</li>
         </ul>
       </div>
+    </div>
+    <div class="callout" style="margin-top:0.5em">
+      Reading tip: if the change affects file structure, class design, or several coordinated edits at once, agentic chat is usually the better tool.
     </div>
   </section>
 
@@ -1146,6 +1185,9 @@ public class SnakeStarter extends JPanel {
     </div>
     <div class="callout fragment" style="margin-top:0.6em">
       <strong>Every vague word in a prompt is a decision the AI makes without your input.</strong>
+    </div>
+    <div class="callout" style="margin-top:0.4em">
+      The practical consequence is that better prompts reduce debugging time. Specificity is not about sounding formal; it is about preventing avoidable ambiguity.
     </div>
     <aside class="notes">
       Read both prompts aloud. Ask students to count the decisions the strong prompt makes for the AI:
@@ -1303,6 +1345,9 @@ I'm starting a Java project in VS Code. Create a single file called
       Do not wait until Friday to fill this in.
       Write two sentences right after each AI conversation.
     </div>
+    <div class="callout" style="margin-top:0.4em">
+      If these slides are your textbook, then <code>PROMPTS.md</code> is your lab notebook. One explains the ideas; the other records what happened when you actually tried them.
+    </div>
     <div class="callout callout-blue fragment">
       ✅ <strong>Async checkpoint 5:</strong> Run Prompt 1, add the output to your repo, and write your first PROMPTS.md entry.
     </div>
@@ -1367,6 +1412,9 @@ graph TD
     <div class="callout callout-blue" style="margin-top:0.5em">
       Strong prompt tip: ask the AI to explain each data structure choice in one sentence.
     </div>
+    <div class="callout" style="margin-top:0.4em">
+      This matters because data structures are not decoration. They shape what is easy or hard to do in your program, especially in a game loop that updates constantly.
+    </div>
   </section>
 
   <section>
@@ -1402,7 +1450,7 @@ graph TD
         <tr><td>Student Pack</td><td>Apply today with your school email; use Claude while you wait</td></tr>
         <tr><td>Agentic AI</td><td>Specificity is the skill — vague prompt = vague code</td></tr>
         <tr><td>Snake strategy</td><td>Build in increments: render first, then move, then collide, then polish</td></tr>
-        <tr><td>PROMPTS.md</td><td>Open it now; maintain it throughout; it is a graded artifact (30%)</td></tr>
+        <tr><td>PROMPTS.md</td><td>Open it now; maintain it throughout; it documents your real process</td></tr>
       </tbody>
     </table>
     <aside class="notes">Quick summary. Read each row. Then wrap up with "What's next."</aside>
