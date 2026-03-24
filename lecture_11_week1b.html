@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>An Intro to Modern Software Engineering with Snake: IDEs, Git, GUIs, and Agentic Coding</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/night.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/monokai.css">
+  <style>
+    :root {
+      --bg: #0d1321;
+      --bg-soft: #141c2f;
+      --panel: rgba(255,255,255,0.055);
+      --line: #29405f;
+      --line-strong: #4f7cac;
+      --text: #f5f7fb;
+      --muted: #b6c2d9;
+      --gold: #f4b942;
+      --green: #4cc38a;
+      --red: #ef6b73;
+      --blue: #69a9ff;
+      --teal: #44c6d9;
+    }
+
+    .reveal {
+      font-family: "Aptos", "Segoe UI", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(79,124,172,0.18), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(68,198,217,0.12), transparent 24%),
+        linear-gradient(180deg, #0c1322 0%, #11192c 100%);
+    }
+    .reveal .slides {
+      text-align: left;
+    }
+    .reveal h1,
+    .reveal h2,
+    .reveal h3 {
+      font-family: Georgia, "Times New Roman", serif;
+      letter-spacing: 0.01em;
+      text-transform: none;
+    }
+    .reveal h1 { font-size: 1.82em; margin-bottom: 0.2em; }
+    .reveal h2 { font-size: 1.34em; margin-bottom: 0.28em; }
+    .reveal h3 { font-size: 1.06em; margin-bottom: 0.38em; }
+    .reveal p,
+    .reveal li,
+    .reveal td,
+    .reveal th,
+    .reveal blockquote {
+      font-size: 0.76em;
+      line-height: 1.48;
+    }
+    .reveal strong { color: #ffffff; }
+    .reveal em { color: #dfe8f8; }
+    .reveal code {
+      font-family: Consolas, "Cascadia Code", monospace;
+      font-size: 0.9em;
+      background: rgba(255,255,255,0.06);
+      padding: 0.08em 0.25em;
+      border-radius: 4px;
+    }
+    .reveal pre {
+      width: 100%;
+      margin: 0.35em 0;
+      box-shadow: none;
+    }
+    .reveal pre code {
+      max-height: 255px;
+      border-radius: 10px;
+      font-size: 0.72em;
+      line-height: 1.45;
+      padding: 1em;
+      background: #0b1018;
+    }
+    .reveal table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.45em;
+    }
+    .reveal th {
+      background: rgba(79,124,172,0.35);
+      padding: 0.28em 0.55em;
+      text-align: left;
+      border-bottom: 1px solid var(--line-strong);
+    }
+    .reveal td {
+      padding: 0.24em 0.55em;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      vertical-align: top;
+    }
+    .reveal tr:nth-child(even) td {
+      background: rgba(255,255,255,0.03);
+    }
+    .reveal ul,
+    .reveal ol {
+      margin: 0.2em 0 0.15em 1.18em;
+    }
+    .reveal li {
+      margin: 0.17em 0;
+    }
+    .reveal blockquote {
+      width: 100%;
+      margin: 0.55em 0 0;
+      padding: 0.48em 0.75em;
+      background: rgba(105,169,255,0.12);
+      border-left: 4px solid var(--blue);
+      border-radius: 0 10px 10px 0;
+      color: #edf3ff;
+      box-shadow: none;
+    }
+    .reveal hr {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.11);
+      margin: 0.65em 0;
+    }
+
+    .part {
+      background: linear-gradient(135deg, rgba(20,28,47,0.96), rgba(17,25,44,0.88));
+      border: 1px solid var(--line-strong);
+      border-radius: 18px;
+      padding: 1.1em 1.25em;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.22);
+    }
+    .part .kicker {
+      color: var(--teal);
+      font-size: 0.58em;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 0.55em;
+    }
+    .part .subtitle {
+      color: var(--muted);
+      font-size: 0.74em;
+      margin-top: 0.6em;
+      max-width: 28em;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr;
+      gap: 1em;
+      align-items: center;
+    }
+    .hero-panel,
+    .card,
+    .mini-card {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+    }
+    .hero-panel {
+      padding: 0.85em 1em;
+    }
+    .card {
+      padding: 0.65em 0.85em;
+    }
+    .mini-card {
+      padding: 0.55em 0.7em;
+      margin: 0.3em 0;
+    }
+    .card-title {
+      color: var(--gold);
+      font-size: 0.68em;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.35em;
+    }
+    .muted {
+      color: var(--muted);
+    }
+
+    .badge-line {
+      display: flex;
+      gap: 0.45em;
+      flex-wrap: wrap;
+      margin-top: 0.8em;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(79,124,172,0.24);
+      border: 1px solid rgba(105,169,255,0.38);
+      border-radius: 999px;
+      padding: 0.18em 0.62em;
+      font-size: 0.58em;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #eef4ff;
+    }
+
+    .reveal section[data-markdown] {
+      text-align: left;
+    }
+    .reveal section[data-markdown] > textarea {
+      display: none;
+    }
+
+    .cols-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8em;
+      align-items: start;
+    }
+    .cols-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.7em;
+      align-items: start;
+    }
+
+    .term-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55em;
+      margin-top: 0.55em;
+    }
+    .term {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 0.55em 0.65em;
+    }
+    .term h4 {
+      margin: 0 0 0.22em;
+      font-size: 0.72em;
+      color: var(--teal);
+      font-family: Georgia, "Times New Roman", serif;
+    }
+    .term p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.71em;
+      line-height: 1.4;
+    }
+
+    .steps {
+      counter-reset: step;
+      margin-top: 0.5em;
+    }
+    .step {
+      display: grid;
+      grid-template-columns: 1.7em 1fr;
+      gap: 0.5em;
+      align-items: start;
+      background: rgba(105,169,255,0.08);
+      border: 1px solid rgba(105,169,255,0.16);
+      border-radius: 12px;
+      padding: 0.38em 0.55em;
+      margin: 0.28em 0;
+    }
+    .step-num {
+      width: 1.55em;
+      height: 1.55em;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7em;
+      font-weight: 700;
+      margin-top: 0.03em;
+    }
+
+    .prompt-box {
+      background: rgba(76,195,138,0.09);
+      border: 1px solid rgba(76,195,138,0.34);
+      border-radius: 12px;
+      padding: 0.7em 0.8em;
+      margin-top: 0.45em;
+    }
+    .prompt-box p {
+      margin: 0;
+      font-size: 0.73em;
+      line-height: 1.5;
+      color: #f2fff8;
+    }
+
+    .warn-box {
+      background: rgba(239,107,115,0.09);
+      border: 1px solid rgba(239,107,115,0.35);
+      border-radius: 12px;
+      padding: 0.55em 0.7em;
+      margin-top: 0.45em;
+    }
+
+    .cmd {
+      background: #0b1018;
+      border: 1px solid #2a3445;
+      border-radius: 12px;
+      padding: 0.7em 0.85em;
+      font-family: Consolas, "Cascadia Code", monospace;
+      font-size: 0.72em;
+      line-height: 1.55;
+      color: #88f0b2;
+      margin-top: 0.45em;
+    }
+    .cmd .comment { color: #94a2b8; }
+    kbd {
+      background: #212a3a;
+      border: 1px solid #49576d;
+      border-radius: 4px;
+      padding: 0.08em 0.34em;
+      font-size: 0.86em;
+      font-family: Consolas, monospace;
+    }
+
+    .mermaid-wrap {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 0.35em 0.5em;
+      margin-top: 0.45em;
+    }
+    .mermaid {
+      max-width: 100%;
+      max-height: 300px;
+      overflow: hidden;
+      font-size: 0.64em;
+    }
+    .mermaid svg {
+      max-width: 100% !important;
+      max-height: 290px !important;
+      height: auto !important;
+    }
+
+    .title-snake {
+      display: grid;
+      grid-template-columns: repeat(8, 18px);
+      gap: 3px;
+      justify-content: center;
+      padding: 0.7em;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+    }
+    .title-snake span {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      background: #1d2740;
+      display: block;
+    }
+    .title-snake .body { background: #4cc38a; }
+    .title-snake .head { background: #7fffd4; border-radius: 7px; }
+    .title-snake .food { background: #f56a79; border-radius: 50%; }
+
+    .small {
+      font-size: 0.69em;
+      color: var(--muted);
+    }
+
+    @media (max-width: 1000px) {
+      .hero-grid,
+      .cols-2,
+      .cols-3,
+      .term-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<section>
+  <div class="hero-grid">
+    <div class="part">
+      <div class="kicker">Lecture 11 • Week 1</div>
+      <h1>An Intro to Modern Software Engineering with Snake: IDEs, Git, GUIs, and Agentic Coding</h1>
+      <p class="subtitle">A reader-oriented guide to setting up a real development workflow, understanding GUI programming in Java Swing, working with Git and GitHub, and building a Snake game with both inline and agentic AI.</p>
+      <div class="badge-line">
+        <span class="badge">Java 17</span>
+        <span class="badge">VS Code</span>
+        <span class="badge">Git + GitHub</span>
+        <span class="badge">Swing</span>
+        <span class="badge">Copilot / Claude</span>
+      </div>
+    </div>
+    <div class="hero-panel">
+      <div class="card-title">Mental Model</div>
+      <p style="margin-top:0">In this course, Snake is not just a game project. It is the vehicle for learning how modern software is actually built: with editors, terminals, repositories, libraries, prompts, tests, debugging, and revision.</p>
+      <div class="title-snake" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span class="body"></span><span class="body"></span><span class="body"></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span class="body"></span><span></span><span class="food"></span>
+        <span></span><span></span><span></span><span></span><span></span><span class="body"></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span class="body"></span><span class="body"></span><span class="head"></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <p class="small" style="margin-top:0.8em">Read these slides as a textbook chapter. Every major term is defined when it first matters.</p>
+    </div>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+## Roadmap
+
+1. What this project is really teaching
+2. Core ideas: IDEs, Git, GitHub, inline AI, agentic AI
+3. Installing Java and VS Code
+4. Creating a GitHub repository and opening it in VS Code
+5. Running a first Java file inside the real repository
+6. Understanding Swing and GUI programming
+7. Editing a tiny Swing program with inline and agentic AI
+8. The actual Snake prompts, step by step
+9. Running, debugging, documenting, and extending the game
+
+> The goal is not just to "get a game working." The goal is to understand the workflow well enough that you can keep building when the AI is imperfect.
+  </textarea>
+</section>
+
+<section>
+  <div class="part">
+    <div class="kicker">Part 1</div>
+    <h2>The Big Picture</h2>
+    <p class="subtitle">What students are really learning when they build Snake with Java, Git, VS Code, and AI tools.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### This Course Is Not About Memorizing APIs
+
+You are **not** being asked to memorize every Java keyword or every Swing class.
+
+You **are** being asked to learn how to:
+
+- set up a real development environment
+- describe a software task clearly
+- inspect code that you did not write entirely by hand
+- test whether code actually works
+- debug problems instead of freezing when something fails
+- use Git to keep a clean, recoverable history of your work
+
+> The game is the project. The workflow is the deeper lesson.
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### What "Modern Software Engineering" Means Here
+
+In this lecture, **software engineering** means organizing tools and decisions so that programming becomes manageable.
+
+That includes:
+
+- choosing the right editor
+- using version control
+- naming files and classes carefully
+- building features in small steps
+- treating AI output as a draft, not as unquestionable truth
+- keeping records of what you tried and what happened
+
+A student who can do all of that is in a stronger position than a student who can write one longer file from memory but cannot recover from mistakes.
+  </textarea>
+</section>
+
+<section>
+  <div class="part">
+    <div class="kicker">Part 2</div>
+    <h2>Core Ideas Before Setup</h2>
+    <p class="subtitle">Before installing tools, define the vocabulary. If the terms are vague, the workflow becomes vague too.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### What an IDE Is
+
+**IDE** stands for **Integrated Development Environment**.
+
+An IDE is a place where several development tasks live together:
+
+- editing code
+- running programs
+- reading errors
+- navigating files
+- working with Git
+- sometimes talking to AI tools
+
+Why this matters:
+
+- fewer tool switches means less confusion
+- errors appear close to the code that caused them
+- you can edit, run, and revise quickly
+
+> In this course, VS Code becomes an IDE once its Java, Git, terminal, and AI features are installed and used together.
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### What Git Is
+
+**Git** is a version control system.
+
+A **version control system** records how files change over time.
+
+Important terms:
+
+| Term | Meaning |
+|---|---|
+| Repository | A project folder plus its history |
+| Commit | A named snapshot of the project at one moment |
+| Remote | A copy of the repository stored elsewhere, such as GitHub |
+| Clone | A full local copy of a remote repository |
+| Push | Send local commits to the remote repository |
+| Pull | Bring remote changes down to your machine |
+
+> Git is valuable because it turns "I hope I do not break this" into "If I break this, I can return to a known working version."
+  </textarea>
+</section>
+
+<section>
+  <h3>The Git Cycle</h3>
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart LR
+  A[Edit files in VS Code] --> B[git add]
+  B --> C[git commit]
+  C --> D[git push]
+  D --> E[GitHub stores history]
+  E --> A
+    </div>
+  </div>
+  <blockquote>
+    The most common beginner confusion is the difference between <code>commit</code> and <code>push</code>. A commit saves history on your machine. A push sends that history to GitHub.
+  </blockquote>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### What GitHub Is
+
+**GitHub** is a website and service built around Git repositories.
+
+In this lecture, GitHub has three jobs:
+
+1. It stores a remote copy of your project.
+2. It gives you a clean place to submit and share your work.
+3. It makes your history visible, so your progress is not trapped only on one computer.
+
+Students often think GitHub and Git are the same thing. They are related, but not identical:
+
+- **Git** is the version control system.
+- **GitHub** is a platform that hosts Git repositories.
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Inline AI vs. Agentic AI
+
+| Tool mode | What it does well | What it does poorly |
+|---|---|---|
+| Inline AI | tiny local edits, completing obvious next lines, short boilerplate | planning a multi-step feature |
+| Agentic AI | scoped prompts, file-level changes, debugging conversations, structured iteration | being automatically correct without testing |
+
+An **LLM** is the underlying language model.
+
+An **agentic workflow** is the broader pattern where you give the model a scoped task, inspect its answer, run the result, and ask follow-up questions based on real feedback.
+
+> AI gives you candidate code. The compiler, runtime, and your reasoning decide whether the candidate is acceptable.
+  </textarea>
+</section>
+
+<section>
+  <div class="part">
+    <div class="kicker">Part 3</div>
+    <h2>Install Java and VS Code</h2>
+    <p class="subtitle">The point of setup is not to collect tools. The point is to make sure your machine can compile and run Java reliably before the project gets more complex.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### What Java You Actually Need
+
+For development, install the **JDK**.
+
+**JDK** means **Java Development Kit**.
+
+The JDK includes:
+
+- the compiler, `javac`
+- the runtime tools needed to run Java programs
+- the standard library, including Swing
+
+If you only install the runtime, you may be able to run Java software that someone else already built, but you will not have the full toolchain needed to build your own programs.
+  </textarea>
+</section>
+
+<section>
+  <h3>Java in One Small Diagram</h3>
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart TD
+  JDK[JDK<br/>what you install] --> COMP[javac compiler]
+  JDK --> LIB[standard library<br/>includes Swing]
+  JDK --> RUN[runtime tools]
+    </div>
+  </div>
+  <blockquote>
+    For this class, the only safe beginner rule is simple: install the JDK, not just a runtime.
+  </blockquote>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Install Java 17 and Verify It
+
+Use a stable Java 17 JDK such as Adoptium Temurin 17.
+
+After installation, open a terminal and run:
+
+```bash
+java -version
+```
+
+You want to see a Java 17 version string.
+
+If the terminal says that `java` is not recognized, the installation is not finished correctly yet. Fix that first.
+
+Why this check matters:
+
+- it confirms the installation worked
+- it confirms the terminal can find Java
+- it prevents later confusion inside VS Code
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Why VS Code Is a Good Choice Here
+
+VS Code is useful for this project because it combines:
+
+- file editing
+- an integrated terminal
+- Git support
+- Java support through extensions
+- Copilot and chat-based AI tools
+
+That matters because the course workflow depends on moving quickly among all of those tasks.
+
+You do not want one program for editing, another for running, another for Git, and another for prompts if you can avoid it.
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### The Extensions to Install
+
+Install these in VS Code:
+
+| Extension | Why it matters |
+|---|---|
+| Extension Pack for Java | Java language support, running, debugging, and useful helpers |
+| GitHub Copilot | Inline suggestions while you type |
+| GitHub Copilot Chat | Structured prompting and follow-up discussion |
+
+After installation, open a folder in VS Code rather than working on isolated files.
+
+> A real project should live in a folder that VS Code can treat as a workspace.
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### First Local Sanity Check
+
+Before you involve Git or GitHub, make sure Java code runs locally.
+
+Create a file called `HelloWorld.java` and run:
+
+```java
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+```
+
+Then in the terminal:
+
+```bash
+javac HelloWorld.java
+java HelloWorld
+```
+
+This is not the project yet. It is a tool check.
+  </textarea>
+</section>
+
+<section>
+  <div class="part">
+    <div class="kicker">Part 4</div>
+    <h2>Create the Repository and Open It in VS Code</h2>
+    <p class="subtitle">This is where the work stops being "a file on my laptop" and becomes a real project with history.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Why Create the Repository First
+
+Many beginners write code locally first and try to "put it on GitHub later."
+
+That usually creates avoidable confusion.
+
+A cleaner approach is:
+
+1. create the repository on GitHub first
+2. clone it to your computer
+3. open that cloned folder in VS Code
+4. do your work inside the real repository from the beginning
+
+That way:
+
+- your history starts immediately
+- your local folder and GitHub folder stay aligned
+- every file you create already lives in the project you will submit
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Step by Step: Create `snake-game` on GitHub
+
+1. Go to GitHub.com and sign in.
+2. Create a new repository named `snake-game`.
+3. Check the option to add a `README`.
+4. Click **Create repository**.
+5. Copy the repository URL.
+
+Why add the `README`?
+
+Because it gives the repository one first file, which makes the initial clone workflow simpler for beginners.
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Step by Step: Clone the Repository in VS Code
+
+1. Open VS Code.
+2. Press `Ctrl+Shift+P` to open the Command Palette.
+3. Run `Git: Clone`.
+4. Paste the repository URL.
+5. Choose a local folder for the clone.
+6. Click **Open** when VS Code asks whether to open the cloned repository.
+
+At that point, VS Code should be showing the real `snake-game` project folder.
+
+> From now on, create files inside that cloned folder, not somewhere else on your machine.
+  </textarea>
+</section>
+
+<section>
+  <h3>What VS Code Should Look Like Now</h3>
+  <div class="cols-2">
+    <div class="card">
+      <div class="card-title">Explorer</div>
+      <p>You should see the `snake-game` folder and its files in the Explorer panel.</p>
+      <div class="mini-card"><strong>Good sign:</strong> `README.md` is visible.</div>
+      <div class="mini-card"><strong>Bad sign:</strong> you only opened one file, not the folder.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Source Control</div>
+      <p>Source Control should be available in the sidebar because the open folder is a Git repository.</p>
+      <div class="mini-card"><strong>Good sign:</strong> the branch and repo are recognized.</div>
+      <div class="mini-card"><strong>Bad sign:</strong> VS Code says the folder is not under source control.</div>
+    </div>
+  </div>
+  <blockquote>
+    If the folder is not recognized as a repository, stop and fix that before writing project code.
+  </blockquote>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Your First Real File in the Repository
+
+Now that `snake-game` is open, create `HelloSnake.java` inside that repository.
+
+```java
+public class HelloSnake {
+    public static void main(String[] args) {
+        System.out.println("Hello, Snake!");
+        System.out.println("This repository can compile Java.");
+    }
+}
+```
+
+Then run:
+
+```bash
+javac HelloSnake.java
+java HelloSnake
+```
+
+This matters because it confirms three things at once:
+
+- Java works
+- VS Code is pointed at the right folder
+- your real project repository can already run code
+  </textarea>
+</section>
+
+<section>
+  <h3>Your First Commit in the Real Project</h3>
+  <div class="cmd">
+    <span class="comment"># Stage the new file</span><br>
+    git add .<br><br>
+    <span class="comment"># Save a named snapshot</span><br>
+    git commit -m "Add HelloSnake.java setup check"<br><br>
+    <span class="comment"># Send the commit to GitHub</span><br>
+    git push
+  </div>
+  <blockquote>
+    A useful commit message should say what changed. Avoid vague messages such as <code>fixed stuff</code>.
+  </blockquote>
+</section>
+
+<section>
+  <div class="part">
+    <div class="kicker">Part 5</div>
+    <h2>What Swing Is and Why It Matters</h2>
+    <p class="subtitle">Students often see GUI code as a different world. It is not a different world. It is ordinary Java plus a library for building windows and drawing components.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Definition: GUI
+
+**GUI** stands for **Graphical User Interface**.
+
+A GUI program shows visible elements on screen, such as:
+
+- windows
+- panels
+- buttons
+- labels
+- drawings
+- menus
+
+This is different from a console program, which communicates mainly through printed text in a terminal.
+
+Snake is a GUI program because the player needs to see a game board, not just lines of text.
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Definition: Swing
+
+**Swing** is a Java GUI library.
+
+A **library** is a collection of prewritten classes and methods that you can use instead of building everything from scratch.
+
+So when we say "we are using Swing," we mean:
+
+- the language is still Java
+- the syntax is still Java syntax
+- the new thing is the library that gives us GUI-related classes
+
+> Swing is not "a different language." It is Java plus a set of GUI tools.
+  </textarea>
+</section>
+
+<section>
+  <h3>Important Swing Terms</h3>
+  <div class="term-grid">
+    <div class="term"><h4>JFrame</h4><p>The main application window. If the program opens a visible window, that outer window is often a <code>JFrame</code>.</p></div>
+    <div class="term"><h4>JPanel</h4><p>A rectangular area inside a window. For a simple game, the panel is often where drawing happens.</p></div>
+    <div class="term"><h4>Component</h4><p>A visible GUI element. Frames, panels, buttons, and labels are all components.</p></div>
+    <div class="term"><h4>paintComponent</h4><p>A method that Swing calls when a panel needs to redraw itself.</p></div>
+    <div class="term"><h4>Graphics</h4><p>An object that gives drawing commands such as rectangles, colors, and text.</p></div>
+    <div class="term"><h4>Event</h4><p>Something that happens while the program is running, such as a key press, a mouse click, or a timer tick.</p></div>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Swing Connects Directly to Basic Java
+
+| Basic Java idea | Swing version |
+|---|---|
+| Class | `JFrame`, `JPanel`, and `Timer` are classes |
+| Object | `new JFrame()` creates an object |
+| Field | score, direction, and snake body can live in fields |
+| Method | `paintComponent` and `setVisible` are methods |
+| Inheritance | `class GamePanel extends JPanel` means your class is a specialized panel |
+| Override | you replace inherited behavior with your own method body |
+
+This is why learning Swing is a reasonable next step after basic Java: the concepts are new in application, not new in kind.
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Console Programs and GUI Programs Behave Differently
+
+A console program often feels like this:
+
+1. start `main`
+2. run top to bottom
+3. print output
+4. end
+
+A GUI program behaves more like this:
+
+1. start `main`
+2. build windows and components
+3. wait for events
+4. react to repaint requests, key presses, and timer ticks
+
+This is called **event-driven programming**.
+
+In event-driven programming, the program does not simply run once from top to bottom and stop. It stays alive and reacts to events.
+  </textarea>
+</section>
+
+<section>
+  <h3>The Smallest Useful Swing Example</h3>
+  <pre><code class="language-java" data-trim>
+import java.awt.*;
+import javax.swing.*;
+
+public class SimpleWindow extends JPanel {
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.setColor(Color.GREEN);
+        g.fillRect(40, 40, 120, 40);
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Simple Window");
+        frame.setSize(400, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(new SimpleWindow());
+        frame.setVisible(true);
+    }
+}
+  </code></pre>
+  <blockquote>
+    Read this code as ordinary Java. The only major new thing is what kinds of objects are being created and what those objects know how to do.
+  </blockquote>
+</section>
+
+<section>
+  <div class="part">
+    <div class="kicker">Part 6</div>
+    <h2>Editing a Tiny Swing Program with AI</h2>
+    <p class="subtitle">This is where students practice the difference between a small local edit and a larger structured request.</p>
+  </div>
+</section>
+
+<section>
+  <h3>Starting File: `SnakeStarter.java`</h3>
+  <pre><code class="language-java" data-trim>
+import java.awt.*;
+import javax.swing.*;
+
+public class SnakeStarter extends JPanel {
+    private final int gridSize = 20;
+    private final int cellSize = 25;
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.setColor(new Color(22, 28, 39));
+        g.fillRect(0, 0, gridSize * cellSize, gridSize * cellSize);
+    }
+}
+  </code></pre>
+  <blockquote>
+    This file does not do much yet. That is intentional. Small, stable starting points are easier to extend safely.
+  </blockquote>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Inline AI Exercise: What to Type Exactly
+
+Place your cursor inside `paintComponent` after the background rectangle code.
+
+Press Enter and type this comment exactly:
+
+```java
+// draw a green 3-segment snake near the center
+```
+
+Then pause and let inline AI suggest the next few lines.
+
+Accept only the part that matches the comment.
+
+Why this is a good inline task:
+
+- the file already exists
+- the method already exists
+- the change is local and small
+- you can judge quickly whether the suggestion matches the request
+  </textarea>
+</section>
+
+<section>
+  <h3>Agentic AI Exercise: A Larger Structured Change</h3>
+  <div class="prompt-box">
+    <p>In <code>SnakeStarter.java</code>, add a <code>main</code> method that opens a 600x600 <code>JFrame</code> titled <code>Snake Starter</code>. Keep everything in one file. Add a <code>LinkedList&lt;Point&gt;</code> with three snake segments and draw them in green on the panel. Do not add movement yet.</p>
+  </div>
+  <div class="cols-2" style="margin-top:0.55em;">
+    <div class="card">
+      <div class="card-title">Why this is agentic work</div>
+      <ul>
+        <li>it changes file structure</li>
+        <li>it introduces new imports and state</li>
+        <li>it coordinates several edits at once</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">What to verify afterward</div>
+      <ul>
+        <li>the file still compiles</li>
+        <li>the window opens</li>
+        <li>the snake is actually visible</li>
+        <li>the AI did not add extra features you did not request</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Inline vs. Agentic: A Useful Rule of Thumb
+
+Use **inline AI** when you can already picture the next small local change.
+
+Use **agentic AI** when the task involves:
+
+- several coordinated edits
+- class structure changes
+- setup logic
+- a design choice you want explained
+
+Both still require testing.
+
+> The right question is not "Which AI tool is better?" The right question is "Which tool matches the size and shape of the change I am making?"
+  </textarea>
+</section>
+
+<section>
+  <div class="part">
+    <div class="kicker">Part 7</div>
+    <h2>Snake Deep Dive: The Actual Prompts</h2>
+    <p class="subtitle">Here the prompts are written out explicitly. Each one has a software-design purpose, not just a coding purpose.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Why Snake Is a Good Teaching Game
+
+Snake is small enough to finish, but rich enough to teach important ideas:
+
+- visible state
+- keyboard input
+- discrete movement
+- collision detection
+- scoring
+- restart logic
+- iterative feature building
+
+That makes Snake a strong first GUI project.
+  </textarea>
+</section>
+
+<section>
+  <h3>Prompt 1: Open a Window and Nothing More</h3>
+  <div class="prompt-box">
+    <p>I'm building a Snake game in Java using Swing. Create a single file called <code>SnakeGame.java</code>. It should have a <code>main</code> method that opens a <code>JFrame</code> window that is 600 by 600 pixels and titled <code>Snake</code>. Inside the frame, add a <code>JPanel</code> subclass called <code>GamePanel</code>. Do not add any game logic yet. Just get the window to open correctly.</p>
+  </div>
+  <div class="cols-2" style="margin-top:0.55em;">
+    <div class="card">
+      <div class="card-title">Why this prompt exists</div>
+      <p>It creates a shell you can run immediately. If the shell does not work, you should not move on to game logic yet.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">What to look for</div>
+      <ul>
+        <li>correct imports</li>
+        <li>matching class names</li>
+        <li>a visible window</li>
+        <li>no extra features</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h3>Prompt 2: Draw a Board and a Starting Snake</h3>
+  <div class="prompt-box">
+    <p>Now extend <code>SnakeGame.java</code>. Keep it as one file. Add a dark background grid and draw a starting snake that is three segments long. Store the snake body as a <code>LinkedList&lt;Point&gt;</code>. Explain briefly in code comments why <code>LinkedList&lt;Point&gt;</code> is a reasonable choice here. Do not add movement yet.</p>
+  </div>
+  <blockquote>
+    This prompt is about representation. Before a game can move, it needs a way to store where things are.
+  </blockquote>
+</section>
+
+<section>
+  <h3>Prompt 3: Add Movement and Keyboard Input</h3>
+  <div class="prompt-box">
+    <p>Now add basic movement to <code>SnakeGame.java</code>. Use a Swing <code>Timer</code> so the snake updates at regular intervals. Add arrow key controls that change direction safely. Do not allow an immediate reversal directly into the snake's own body. Keep the code in one file and keep the logic readable for a beginner.</p>
+  </div>
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart LR
+  A[Timer tick] --> B[Read direction]
+  B --> C[Move head]
+  C --> D[Redraw panel]
+  D --> A
+    </div>
+  </div>
+  <blockquote>
+    This is the central loop of the game. The loop is small, but it is conceptually important: update state, then redraw.
+  </blockquote>
+</section>
+
+<section>
+  <h3>Prompt 4: Add Food, Growth, Score, and Game Over</h3>
+  <div class="prompt-box">
+    <p>Extend <code>SnakeGame.java</code> again. Add one food item at a random grid location. When the snake reaches the food, increase the score, grow the snake, and place a new food item. End the game if the snake hits a wall or itself. Display a simple game-over message and the score. Keep the file beginner-readable and avoid introducing advanced patterns yet.</p>
+  </div>
+  <div class="cols-3" style="margin-top:0.5em;">
+    <div class="mini-card"><strong>Food</strong><br><span class="muted">creates reward</span></div>
+    <div class="mini-card"><strong>Growth</strong><br><span class="muted">changes state over time</span></div>
+    <div class="mini-card"><strong>Game over</strong><br><span class="muted">creates consequences and rules</span></div>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Why These Four Prompts Are in This Order
+
+The order is deliberate.
+
+1. window first
+2. visual state second
+3. movement and input third
+4. rewards and failure last
+
+That order matters because it keeps the debugging surface small.
+
+If you ask for everything at once, the AI may give you a larger file, but you will understand less of it and isolate problems more slowly.
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### A Better Student Habit: Commit After Each Prompt
+
+After each prompt:
+
+1. run the program
+2. verify the specific new behavior
+3. commit the working version
+4. write a short note in `PROMPTS.md`
+
+This creates a clean ladder of working states.
+
+If Prompt 4 breaks the program, Prompt 3 is still there as a stable checkpoint.
+  </textarea>
+</section>
+
+<section>
+  <div class="part">
+    <div class="kicker">Part 8</div>
+    <h2>Running, Debugging, and Recording the Work</h2>
+    <p class="subtitle">A project is not complete when code exists. It is complete when the code can be run, explained, debugged, and revised deliberately.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### How to Run the Program Locally
+
+If your project is a single-file Swing program called `SnakeGame.java`, you can usually run it in the terminal with:
+
+```bash
+javac SnakeGame.java
+java SnakeGame
+```
+
+You can also use VS Code's run controls if Java support is installed correctly.
+
+What you should expect:
+
+- a window opens
+- the title is correct
+- the panel appears
+- the game responds to input if movement has been added
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### When the Program Fails
+
+Failure is part of the normal workflow.
+
+If the AI gives you code that does not compile:
+
+1. read the error message carefully
+2. copy the error message exactly
+3. paste it back into the AI conversation
+4. explain what you were trying to do
+5. inspect the proposed fix before accepting it
+
+If the program compiles but behaves incorrectly, describe the behavior precisely.
+
+For example:
+
+- "The window opens, but the snake is not visible."
+- "The snake moves, but pressing left after moving right crashes the game."
+
+Those descriptions are much more useful than "It does not work."
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### What `PROMPTS.md` Should Contain
+
+`PROMPTS.md` is your process record.
+
+A useful entry should include:
+
+- the prompt you used
+- what the AI produced
+- what worked
+- what you had to fix
+- what failed or surprised you
+
+A minimal example:
+
+```markdown
+## Prompt 2
+
+Prompt used: [paste prompt]
+
+Result: The AI drew a snake and grid correctly.
+
+Fixes: I had to add one missing import.
+
+Observation: The AI chose LinkedList<Point>, which fits head/tail updates.
+```
+
+> If these slides are the textbook, `PROMPTS.md` is the lab notebook.
+  </textarea>
+</section>
+
+<section>
+  <h3>A Simple Debugging Loop</h3>
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart TD
+  A[Write or revise prompt] --> B[Get code]
+  B --> C[Run program]
+  C --> D{Works?}
+  D -- Yes --> E[Commit and document]
+  D -- No --> F[Read error or behavior]
+  F --> G[Ask follow-up with evidence]
+  G --> B
+    </div>
+  </div>
+  <blockquote>
+    The key word here is <em>evidence</em>. Good follow-up prompts include the actual error message or the actual incorrect behavior.
+  </blockquote>
+</section>
+
+<section>
+  <div class="part">
+    <div class="kicker">Part 9</div>
+    <h2>Where Snake Can Grow Next</h2>
+    <p class="subtitle">Once the baseline game works, growth should still be controlled. Better projects are usually the result of disciplined additions, not random accumulation.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Good First Extensions
+
+Start with one extension at a time.
+
+Strong first choices:
+
+- increase speed as score rises
+- add a restart key
+- add a start screen
+- store a high score
+- improve colors, cell shapes, or text
+- add obstacles after the baseline rules already work
+
+These are good because each one changes a limited, understandable part of the program.
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Extensions That Require More Care
+
+Some ideas are exciting but structurally larger:
+
+- multiple levels
+- several game modes
+- enemy objects
+- sound systems
+- menus with multiple screens
+- saving and loading state
+
+These are not bad ideas. They are just larger architectural changes.
+
+The right beginner habit is not "never try hard things." The right habit is "earn hard things by building a stable baseline first."
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+## Summary
+
+By the end of this workflow, you should understand that:
+
+- VS Code is acting as your IDE
+- Git records history and GitHub stores the remote copy
+- Swing is Java plus a GUI library, not a different language
+- Snake is best built in small prompts, not one giant prompt
+- inline AI and agentic AI solve different kinds of problems
+- running and debugging are part of programming, not signs that you failed
+- `PROMPTS.md` records the process that produced the game
+
+A student who understands those ideas can keep learning after this lecture.
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+## Reader Checklist
+
+Before you move on, you should be able to say yes to these statements:
+
+- I can explain what an IDE is.
+- I can explain the difference between Git and GitHub.
+- I can create a repository on GitHub and clone it into VS Code.
+- I can compile and run a simple Java file locally.
+- I know what `JFrame`, `JPanel`, `paintComponent`, and `Graphics` mean.
+- I know when to use inline AI and when to use an agentic prompt.
+- I have four concrete Snake prompts I can run in order.
+- I know how to record my work in `PROMPTS.md`.
+  </textarea>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/markdown/markdown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'slide',
+    transitionSpeed: 'default',
+    backgroundTransition: 'fade',
+    controls: true,
+    progress: true,
+    center: false,
+    width: 1200,
+    height: 800,
+    margin: 0.03,
+    minScale: 0.2,
+    maxScale: 1.6,
+    plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+  });
+
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'dark',
+    themeVariables: {
+      fontFamily: 'Arial, Helvetica, sans-serif',
+      fontSize: '11px',
+      primaryColor: '#17304d',
+      primaryTextColor: '#ffffff',
+      primaryBorderColor: '#69a9ff',
+      lineColor: '#69a9ff',
+      secondaryColor: '#173524',
+      tertiaryColor: '#2b2417',
+      background: '#0d1321',
+      mainBkg: '#11192c',
+      clusterBkg: '#11192c',
+      edgeLabelBackground: '#11192c'
+    },
+    flowchart: {
+      htmlLabels: true,
+      curve: 'basis',
+      nodeSpacing: 24,
+      rankSpacing: 28,
+      padding: 6
+    }
+  });
+
+  function renderMermaidInSlide(slideEl) {
+    if (!slideEl) return;
+    const pending = slideEl.querySelectorAll('.mermaid:not([data-processed="true"])');
+    if (pending.length > 0) {
+      mermaid.run({ nodes: pending });
+    }
+  }
+
+  Reveal.on('ready', (event) => {
+    renderMermaidInSlide(event.currentSlide);
+  });
+
+  Reveal.on('slidechanged', (event) => {
+    renderMermaidInSlide(event.currentSlide);
+  });
+</script>
+</body>
+</html>
