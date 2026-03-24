@@ -223,7 +223,8 @@
       <tr><td>5</td><td>Hello Snake in your cloned repo</td></tr>
       <tr><td>6</td><td>Simple Snake with inline + agentic AI</td></tr>
       <tr><td>7</td><td>Prompt engineering and debugging loop</td></tr>
-      <tr><td>8</td><td>Snake deep dive: game loop, grid model, collisions, extension strategy</td></tr>
+      <tr><td>8</td><td>Snake deep dive: history, prompts, and design theory</td></tr>
+      <tr><td>9</td><td>Extending Snake: from baseline game to ambitious variants</td></tr>
     </tbody>
   </table>
   <div class="callout callout-blue" style="margin-top:0.8em">
@@ -900,7 +901,7 @@ graph LR
     <div class="step-box"><strong>Step 4:</strong> Click <em>Open</em> when VS Code asks to open cloned repository</div>
     <div class="step-box"><strong>Step 5:</strong> Work normally in VS Code; use Source Control panel for stage, commit, push, and sync</div>
     <div class="callout callout-green" style="margin-top:0.5em">
-      This is the course default. Do not start local-only and figure out Git later.
+      Fill this in as you work, not afterward from memory.
     </div>
     <aside class="notes">
       Make this explicit: students should create on GitHub first, then clone in VS Code.
@@ -1068,6 +1069,10 @@ public class SnakeStarter extends JPanel {
     </code></pre>
     <div class="callout callout-green" style="margin-top:0.6em">
       Use inline completion to add: "draw a 3-segment green snake near center".
+    </div>
+    <div class="callout" style="margin-top:0.4em">
+      <strong>Exactly what to type:</strong> click inside <code>paintComponent</code> after the background rectangle, press Enter, and type
+      <code>// draw a 3-segment green snake near the center</code>. Pause. Let inline AI suggest the next drawing lines, then accept only the part that matches the comment.
     </div>
     <div class="callout">
       Inline AI is best for short, local edits where file structure is already fixed.
@@ -1342,7 +1347,7 @@ I'm starting a Java project in VS Code. Create a single file called
 [Did the AI make a choice you didn't expect? What was it?]
     </code></pre>
     <div class="callout callout-green fragment">
-      Do not wait until Friday to fill this in.
+      Fill this in as you work, not afterward from memory.
       Write two sentences right after each AI conversation.
     </div>
     <div class="callout" style="margin-top:0.4em">
@@ -1371,34 +1376,53 @@ I'm starting a Java project in VS Code. Create a single file called
       <h2 style="margin:0.2em 0">Snake Deep Dive</h2>
     </div>
     <br>
-    <p style="color:#aaa">How the game works under the hood before you build it</p>
+    <p style="color:#aaa">Why Snake is such a durable teaching game, and how the prompts map onto the design</p>
   </section>
 
   <section>
-    <h3>Snake Architecture in One Screen</h3>
-    <div class="mermaid">
-graph TD
-    A["Timer tick (every 120-150 ms)"] --> B["Read pending direction"]
-    B --> C["Compute new head cell"]
-    C --> D{"Collision?"}
-    D -- "Wall/self" --> E["Game over"]
-    D -- "No" --> F{"Food?"}
-    F -- "Yes" --> G["Grow snake + score++ + spawn food"]
-    F -- "No" --> H["Move forward: add head, remove tail"]
-    G --> I["Repaint panel"]
-    H --> I
-    I --> A
-    style A fill:#1e3a5f,stroke:#4299e1,color:#fff
-    style E fill:#2d1010,stroke:#ef5350,color:#fff
-    style G fill:#1a3a2e,stroke:#48c78e,color:#fff
+    <h3>Snake: Overview and History</h3>
+    <div class="two-col" style="font-size:0.82em">
+      <div class="theory-box">
+        <p><strong>What the player experiences</strong></p>
+        <p style="color:#aaa">A moving snake eats food, grows longer, and becomes harder to control as the board fills up.</p>
+      </div>
+      <div class="theory-box">
+        <p><strong>Why programmers keep teaching it</strong></p>
+        <p style="color:#aaa">It combines graphics, input, state, collision detection, timing, and feature growth in a compact project.</p>
+      </div>
     </div>
-    <aside class="notes">
-      Students should understand the update loop before writing code. This mental model helps them debug.
-    </aside>
+    <div class="workflow-step" style="margin-top:0.6em"><span class="number-circle">1</span><div>Early grid-based ancestors appeared in arcade and terminal games.</div></div>
+    <div class="workflow-step"><span class="number-circle">2</span><div>Nokia phone versions made Snake globally recognizable in the late 1990s.</div></div>
+    <div class="workflow-step"><span class="number-circle">3</span><div>Today it survives as a teaching game because it is small enough to finish and rich enough to study.</div></div>
   </section>
 
   <section>
-    <h3>Data Structures and Why They Fit</h3>
+    <h3>Prompt 1: Build the Shell First</h3>
+    <div class="callout callout-blue" style="font-style:italic;line-height:1.7">
+      "Create a single file called <code>SnakeGame.java</code> with a <code>main</code> method, a 600x600 <code>JFrame</code>, and a <code>GamePanel</code>. Do not add game logic yet."
+    </div>
+    <div class="two-col" style="font-size:0.82em;margin-top:0.6em">
+      <div class="os-box">
+        <p><strong>What this prompt is doing</strong></p>
+        <ul>
+          <li>Creates the executable shell</li>
+          <li>Separates window setup from gameplay bugs</li>
+          <li>Keeps week 1 scope intentionally narrow</li>
+        </ul>
+      </div>
+      <div class="os-box">
+        <p><strong>Theory behind it</strong></p>
+        <ul>
+          <li>Software is easier to debug when built in layers</li>
+          <li>A visible window is a checkpoint, not just decoration</li>
+          <li>Early success reduces cognitive load for the next step</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h3>Prompt 2: Choose Representations Carefully</h3>
     <table class="nice">
       <thead><tr><th>Game concept</th><th>Java type</th><th>Why this choice</th></tr></thead>
       <tbody>
@@ -1418,16 +1442,90 @@ graph TD
   </section>
 
   <section>
-    <h3>Incremental Build Plan for Week 1</h3>
-    <div class="step-box">1. Window only: JFrame + GamePanel, no logic</div>
-    <div class="step-box">2. Grid and snake rendering: fixed initial snake, paint squares</div>
-    <div class="step-box">3. Timer movement loop: move head forward every tick</div>
-    <div class="step-box">4. Input handling: arrow keys update direction safely</div>
-    <div class="step-box">5. Food spawn and growth: score increments on eat</div>
-    <div class="step-box">6. Collision and game over: wall + self checks</div>
-    <div class="step-box">7. Polish extension: speed curve, restart, theme, or high score</div>
+    <h3>Prompt 3: The Game Loop Is the Core System</h3>
+    <div class="mermaid">
+graph TD
+    A["Timer tick"] --> B["Read direction"]
+    B --> C["Compute next head"]
+    C --> D["Apply movement rules"]
+    D --> E["Repaint panel"]
+    E --> A
+    style A fill:#1e3a5f,stroke:#4299e1,color:#fff
+    style D fill:#2d2010,stroke:#ffc107,color:#fff
+    style E fill:#1a3a2e,stroke:#48c78e,color:#fff
+    </div>
+    <div class="callout" style="margin-top:0.5em">
+      This is a discrete simulation. The world does not move continuously. It updates in steps, and each step produces the next game state.
+    </div>
+    <div class="callout callout-blue" style="margin-top:0.4em">
+      That is why a Swing <code>Timer</code> is enough here. We need a reliable tick, not a full game engine.
+    </div>
+  </section>
+
+  <section>
+    <h3>Prompt 4: Rules Create the Game</h3>
+    <div class="workflow-step"><span class="number-circle">1</span><div><strong>Food logic</strong> creates reward and growth.</div></div>
+    <div class="workflow-step"><span class="number-circle">2</span><div><strong>Wall collision</strong> creates an external losing condition.</div></div>
+    <div class="workflow-step"><span class="number-circle">3</span><div><strong>Self collision</strong> creates an internal losing condition based on state.</div></div>
+    <div class="workflow-step"><span class="number-circle">4</span><div><strong>Game over state</strong> turns invisible logic into visible player feedback.</div></div>
     <div class="callout callout-green" style="margin-top:0.5em">
-      Commit after every stage. Each stage should be runnable before moving on.
+      This is where a moving demo becomes an actual game: it now has rewards, failure, and meaningful consequences.
+    </div>
+  </section>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PART 9 — EXTENDING SNAKE
+═══════════════════════════════════════════ -->
+<section>
+
+  <section>
+    <div class="part-header">
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 9</p>
+      <h2 style="margin:0.2em 0">Extending Snake</h2>
+    </div>
+    <br>
+    <p style="color:#aaa">How to move from the baseline assignment toward a more personalized and more challenging game</p>
+  </section>
+
+  <section>
+    <h3>Extension Ladder</h3>
+    <table class="nice">
+      <thead><tr><th>Level</th><th>Examples</th><th>What changes</th></tr></thead>
+      <tbody>
+        <tr><td>Visual polish</td><td>Rounded snake, theme colors, pixel art food</td><td>The appearance improves more than the rules</td></tr>
+        <tr><td>Gameplay variation</td><td>Speed increase, wraparound edges, obstacles, bonus food</td><td>The challenge curve and decision-making change</td></tr>
+        <tr><td>Systems features</td><td>Restart screen, menus, sound, high score file</td><td>The project gains structure beyond the core loop</td></tr>
+        <tr><td>Larger redesign</td><td>Levels, enemies, portals, multiple modes</td><td>The architecture starts to expand meaningfully</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h3>Choose Extensions in a Controlled Order</h3>
+    <div class="two-col" style="font-size:0.82em">
+      <div class="os-box">
+        <p><strong>Good first extensions</strong></p>
+        <ul>
+          <li>Increase speed with score</li>
+          <li>Add a restart key</li>
+          <li>Store a high score</li>
+          <li>Improve the visuals</li>
+        </ul>
+      </div>
+      <div class="os-box">
+        <p><strong>Why order matters</strong></p>
+        <ul>
+          <li>One clear change is easier to test</li>
+          <li>Multiple simultaneous changes hide bugs</li>
+          <li>Controlled scope makes AI prompting cleaner</li>
+          <li>Each extension should earn its own commit</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout callout-blue" style="margin-top:0.5em">
+      Extension design is a software engineering skill. The question is not just "what would be cool?" but also "what can I add without losing control of the codebase?"
     </div>
   </section>
 
@@ -1450,6 +1548,7 @@ graph TD
         <tr><td>Student Pack</td><td>Apply today with your school email; use Claude while you wait</td></tr>
         <tr><td>Agentic AI</td><td>Specificity is the skill — vague prompt = vague code</td></tr>
         <tr><td>Snake strategy</td><td>Build in increments: render first, then move, then collide, then polish</td></tr>
+        <tr><td>Snake extensions</td><td>Choose one controlled change at a time as the project grows</td></tr>
         <tr><td>PROMPTS.md</td><td>Open it now; maintain it throughout; it documents your real process</td></tr>
       </tbody>
     </table>
@@ -1462,17 +1561,19 @@ graph TD
     <br>
     <div class="step-box">📌 After Part 2 — run <code>java -version</code> in a terminal. See the version number.</div>
     <div class="step-box">📌 After Part 3 — confirm Extension Pack for Java is installed in VS Code</div>
-    <div class="step-box">📌 After Part 4 — create your GitHub repo (<code>snake-game</code>) and clone it locally</div>
     <div class="step-box">📌 After Part 3.5 — run <code>HelloWorld.java</code> as a local setup check</div>
+    <div class="step-box">📌 After Part 4 — create your GitHub repo (<code>snake-game</code>) and clone it locally</div>
     <div class="step-box">📌 After Part 5 — in <code>snake-game</code>, run <code>HelloSnake.java</code> and push to GitHub</div>
     <div class="step-box">📌 After Part 6 — use inline and chat AI to build a tiny SnakeStarter shell and commit it</div>
     <div class="step-box">📌 After Part 7 — run Prompt 1, add the output to your repo, write the first PROMPTS.md entry</div>
+    <div class="step-box">📌 After Part 8 — match each seed prompt to the design idea it teaches</div>
+    <div class="step-box">📌 After Part 9 — choose one extension path before continuing the project</div>
     <br>
     <div class="callout callout-blue">
       Bring your <code>PROMPTS.md</code> to office hours — it makes troubleshooting much faster
       because there's a record of what the AI actually produced.
     </div>
-    <aside class="notes">End of lecture. Take questions. Remind students: submit the GitHub repo link by Friday 11:59 PM.</aside>
+    <aside class="notes">End of lecture. Take questions. Remind students to check the course schedule for repository submission timing.</aside>
   </section>
 
   <section>
@@ -1484,7 +1585,7 @@ graph TD
           <li>Run Prompts 2–4 to complete Snake</li>
           <li>Add at least one personal extension</li>
           <li>Maintain PROMPTS.md throughout</li>
-          <li>Submit GitHub link by <strong>Friday 11:59 PM</strong></li>
+          <li>Check the course schedule for the repository submission deadline</li>
         </ul>
       </div>
       <div>
