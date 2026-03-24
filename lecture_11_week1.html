@@ -313,49 +313,90 @@
     <div class="step-box fragment">⚠️ At least <strong>one prompt that didn't work</strong> as expected — and what you did about it</div>
     <br>
     <div class="callout callout-green fragment">
-      Think of it as a <strong>lab notebook</strong> for your AI conversations. It makes your process visible —
-      and it's worth <strong>30% of your grade</strong>.
+      Think of it as a <strong>lab notebook</strong> for your AI conversations. It makes your process visible
+      and shows how you are actually using the tools.
     </div>
     <aside class="notes">
-      PROMPTS.md is not optional documentation bolt-on. It's a primary artifact. The grade rubric weights
-      it at 30% precisely because the process matters more than the output here.
+      PROMPTS.md is not optional documentation bolt-on. It's a primary artifact.
+      The point is to make the student's process inspectable and discussable.
     </aside>
   </section>
 
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PART 1.5 — CORE THEORY
+═══════════════════════════════════════════ -->
+<section>
+
   <section>
-    <h3>Core Theory Crash Course: IDEs, Git, LLMs, Agents</h3>
+    <div class="part-header">
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 1.5</p>
+      <h2 style="margin:0.2em 0">Core Theory</h2>
+    </div>
+    <br>
+    <p style="color:#aaa">This is a CS class, not just a build-along. The tools have concepts behind them.</p>
+  </section>
+
+  <section>
+    <h3>What an IDE Actually Is</h3>
+    <div class="two-col" style="font-size:0.82em">
+      <div class="theory-box">
+        <p><strong>IDE = Integrated Development Environment</strong></p>
+        <p style="color:#aaa">An IDE brings editing, compiling, running, debugging, navigation, and source control into one coordinated environment.</p>
+      </div>
+      <div class="theory-box">
+        <p><strong>Why this matters</strong></p>
+        <p style="color:#aaa">It reduces friction. Fewer tool jumps means faster feedback, fewer mistakes, and easier experimentation.</p>
+      </div>
+    </div>
+    <div class="workflow-step"><span class="number-circle">1</span><div><strong>Edit</strong> code in one place</div></div>
+    <div class="workflow-step"><span class="number-circle">2</span><div><strong>Run</strong> and see output immediately</div></div>
+    <div class="workflow-step"><span class="number-circle">3</span><div><strong>Debug</strong> errors without leaving the environment</div></div>
+    <div class="workflow-step"><span class="number-circle">4</span><div><strong>Version</strong> your changes with Git in the same interface</div></div>
+  </section>
+
+  <section>
+    <h3>What Git Actually Tracks</h3>
     <table class="nice">
-      <thead><tr><th>Concept</th><th>Definition</th><th>Why it matters in this project</th></tr></thead>
+      <thead><tr><th>Concept</th><th>Meaning</th><th>Why students care</th></tr></thead>
+      <tbody>
+        <tr><td>Repository</td><td>A project plus its version history</td><td>Your working folder and its timeline live together</td></tr>
+        <tr><td>Commit</td><td>A named snapshot of the project state</td><td>You can return to known-good versions</td></tr>
+        <tr><td>Branch</td><td>An alternate line of development</td><td>Useful later for experiments, but not required yet</td></tr>
+        <tr><td>Remote</td><td>A copy of the repo on another machine/server</td><td>GitHub is the remote copy you submit</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-blue" style="margin-top:0.5em">
+      Git does not care about “projects” in the human sense. It tracks file changes and snapshots over time.
+    </div>
+  </section>
+
+  <section>
+    <h3>LLMs and Agents Are Not the Same Thing</h3>
+    <table class="nice">
+      <thead><tr><th>Term</th><th>Definition</th><th>Course meaning</th></tr></thead>
       <tbody>
         <tr>
-          <td><strong>IDE</strong></td>
-          <td>Integrated Development Environment. Editor + compiler integration + debugger + terminal + source control tools in one place.</td>
-          <td>Reduces context switching. Faster feedback loops when iterating with AI.</td>
-        </tr>
-        <tr>
-          <td><strong>Git</strong></td>
-          <td>Distributed version control system tracking snapshots of your code over time.</td>
-          <td>Lets you experiment safely with AI-generated code and recover instantly.</td>
-        </tr>
-        <tr>
           <td><strong>LLM</strong></td>
-          <td>Large language model trained to predict text/code from context.</td>
-          <td>Generates code fast, but does not guarantee correctness.</td>
+          <td>A large language model that predicts likely next text based on context</td>
+          <td>The engine producing code suggestions and explanations</td>
         </tr>
         <tr>
-          <td><strong>Agentic workflow</strong></td>
-          <td>LLM used as a collaborative process: prompt, generate, run, inspect, revise, document.</td>
-          <td>This process is the real learning target of the final project.</td>
+          <td><strong>Inline AI</strong></td>
+          <td>Short local completions while you type</td>
+          <td>Good for small edits and boilerplate</td>
+        </tr>
+        <tr>
+          <td><strong>Agentic AI</strong></td>
+          <td>A broader workflow where the model follows a scoped request, iterates, and helps you refine output</td>
+          <td>Good for whole features, architecture, debugging, and design conversations</td>
         </tr>
       </tbody>
     </table>
-    <div class="callout callout-blue" style="margin-top:0.6em">
-      The project is designed around a feedback loop: faster loops create better software and better learning.
+    <div class="callout callout-red" style="margin-top:0.5em">
+      An LLM produces plausible output. It does not know whether your program is correct until you test it.
     </div>
-    <aside class="notes">
-      Explain that an IDE is not just a text editor. It orchestrates tools and lowers friction.
-      Clarify that LLMs predict plausible code, not truth. The student's job is to validate.
-    </aside>
   </section>
 
   <section>
@@ -874,6 +915,18 @@ graph LR
     </div>
   </section>
 
+  <section>
+    <h3>Do This Now: Create snake-game and Clone It in VS Code</h3>
+    <div class="workflow-step"><span class="number-circle">1</span><div>Go to GitHub.com and create a new repository named <code>snake-game</code></div></div>
+    <div class="workflow-step"><span class="number-circle">2</span><div>Check <strong>Add a README</strong> so the repo has initial content</div></div>
+    <div class="workflow-step"><span class="number-circle">3</span><div>Copy the repository URL from GitHub</div></div>
+    <div class="workflow-step"><span class="number-circle">4</span><div>In VS Code run <strong>Git: Clone</strong> from the Command Palette and paste the URL</div></div>
+    <div class="workflow-step"><span class="number-circle">5</span><div>Open the cloned folder in VS Code. Leave it open for Part 5.</div></div>
+    <div class="callout callout-green" style="margin-top:0.5em">
+      Transition: Part 5 starts from the assumption that <code>snake-game</code> is already cloned and open in VS Code.
+    </div>
+  </section>
+
 </section>
 
 <!-- ═══════════════════════════════════════════
@@ -887,7 +940,7 @@ graph LR
       <h2 style="margin:0.2em 0">Hello Snake in Your Cloned Repo</h2>
     </div>
     <br>
-    <p style="color:#aaa">Now connect Java practice directly to the Snake project workflow</p>
+    <p style="color:#aaa">You now have <code>snake-game</code> open in VS Code. Next, add the first Java file inside that real repository.</p>
   </section>
 
   <section>
