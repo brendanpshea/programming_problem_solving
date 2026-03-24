@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lecture 11 — From Zero to Snake</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/night.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/monokai.css">
+  <style>
+    /* ── Typography & base ─────────────────────────────── */
+    .reveal { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    .reveal h1 { font-size: 2em; }
+    .reveal h2 { font-size: 1.55em; }
+    .reveal h3 { font-size: 1.25em; }
+    .reveal pre { box-shadow: none; width: 100%; }
+    .reveal pre code { max-height: 380px; border-radius: 8px; }
+    .reveal code { font-family: 'Consolas', 'Fira Code', monospace; font-size: 0.88em; }
+
+    /* ── Callout boxes ─────────────────────────────────── */
+    .callout {
+      background: rgba(255, 193, 7, 0.13);
+      border-left: 4px solid #ffc107;
+      padding: 0.55em 1em;
+      border-radius: 0 8px 8px 0;
+      margin: 0.4em 0;
+      text-align: left;
+      font-size: 0.85em;
+    }
+    .callout-blue  { background: rgba(66,153,225,0.13); border-left-color: #4299e1; }
+    .callout-green { background: rgba(72,199,142,0.13); border-left-color: #48c78e; }
+    .callout-red   { background: rgba(240,82,82,0.13);  border-left-color: #ef5350; }
+
+    /* ── Layout helpers ────────────────────────────────── */
+    .two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2em; align-items: start; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.9em; }
+
+    /* ── Part header ───────────────────────────────────── */
+    .part-header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border: 1px solid #4299e1;
+      border-radius: 12px;
+      padding: 0.5em 1.2em;
+    }
+
+    /* ── OS / card boxes ───────────────────────────────── */
+    .os-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 0.65em 0.9em;
+    }
+
+    /* ── Step boxes ────────────────────────────────────── */
+    .step-box {
+      background: rgba(66,153,225,0.1);
+      border: 1px solid #4299e1;
+      border-radius: 8px;
+      padding: 0.45em 0.85em;
+      margin: 0.28em 0;
+      text-align: left;
+      font-size: 0.85em;
+    }
+
+    /* ── Terminal / command blocks ─────────────────────── */
+    .cmd-block {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 0.75em 1.1em;
+      font-family: 'Consolas', 'Fira Code', monospace;
+      font-size: 0.82em;
+      text-align: left;
+      color: #58d68d;
+      line-height: 1.9;
+    }
+    .cmd-block .prompt { color: #606060; }
+
+    /* ── Badge labels ──────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      background: #4299e1;
+      color: #fff;
+      padding: 0.08em 0.5em;
+      border-radius: 4px;
+      font-size: 0.65em;
+      font-weight: bold;
+      vertical-align: middle;
+    }
+    .badge.green  { background: #48c78e; }
+    .badge.orange { background: #f57c00; }
+    .badge.red    { background: #ef5350; }
+
+    /* ── Keyboard shortcut keys ────────────────────────── */
+    kbd {
+      background: #2d2d2d;
+      border: 1px solid #555;
+      border-radius: 4px;
+      padding: 0.15em 0.45em;
+      font-family: 'Consolas', monospace;
+      font-size: 0.82em;
+    }
+
+    /* ── Nice tables ───────────────────────────────────── */
+    table.nice { border-collapse: collapse; width: 100%; }
+    table.nice th { background: #1e3a5f; padding: 0.5em 0.8em; text-align: left; font-size: 0.82em; }
+    table.nice td { padding: 0.4em 0.8em; border-bottom: 1px solid #2c2c2c; font-size: 0.78em; }
+    table.nice tr:nth-child(even) td { background: rgba(255,255,255,0.04); }
+
+    /* ── Mermaid sizing inside slides ──────────────────── */
+    .mermaid { font-size: 0.78em; max-width: 100%; overflow: hidden; }
+    .mermaid svg { max-width: 100% !important; height: auto !important; }
+
+    /* ── Mini Snake grid (title slide decoration) ──────── */
+    .snake-grid {
+      display: inline-grid;
+      grid-template-columns: repeat(12, 20px);
+      gap: 2px;
+      background: #111;
+      padding: 7px;
+      border-radius: 8px;
+      border: 2px solid #2a2a2a;
+    }
+    .sc { width: 20px; height: 20px; border-radius: 3px; background: #1a1a2e; }
+    .sc.head { background: #00e676; border-radius: 6px; }
+    .sc.body { background: #388e3c; }
+    .sc.food { background: #ff5722; border-radius: 50%; }
+
+    /* ── Prompt diff highlight ─────────────────────────── */
+    .weak-prompt {
+      background: rgba(240,82,82,0.12);
+      border: 1px solid #ef5350;
+      border-radius: 8px;
+      padding: 0.6em 0.9em;
+      font-style: italic;
+      font-size: 0.82em;
+      text-align: left;
+    }
+    .strong-prompt {
+      background: rgba(72,199,142,0.12);
+      border: 1px solid #48c78e;
+      border-radius: 8px;
+      padding: 0.6em 0.9em;
+      font-style: italic;
+      font-size: 0.78em;
+      text-align: left;
+      line-height: 1.65;
+    }
+  </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ═══════════════════════════════════════════
+     TITLE SLIDE
+═══════════════════════════════════════════ -->
+<section>
+  <p style="color:#48c78e;font-size:0.8em;margin-bottom:0.3em">COMP 2243 — Introduction to Programming &nbsp;|&nbsp; Lecture 11</p>
+  <h1 style="color:#58d68d">From Zero to Snake 🐍</h1>
+  <p style="color:#aaa;font-size:0.9em">Setting Up Your Environment &amp; Meeting Your AI Collaborator</p>
+  <br>
+  <!-- Mini snake grid ––– purely decorative -->
+  <div class="snake-grid" id="title-snake"></div>
+  <br>
+  <p style="color:#666;font-size:0.65em">Week 1 &nbsp;·&nbsp; Agentic AI Game Project Kickoff &nbsp;·&nbsp; ~75 minutes</p>
+  <aside class="notes">
+    Open by running the finished Snake game — let it play for 20–30 seconds before speaking.
+    Students should think "I want to build that." Then open VS Code and flash the ~200 lines
+    of generated code: "This is what an AI will write for you. Today we set up the tools."
+  </aside>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     AGENDA
+═══════════════════════════════════════════ -->
+<section>
+  <h2>Today's Roadmap</h2>
+  <table class="nice">
+    <thead><tr><th>#</th><th>Topic</th><th>Time</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>The Big Picture — what this project is really about</td><td>10 min</td></tr>
+      <tr><td>2</td><td>Installing Java</td><td>10 min</td></tr>
+      <tr><td>3</td><td>Installing &amp; configuring VS Code</td><td>10 min</td></tr>
+      <tr><td>4</td><td>GitHub setup &amp; version control basics</td><td>10 min</td></tr>
+      <tr><td>5</td><td>Connecting GitHub Copilot</td><td>5 min</td></tr>
+      <tr><td>6</td><td>Writing &amp; running your first Java program</td><td>10 min</td></tr>
+      <tr><td>7</td><td>First look at agentic AI — Prompt 1 live</td><td>15 min</td></tr>
+    </tbody>
+  </table>
+  <div class="callout callout-blue" style="margin-top:0.8em">
+    By the end of class: working dev environment, first Java program on GitHub, and Prompt 1 from the assignment run live.
+  </div>
+  <aside class="notes">Quick roadmap. Don't linger. Tell students: every part today has a hands-on checkpoint. Async students: pause the recording at each checkpoint label.</aside>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PART 1 — THE BIG PICTURE
+═══════════════════════════════════════════ -->
+<section>
+
+  <section>
+    <div class="part-header">
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 1 &nbsp;·&nbsp; 10 MINUTES</p>
+      <h2 style="margin:0.2em 0">The Big Picture</h2>
+    </div>
+    <br>
+    <p style="color:#aaa">What is this project <em>actually</em> about?</p>
+  </section>
+
+  <section>
+    <h3>This Is Not a Swing Memorization Course</h3>
+    <div class="two-col" style="font-size:0.88em">
+      <div>
+        <p style="color:#ef5350;margin-bottom:0.4em">❌ You are <em>not</em> here to…</p>
+        <ul>
+          <li class="fragment">Memorize Swing API documentation</li>
+          <li class="fragment">Know every Java keyword by heart</li>
+          <li class="fragment">Write 300 lines of code from scratch</li>
+        </ul>
+      </div>
+      <div>
+        <p style="color:#58d68d;margin-bottom:0.4em">✅ You <em>are</em> here to…</p>
+        <ul>
+          <li class="fragment"><strong>Direct a machine</strong> to build software</li>
+          <li class="fragment"><strong>Evaluate</strong> what it produces critically</li>
+          <li class="fragment"><strong>Debug</strong> what breaks</li>
+          <li class="fragment"><strong>Push further</strong> on your own</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout fragment" style="margin-top:0.9em">
+      🎯 The game is a <strong>vehicle</strong>. The real skills are setting up a dev environment,
+      using version control, writing clear specifications, and evaluating AI-generated code critically.
+    </div>
+    <aside class="notes">
+      This reframing matters. Many students hear "build a game in Java" and panic. Reassure them:
+      the AI writes most of the code. Their job is to be a good director, evaluator, and debugger.
+    </aside>
+  </section>
+
+  <section>
+    <h3>What "Agentic AI" Actually Means</h3>
+    <div class="two-col" style="font-size:0.85em;margin-top:0.5em">
+      <div class="os-box">
+        <p style="color:#aaa;font-size:0.75em;margin:0">Old-school autocomplete</p>
+        <p style="font-size:1.4em;margin:0.3em 0">💬</p>
+        <p><strong>"Finish this line for me"</strong></p>
+        <p style="color:#aaa;font-size:0.8em">Copilot inline completions, tab suggestions while you type</p>
+      </div>
+      <div class="os-box" style="border-color:#4299e1">
+        <p style="color:#4299e1;font-size:0.75em;margin:0">Agentic AI — what we use</p>
+        <p style="font-size:1.4em;margin:0.3em 0">🤝</p>
+        <p><strong>"Here's what I need — build it"</strong></p>
+        <p style="color:#aaa;font-size:0.8em">Copilot Chat, Claude — full back-and-forth conversation, whole files generated, errors debugged</p>
+      </div>
+    </div>
+    <br>
+    <div class="callout callout-blue fragment">
+      <strong>Key insight:</strong> A vague prompt produces vague code. <strong>Specificity is the skill.</strong>
+    </div>
+    <aside class="notes">
+      Quick demo if time allows: type "write me a game" in Copilot Chat. Then show Prompt 1 from the
+      assignment. The contrast makes the point better than any explanation.
+    </aside>
+  </section>
+
+  <section>
+    <h3>The PROMPTS.md Habit</h3>
+    <p style="color:#aaa;font-size:0.85em">Every week you maintain a file called <code>PROMPTS.md</code> in your repo.</p>
+    <br>
+    <div class="step-box fragment">📋 <strong>Copy &amp; paste</strong> every key prompt you used</div>
+    <div class="step-box fragment">📝 A brief note on <strong>what each prompt produced</strong></div>
+    <div class="step-box fragment">🔧 <strong>What you had to fix or change</strong>, and why</div>
+    <div class="step-box fragment">⚠️ At least <strong>one prompt that didn't work</strong> as expected — and what you did about it</div>
+    <br>
+    <div class="callout callout-green fragment">
+      Think of it as a <strong>lab notebook</strong> for your AI conversations. It makes your process visible —
+      and it's worth <strong>30% of your grade</strong>.
+    </div>
+    <aside class="notes">
+      PROMPTS.md is not optional documentation bolt-on. It's a primary artifact. The grade rubric weights
+      it at 30% precisely because the process matters more than the output here.
+    </aside>
+  </section>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PART 2 — INSTALLING JAVA
+═══════════════════════════════════════════ -->
+<section>
+
+  <section>
+    <div class="part-header">
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 2 &nbsp;·&nbsp; 10 MINUTES</p>
+      <h2 style="margin:0.2em 0">Installing Java ☕</h2>
+    </div>
+    <br>
+    <p style="color:#aaa">The compiler, the runtime, and the one command that confirms it all</p>
+  </section>
+
+  <section>
+    <h3>What Java Actually Is</h3>
+    <div class="mermaid">
+graph TD
+    JDK["📦 JDK — Java Development Kit<br/>(This is what you install)"]
+    JRE["JRE — Java Runtime Environment"]
+    JVM["JVM — Java Virtual Machine<br/>(executes .class bytecode)"]
+    LIB["Standard Library<br/>(String, ArrayList, Swing, ...)"]
+    COMP["javac — Compiler<br/>(.java source → .class bytecode)"]
+    TOOLS["Dev Tools<br/>(debugger, profiler, jar packager)"]
+    JDK --> JRE
+    JDK --> COMP
+    JDK --> TOOLS
+    JRE --> JVM
+    JRE --> LIB
+    style JDK fill:#1e3a5f,stroke:#4299e1,color:#fff
+    style JRE fill:#1a3a2e,stroke:#48c78e,color:#fff
+    style JVM fill:#2d2010,stroke:#ffc107,color:#fff
+    style LIB fill:#2d2010,stroke:#ffc107,color:#ccc
+    style COMP fill:#1e1e3a,stroke:#9b59b6,color:#fff
+    style TOOLS fill:#1e1e3a,stroke:#9b59b6,color:#ccc
+    </div>
+    <div class="callout fragment" style="margin-top:0.5em">
+      Users only need the <strong>JRE</strong> to <em>run</em> Java apps.
+      You need the full <strong>JDK</strong> to <em>build</em> them — always install the JDK.
+    </div>
+    <aside class="notes">
+      Students often download the wrong thing. JRE = run only. JDK = compile + run + dev tools.
+      For development: always JDK. Point out the diagram: JDK contains the JRE, the javac compiler,
+      and extra tools. The JRE contains the JVM (which runs bytecode) and the standard library.
+    </aside>
+  </section>
+
+  <section>
+    <h3>Download: Adoptium Temurin 17</h3>
+    <p style="font-size:0.8em;color:#aaa">
+      We use <strong>Java 17 LTS</strong> — Long Term Support means it's stable and supported for years.
+      Free, no Oracle account needed.
+    </p>
+    <div class="callout callout-blue" style="margin-bottom:0.8em">
+      🌐 <strong>adoptium.net</strong> → click "Latest LTS" → Temurin 17
+    </div>
+    <div class="three-col" style="font-size:0.78em">
+      <div class="os-box">
+        <p style="font-size:1.4em;margin:0">🪟</p>
+        <p><strong>Windows</strong></p>
+        <hr style="border-color:#333">
+        <p style="color:#aaa">Run the <code>.msi</code> installer<br>Accept defaults<br>✅ Check "Set <code>JAVA_HOME</code>"</p>
+      </div>
+      <div class="os-box">
+        <p style="font-size:1.4em;margin:0">🍎</p>
+        <p><strong>macOS</strong></p>
+        <hr style="border-color:#333">
+        <p style="color:#aaa">Run the <code>.pkg</code> installer<br><em>— or —</em></p>
+        <div class="cmd-block" style="font-size:0.8em">brew install --cask temurin@17</div>
+      </div>
+      <div class="os-box">
+        <p style="font-size:1.4em;margin:0">🐧</p>
+        <p><strong>Linux</strong></p>
+        <hr style="border-color:#333">
+        <div class="cmd-block" style="font-size:0.8em">sudo apt install<br>temurin-17-jdk</div>
+        <p style="color:#aaa;font-size:0.8em">(Ubuntu / Debian)</p>
+      </div>
+    </div>
+    <aside class="notes">
+      Show the Adoptium site. Point to the big blue "Latest LTS release" button. Warn students
+      away from the Oracle JDK download page — Adoptium is free with no account.
+    </aside>
+  </section>
+
+  <section>
+    <h3>Verify the Installation</h3>
+    <p style="font-size:0.85em">Open a terminal and run:</p>
+    <div class="cmd-block">
+      <span class="prompt">$ </span>java -version
+    </div>
+    <p style="font-size:0.8em;color:#aaa;margin-top:0.6em">Expected output:</p>
+    <div class="cmd-block" style="color:#aaa">
+      openjdk version "17.0.x" 2023-xx-xx<br>
+      OpenJDK Runtime Environment Temurin-17.0.x+x<br>
+      OpenJDK 64-Bit Server VM Temurin-17.0.x+x (build ...)
+    </div>
+    <br>
+    <div class="two-col" style="font-size:0.8em">
+      <div class="callout callout-red">
+        <strong>"java is not recognized"</strong><br>
+        PATH wasn't set. On Windows: reinstall and check the "Set JAVA_HOME" checkbox.
+      </div>
+      <div class="callout">
+        <strong>Multiple Java versions?</strong><br>
+        <code>java -version</code> shows the active one. VS Code's Extension Pack lets you pick which to use per project.
+      </div>
+    </div>
+    <div class="callout callout-blue fragment" style="margin-top:0.6em">
+      ✅ <strong>Async checkpoint 1:</strong> Confirm <code>java -version</code> works before moving on.
+    </div>
+    <aside class="notes">
+      Do this live. Students follow along. Both the terminal and VS Code need to find Java.
+      Common Windows gotcha: if they have an old Java installation already, the new one might not be on PATH.
+      Show how to check: "where java" on Windows, "which java" on Mac/Linux.
+    </aside>
+  </section>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PART 3 — VS CODE
+═══════════════════════════════════════════ -->
+<section>
+
+  <section>
+    <div class="part-header">
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 3 &nbsp;·&nbsp; 10 MINUTES</p>
+      <h2 style="margin:0.2em 0">Installing VS Code</h2>
+    </div>
+    <br>
+    <p style="color:#aaa">Your development environment — where everything happens</p>
+  </section>
+
+  <section>
+    <h3>Why VS Code?</h3>
+    <table class="nice">
+      <thead><tr><th>Editor</th><th>The case for it</th><th>The catch</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>VS Code</strong> <span class="badge green">We use this</span></td>
+          <td>Free, lightweight, cross-platform, GitHub Copilot built-in, used professionally across many languages</td>
+          <td>Java support requires a few extensions</td>
+        </tr>
+        <tr>
+          <td>IntelliJ IDEA</td>
+          <td>Best-in-class Java tooling, smart refactoring</td>
+          <td>Free tier is limited; heavy; Java-focused only</td>
+        </tr>
+        <tr>
+          <td>Eclipse</td>
+          <td>Free, full-featured, been around forever</td>
+          <td>Dated UI; steep learning curve; slow on older machines</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout callout-green fragment" style="margin-top:0.7em">
+      Learning VS Code pays off permanently — it works for Python, JavaScript, C++, and more.
+      The skills transfer to every project after this one.
+    </div>
+    <aside class="notes">
+      Don't dwell here. The table is just context. Key message: VS Code is the professional default
+      these days and GitHub Copilot integrates directly.
+    </aside>
+  </section>
+
+  <section>
+    <h3>Extensions to Install</h3>
+    <p style="font-size:0.82em;color:#aaa">Open Extensions (<kbd>Ctrl+Shift+X</kbd>) and search for each:</p>
+    <br>
+    <table class="nice">
+      <thead><tr><th>Extension</th><th>Extension ID</th><th>What it adds</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Extension Pack for Java</strong> <span class="badge green">Required</span></td>
+          <td><code>vscjava.vscode-java-pack</code></td>
+          <td>Language support, debugger, test runner, Maven — 6 extensions in one click</td>
+        </tr>
+        <tr>
+          <td><strong>GitHub Copilot</strong> <span class="badge">Required</span></td>
+          <td><code>GitHub.copilot</code></td>
+          <td>Inline AI completions as you type</td>
+        </tr>
+        <tr>
+          <td><strong>GitHub Copilot Chat</strong> <span class="badge">Required</span></td>
+          <td><code>GitHub.copilot-chat</code></td>
+          <td>The conversation panel — <strong>this is what we use most</strong></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout fragment" style="margin-top:0.6em">
+      Installing the Extension Pack installs all 6 sub-extensions at once. That's intentional — it's the recommended Java setup.
+    </div>
+    <aside class="notes">
+      Demo live: open Extensions, search for "vscjava.vscode-java-pack", click Install. Watch the progress bar.
+      Show that multiple sub-extensions appear in the installed list.
+    </aside>
+  </section>
+
+  <section>
+    <h3>VS Code: Quick Interface Tour</h3>
+    <div class="two-col" style="font-size:0.82em">
+      <div>
+        <div class="step-box">📁 <strong>Explorer</strong> <kbd>Ctrl+Shift+E</kbd><br><span style="color:#aaa">Your files and folders — always open a folder, not a single file</span></div>
+        <div class="step-box">🔍 <strong>Search</strong> <kbd>Ctrl+Shift+F</kbd><br><span style="color:#aaa">Search across every file in your project</span></div>
+        <div class="step-box">🔀 <strong>Source Control</strong> <kbd>Ctrl+Shift+G</kbd><br><span style="color:#aaa">Git GUI — commit, view diffs, push without the terminal</span></div>
+        <div class="step-box">🤖 <strong>Copilot Chat</strong><br><span style="color:#aaa">Ask questions, paste prompts, get full code blocks</span></div>
+      </div>
+      <div>
+        <div class="callout callout-blue">
+          <strong>Open integrated terminal:</strong><br>
+          <kbd>Ctrl+`</kbd> (Windows / Linux)<br>
+          <kbd>Cmd+`</kbd> (Mac)<br>
+          <span style="color:#aaa">You don't need to switch windows — run Java from inside VS Code</span>
+        </div>
+        <br>
+        <div class="callout callout-green">
+          <strong>Red squiggle → Quick Fix:</strong><br>
+          Missing import? Hover the squiggle → click "Quick Fix" → VS Code adds the import automatically
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      Give a live tour. Open a folder, show each panel. Specifically demonstrate: open a Java file with
+      a missing import, hover the red squiggle, click Quick Fix. That trick alone saves students a lot of
+      frustration in the first week.
+    </aside>
+  </section>
+
+  <section>
+    <h3>Creating Your Project Folder</h3>
+    <div class="two-col" style="font-size:0.83em">
+      <div class="os-box">
+        <p><strong>Option A: Plain folder</strong> <span class="badge green">Use this</span></p>
+        <ol style="line-height:1.8">
+          <li>Create a new folder anywhere on your machine</li>
+          <li>In VS Code: <strong>File → Open Folder</strong></li>
+          <li>Create a <code>src/</code> subfolder inside it</li>
+          <li>Add your <code>.java</code> files to <code>src/</code></li>
+        </ol>
+        <p style="color:#aaa;font-size:0.8em">Simple, no build files, no configuration</p>
+      </div>
+      <div class="os-box">
+        <p><strong>Option B: Java Project Wizard</strong></p>
+        <ol style="line-height:1.8">
+          <li><kbd>Ctrl+Shift+P</kbd></li>
+          <li>Type <em>"Java: Create Java Project"</em></li>
+          <li>Choose <strong>"No build tools"</strong></li>
+          <li>Pick a folder location</li>
+        </ol>
+        <p style="color:#aaa;font-size:0.8em">Generates folder structure automatically</p>
+      </div>
+    </div>
+    <div class="callout callout-blue fragment" style="margin-top:0.7em">
+      ✅ <strong>Async checkpoint 2:</strong> Confirm Extension Pack for Java is installed. Open a folder in VS Code.
+    </div>
+    <aside class="notes">
+      The plain folder approach is all they need. The wizard is nice but adds configuration files that
+      confuse beginners. Keep it simple for week 1.
+    </aside>
+  </section>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PART 4 — GITHUB
+═══════════════════════════════════════════ -->
+<section>
+
+  <section>
+    <div class="part-header">
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 4 &nbsp;·&nbsp; 10 MINUTES</p>
+      <h2 style="margin:0.2em 0">GitHub &amp; Version Control</h2>
+    </div>
+    <br>
+    <p style="color:#aaa">A time machine for your code</p>
+  </section>
+
+  <section>
+    <h3>Why This Matters Right Now</h3>
+    <div class="two-col" style="font-size:0.85em">
+      <div>
+        <p style="color:#ef5350">Without version control...</p>
+        <ul>
+          <li class="fragment">AI gives you something broken</li>
+          <li class="fragment">You try to fix it — now it's worse</li>
+          <li class="fragment">No way back to what worked</li>
+          <li class="fragment"><code>SnakeGame_FINAL_v3b.java</code> 😬</li>
+        </ul>
+      </div>
+      <div>
+        <p style="color:#58d68d">With Git + GitHub...</p>
+        <ul>
+          <li class="fragment">Every commit is a named snapshot</li>
+          <li class="fragment">AI breaks something? Roll back in seconds</li>
+          <li class="fragment">Work history always visible</li>
+          <li class="fragment">One clean folder, permanent record</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout callout-blue fragment" style="margin-top:0.8em">
+      Git is not a backup tool — it's a <strong>time machine</strong>.
+      GitHub is where the time machine lives in the cloud — and doubles as your portfolio.
+    </div>
+    <aside class="notes">
+      Use the vivid scenario: "Imagine Snake is moving correctly. You add food logic. Now nothing works
+      and you don't remember what you changed. With git, one command gets you back to the working version.
+      Without git, you're staring at broken code for an hour."
+    </aside>
+  </section>
+
+  <section>
+    <h3>The Git Mental Model</h3>
+    <div class="mermaid">
+graph LR
+    A["📝 Edit files<br/>on your machine"] -->|"git add ."| B["📬 Staging area<br/>(changes queued)"]
+    B -->|"git commit -m '...'"| C["🗂️ Local repository<br/>(snapshot saved locally)"]
+    C -->|git push| D["☁️ GitHub<br/>(remote — visible to anyone you share with)"]
+    D -->|git clone / git pull| A
+    style A fill:#1e3a5f,stroke:#4299e1,color:#fff
+    style B fill:#1a3a2e,stroke:#48c78e,color:#fff
+    style C fill:#2d2010,stroke:#ffc107,color:#fff
+    style D fill:#2d1020,stroke:#e040fb,color:#fff
+    </div>
+    <div class="callout fragment" style="font-size:0.8em;margin-top:0.5em">
+      You only <code>clone</code> once (to get the repo onto your machine). After that, the loop is:
+      <strong>edit → add → commit → push</strong>, repeated.
+    </div>
+    <aside class="notes">
+      Walk through each node. Students often confuse "commit" (local) with "push" (GitHub).
+      Clarify: a commit creates a snapshot on your machine. Push sends it to GitHub.
+      You can commit many times before pushing.
+    </aside>
+  </section>
+
+  <section>
+    <h3>The Three Commands You'll Use 90% of the Time</h3>
+    <div class="cmd-block">
+      <span style="color:#aaa"># Stage all changed and new files</span><br>
+      <span class="prompt">$ </span>git add .<br>
+      <br>
+      <span style="color:#aaa"># Create a snapshot with a descriptive message</span><br>
+      <span class="prompt">$ </span>git commit -m "Add food spawning to SnakeGame"<br>
+      <br>
+      <span style="color:#aaa"># Send your commits up to GitHub</span><br>
+      <span class="prompt">$ </span>git push
+    </div>
+    <br>
+    <div class="two-col" style="font-size:0.82em">
+      <div class="callout callout-red">
+        ❌ <code>git commit -m "fixed stuff"</code><br>
+        <span style="color:#aaa">Useless when you look back in two weeks</span>
+      </div>
+      <div class="callout callout-green">
+        ✅ <code>git commit -m "Add wall collision — game over on edge hit"</code><br>
+        <span style="color:#aaa">Tells you exactly what changed and why</span>
+      </div>
+    </div>
+    <aside class="notes">
+      Demo this live: make a trivial edit to README, then run all three commands in the VS Code
+      terminal. Refresh GitHub in the browser. Students love seeing the commit appear live.
+      Also show: VS Code's Source Control tab does all three steps with a GUI if they prefer.
+    </aside>
+  </section>
+
+  <section>
+    <h3>GitHub Student Developer Pack 🎓</h3>
+    <p style="font-size:0.82em">Apply at <strong>education.github.com/pack</strong> — requires your school email</p>
+    <br>
+    <div class="three-col" style="font-size:0.78em;text-align:center">
+      <div class="os-box">
+        <p style="font-size:1.5em;margin:0">🤖</p>
+        <p><strong>GitHub Copilot</strong></p>
+        <p style="color:#aaa">Free while enrolled — the AI tool we use in this course</p>
+      </div>
+      <div class="os-box">
+        <p style="font-size:1.5em;margin:0">🔒</p>
+        <p><strong>Private Repos</strong></p>
+        <p style="color:#aaa">Unlimited free private repositories for your projects</p>
+      </div>
+      <div class="os-box">
+        <p style="font-size:1.5em;margin:0">🛠️</p>
+        <p><strong>100+ Tools</strong></p>
+        <p style="color:#aaa">Cloud credits, domain names, JetBrains IDEs, and more</p>
+      </div>
+    </div>
+    <br>
+    <div class="callout fragment">
+      ⏱️ Approval takes <strong>1–3 days</strong> — apply <em>today</em> with your school email.
+    </div>
+    <div class="callout callout-green fragment">
+      ⏳ While you wait: <strong>Claude (claude.ai)</strong> is free right now and works just as well for this project.
+      The prompting skills transfer 1:1.
+    </div>
+    <div class="callout callout-blue fragment">
+      ✅ <strong>Async checkpoint 3:</strong> Create your GitHub repo (<code>snake-game</code>) and clone it locally.
+    </div>
+    <aside class="notes">
+      Show the Student Pack page briefly. The Copilot access alone is more valuable than most students realize.
+      Emphasize the Claude fallback — no one should be blocked from starting because Copilot isn't active yet.
+    </aside>
+  </section>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PART 5 — GITHUB COPILOT
+═══════════════════════════════════════════ -->
+<section>
+
+  <section>
+    <div class="part-header">
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 5 &nbsp;·&nbsp; 5 MINUTES</p>
+      <h2 style="margin:0.2em 0">Connecting GitHub Copilot</h2>
+    </div>
+  </section>
+
+  <section>
+    <h3>Activating Copilot in VS Code</h3>
+    <p style="font-size:0.85em;color:#aaa">Three steps, once your Student Pack is approved:</p>
+    <br>
+    <div class="step-box fragment">
+      <strong>1.</strong> Install <strong>GitHub Copilot</strong> and <strong>GitHub Copilot Chat</strong> extensions
+      (done in Part 3 if you followed along)
+    </div>
+    <div class="step-box fragment">
+      <strong>2.</strong> <kbd>Ctrl+Shift+P</kbd> → type <em>"GitHub Copilot: Sign In"</em> → sign in with your GitHub account
+    </div>
+    <div class="step-box fragment">
+      <strong>3.</strong> Once the Student Pack is approved, Copilot activates automatically —
+      you'll see the Copilot icon in the bottom status bar
+    </div>
+    <br>
+    <div class="callout callout-blue fragment">
+      <strong>Not approved yet?</strong> Open <strong>claude.ai</strong> in a browser — copy the AI's output, paste into VS Code.
+      Same workflow, different tool. No one is blocked.
+    </div>
+    <aside class="notes">
+      Have Claude open in a browser tab as the live fallback. Many students won't have Copilot
+      approved yet. That's fine — today's demo will use one or the other.
+    </aside>
+  </section>
+
+  <section>
+    <h3>Inline Suggestions vs. Copilot Chat</h3>
+    <div class="two-col" style="font-size:0.83em">
+      <div class="os-box">
+        <p style="color:#ffc107;margin-top:0"><strong>💡 Inline Suggestions</strong></p>
+        <p>Start typing → Copilot offers a completion;<br><kbd>Tab</kbd> to accept, <kbd>Esc</kbd> to dismiss</p>
+        <hr style="border-color:#333">
+        <p style="color:#48c78e;font-size:0.85em">Good for:</p>
+        <ul style="font-size:0.82em">
+          <li>Completing a line you started</li>
+          <li>Repetitive patterns (getters/setters)</li>
+          <li>Remembering method names</li>
+        </ul>
+        <p style="color:#ef5350;font-size:0.82em">Not great for getting a whole game</p>
+      </div>
+      <div class="os-box" style="border-color:#4299e1">
+        <p style="color:#4299e1;margin-top:0"><strong>💬 Copilot Chat Panel</strong></p>
+        <p>Ask questions, request whole files, iterate on results — a real conversation</p>
+        <hr style="border-color:#333">
+        <p style="color:#48c78e;font-size:0.85em">What we use for this project ✅</p>
+        <ul style="font-size:0.82em">
+          <li>Full seed prompts from the assignment</li>
+          <li>Pasting compiler errors to get fixes</li>
+          <li>Asking "why did you do it this way?"</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout callout-red fragment" style="margin-top:0.7em">
+      Copilot is not an oracle. It is confidently wrong sometimes.
+      <strong>Read what it writes. Run it. Debug it.</strong>
+    </div>
+    <aside class="notes">
+      Make the contrast clear. Inline suggestions are useful once they're writing their own extension code.
+      For the seed prompt phase, Chat is the tool. The "confidently wrong" point is key —
+      foreshadow that error-debugging is a normal part of the workflow.
+    </aside>
+  </section>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PART 6 — HELLO WORLD
+═══════════════════════════════════════════ -->
+<section>
+
+  <section>
+    <div class="part-header">
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 6 &nbsp;·&nbsp; 10 MINUTES</p>
+      <h2 style="margin:0.2em 0">Your First Java Program</h2>
+    </div>
+    <br>
+    <p style="color:#aaa">Running Java in VS Code — both ways</p>
+  </section>
+
+  <section>
+    <h3>HelloWorld.java — Every Line Explained</h3>
+    <pre><code class="language-java" data-trim>
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+    </code></pre>
+    <table class="nice fragment" style="margin-top:0.7em">
+      <thead><tr><th>Line</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>public class HelloWorld</code></td>
+          <td>Defines the class. The filename <strong>must</strong> be <code>HelloWorld.java</code> — Java enforces this, capital H and W included</td>
+        </tr>
+        <tr>
+          <td><code>public static void main(String[] args)</code></td>
+          <td>The entry point — Java <em>always</em> starts here, in every program you will ever run</td>
+        </tr>
+        <tr>
+          <td><code>System.out.println(...)</code></td>
+          <td>Prints text to the terminal, followed by a newline; <code>print</code> (no <em>ln</em>) skips the newline</td>
+        </tr>
+      </tbody>
+    </table>
+    <aside class="notes">
+      Walk through every single line. Students have seen Java before but probably in a web editor with
+      hidden boilerplate. Demystify each piece — especially that the filename and class name must match
+      exactly (including case). If students get mysterious "class not found" errors, it's usually this.
+    </aside>
+  </section>
+
+  <section>
+    <h3>Two Ways to Run It</h3>
+    <div class="two-col" style="font-size:0.85em">
+      <div class="os-box">
+        <p>▶️ <strong>Green Play Button</strong></p>
+        <p style="color:#aaa">Top-right corner of the editor window.<br>
+        One click — VS Code handles compile and run.</p>
+        <br>
+        <p style="color:#48c78e;font-size:0.85em">Use this most of the time ✅</p>
+      </div>
+      <div class="os-box">
+        <p>💻 <strong>Terminal (manual)</strong></p>
+        <div class="cmd-block" style="font-size:0.85em">
+          <span class="prompt">$ </span>javac HelloWorld.java<br>
+          <span class="prompt">$ </span>java HelloWorld
+        </div>
+        <p style="color:#aaa;font-size:0.82em">Two steps: compile → run<br>
+        You'll see a <code>HelloWorld.class</code> file appear — that's the bytecode</p>
+      </div>
+    </div>
+    <br>
+    <div class="callout callout-blue fragment">
+      <strong>javac</strong> compiles <code>.java</code> source into <code>.class</code> bytecode.
+      <strong>java</strong> runs the bytecode via the JVM.
+      The play button does both automatically — but it's good to know what's happening underneath.
+    </div>
+    <aside class="notes">
+      Run it both ways live. Show the HelloWorld.class file that appears when you compile manually.
+      Ask: "What do you think is inside that .class file?" (Compiled bytecode — not readable text.)
+    </aside>
+  </section>
+
+  <section>
+    <h3>A Slightly More Interesting Example</h3>
+    <pre><code class="language-java" data-trim>
+public class HelloWorld {
+    public static void main(String[] args) {
+        String[] games = {"Snake", "Space Invaders", "Pac-Man"};
+        for (String game : games) {
+            if (game.equals("Snake")) {
+                System.out.println(game + " ← we're building this first");
+            } else {
+                System.out.println(game);
+            }
+        }
+    }
+}
+    </code></pre>
+    <div class="callout fragment" style="margin-top:0.6em">
+      You don't need to copy this. The point: arrays, loops, and conditionals — Java you already know —
+      work exactly the same way here as everywhere. This environment is not special.
+    </div>
+    <aside class="notes">
+      Run it quickly. Students recognize the constructs. Then immediately move to the commit step —
+      this is their first real commit and it matters psychologically.
+    </aside>
+  </section>
+
+  <section>
+    <h3>Your First Real Commit 🎉</h3>
+    <div class="cmd-block">
+      <span class="prompt">$ </span>git add .<br>
+      <span class="prompt">$ </span>git commit -m "Add HelloWorld.java — first Java file"<br>
+      <span class="prompt">$ </span>git push
+    </div>
+    <br>
+    <div class="callout callout-green fragment">
+      Refresh GitHub in your browser — your file is there. That's a real commit in a real repository.
+    </div>
+    <br>
+    <div class="two-col fragment" style="font-size:0.82em">
+      <div class="callout callout-blue">
+        <strong>Prefer a GUI?</strong><br>
+        Source Control tab (<kbd>Ctrl+Shift+G</kbd>) → "+" to stage → type message → checkmark to commit → sync button to push
+      </div>
+      <div class="callout">
+        ✅ <strong>Async checkpoint 4:</strong><br>
+        Run <code>HelloWorld.java</code> and push it to GitHub before continuing
+      </div>
+    </div>
+    <aside class="notes">
+      Do this live. The moment the commit appears on GitHub is a small milestone — make it feel like one.
+      Some students have never committed code to GitHub before. This is their first.
+    </aside>
+  </section>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PART 7 — AGENTIC AI
+═══════════════════════════════════════════ -->
+<section>
+
+  <section>
+    <div class="part-header">
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 7 &nbsp;·&nbsp; 15 MINUTES</p>
+      <h2 style="margin:0.2em 0">First Look at Agentic AI</h2>
+    </div>
+    <br>
+    <p style="color:#aaa">Specificity is the skill</p>
+  </section>
+
+  <section>
+    <h3>Weak vs. Strong Prompts</h3>
+    <div class="two-col" style="font-size:0.82em">
+      <div>
+        <p style="color:#ef5350;margin-bottom:0.4em">❌ Weak</p>
+        <div class="weak-prompt">"Write me a Snake game in Java"</div>
+        <br>
+        <p style="color:#aaa;font-size:0.8em">What will the AI decide for you?</p>
+        <ul style="font-size:0.78em;color:#aaa">
+          <li>Which library? (Swing? JavaFX? AWT?)</li>
+          <li>Window dimensions?</li>
+          <li>Class names and structure?</li>
+          <li>One file or many?</li>
+          <li>Grid size? Speed? Colors?</li>
+        </ul>
+      </div>
+      <div>
+        <p style="color:#58d68d;margin-bottom:0.4em">✅ Strong</p>
+        <div class="strong-prompt">
+          "I'm building a Snake game in Java using <strong>Swing</strong>. Create a single file called
+          <strong><code>SnakeGame.java</code></strong>. It should have a <code>main</code> method that
+          opens a <code>JFrame</code> window (<strong>600×600 pixels</strong>) with the title
+          <strong>'Snake'</strong>. Inside the frame, add a <code>JPanel</code> subclass called
+          <strong><code>GamePanel</code></strong>. Don't add any game logic yet — just get the window to open."
+        </div>
+      </div>
+    </div>
+    <div class="callout fragment" style="margin-top:0.6em">
+      <strong>Every vague word in a prompt is a decision the AI makes without your input.</strong>
+    </div>
+    <aside class="notes">
+      Read both prompts aloud. Ask students to count the decisions the strong prompt makes for the AI:
+      library (Swing), filename (SnakeGame.java), window size (600x600), title ('Snake'),
+      class structure (JPanel subclass named GamePanel), scope (no game logic yet). That's 6 decisions
+      transferred from AI to human. Six fewer surprises.
+    </aside>
+  </section>
+
+  <section>
+    <h3>Anatomy of a Strong Prompt</h3>
+    <br>
+    <div class="step-box fragment">
+      🏷️ <strong>Context:</strong> <em>"I'm building a Snake game in Java using Swing..."</em>
+      <span style="color:#aaa;font-size:0.85em"> — tells the AI which ecosystem you're working in</span>
+    </div>
+    <div class="step-box fragment">
+      📄 <strong>File name:</strong> <em>"Create a single file called <code>SnakeGame.java</code>"</em>
+      <span style="color:#aaa;font-size:0.85em"> — prevents the AI from splitting into files you didn't ask for</span>
+    </div>
+    <div class="step-box fragment">
+      📐 <strong>Exact specs:</strong> <em>"600×600 pixels"</em>, <em>"title 'Snake'"</em>
+      <span style="color:#aaa;font-size:0.85em"> — precise values, not vague descriptions</span>
+    </div>
+    <div class="step-box fragment">
+      🧱 <strong>Class structure:</strong> <em>"a <code>JPanel</code> subclass called <code>GamePanel</code>"</em>
+      <span style="color:#aaa;font-size:0.85em"> — naming and design specified up front</span>
+    </div>
+    <div class="step-box fragment">
+      🔭 <strong>Scope boundary:</strong> <em>"Don't add any game logic yet"</em>
+      <span style="color:#aaa;font-size:0.85em"> — scope limits = fewer surprises; iterating in small steps is safer</span>
+    </div>
+    <aside class="notes">
+      The scope boundary is the piece most beginners miss. When you leave scope open, the AI adds things
+      you didn't ask for and don't understand. Iterating in small steps — get a window, then add the grid,
+      then add movement — gives you a working checkpoint after each step.
+    </aside>
+  </section>
+
+  <section>
+    <h3>The Agentic AI Loop</h3>
+    <div class="mermaid">
+graph TD
+    A["✍️ Write a specific prompt"] --> B["🤖 AI generates code"]
+    B --> C["📋 Paste into VS Code"]
+    C --> D{"Does it compile and run?"}
+    D -- "❌ Compile error" --> E["Copy the error message\nPaste it back into chat\nAdd context: 'this happened when...'"]
+    E --> B
+    D -- "✅ Runs" --> F{"Does it do what you wanted?"}
+    F -- "❌ Not quite" --> G["Ask a follow-up:\n'Now add X'\n'Change Y to Z'"]
+    G --> B
+    F -- "✅ Yes" --> H["git commit 🎉"]
+    H --> I["📝 Document in PROMPTS.md"]
+    I --> A
+    style A fill:#1e3a5f,stroke:#4299e1,color:#fff
+    style H fill:#1a3a2e,stroke:#48c78e,color:#fff
+    style I fill:#2d2010,stroke:#ffc107,color:#fff
+    style E fill:#2d1010,stroke:#ef5350,color:#fff
+    </div>
+    <aside class="notes">
+      This is the core loop — students will repeat it dozens of times across three weeks.
+      Point out: the error loop is normal. Pasting an error back into the AI and asking it to fix
+      its own output is not a sign of failure — it's just how the tool is used.
+    </aside>
+  </section>
+
+  <section>
+    <h3>Live Demo: Prompt 1 🚀</h3>
+    <p style="font-size:0.8em;color:#aaa">Running this now in Copilot Chat (or Claude)</p>
+    <div class="callout callout-blue" style="font-size:0.82em;font-style:italic;line-height:1.75">
+      "I'm starting a Java project in VS Code. Create a single file called <code>SnakeGame.java</code>.
+      It should have a <code>main</code> method that opens a <code>JFrame</code> window (600×600 pixels)
+      with the title 'Snake'. Inside the frame, add a <code>JPanel</code> subclass called
+      <code>GamePanel</code>. Don't add any game logic yet — just get the window to open."
+    </div>
+    <br>
+    <div class="two-col" style="font-size:0.8em">
+      <div>
+        <p style="color:#ffc107">While it generates, watch for:</p>
+        <ul>
+          <li>Import statements at the top</li>
+          <li>Class names — do they match?</li>
+          <li>JFrame → <code>add(new GamePanel())</code></li>
+          <li><code>setDefaultCloseOperation</code></li>
+        </ul>
+      </div>
+      <div>
+        <p style="color:#48c78e">After it runs:</p>
+        <ul>
+          <li>A 600×600 window appears</li>
+          <li>Title bar reads "Snake"</li>
+          <li>Gray/black panel inside</li>
+          <li>Commit: "Add empty JFrame via AI Prompt 1"</li>
+        </ul>
+      </div>
+    </div>
+    <aside class="notes">
+      Run Prompt 1 live. Paste the output into VS Code. Run it. Walk through the generated code:
+      the SwingUtilities.invokeLater pattern, the JFrame constructor, the GamePanel extending JPanel.
+      Then commit live: "git commit -m 'Add empty JFrame via AI Prompt 1'"
+      Then open PROMPTS.md and write one sentence while students watch.
+    </aside>
+  </section>
+
+  <section>
+    <h3>When the AI Is Wrong</h3>
+    <p style="font-size:0.85em;color:#aaa">This will happen. It's expected. It's part of the workflow.</p>
+    <br>
+    <div class="step-box fragment">
+      <strong>Step 1:</strong> Copy the error from the VS Code terminal (the red text)
+    </div>
+    <div class="step-box fragment">
+      <strong>Step 2:</strong> Paste it back into Copilot Chat or Claude
+    </div>
+    <div class="step-box fragment">
+      <strong>Step 3:</strong> Add context: <em>"This happened when I tried to add the food logic"</em>
+    </div>
+    <div class="step-box fragment">
+      <strong>Step 4:</strong> Read the AI's fix before accepting it — does the explanation make sense?
+    </div>
+    <br>
+    <div class="callout callout-red fragment">
+      The AI can be <strong>confidently wrong</strong>. When something seems off, ask it to explain:
+      <em>"Why did you use a <code>LinkedList</code> here instead of an <code>ArrayList</code>?"</em>
+    </div>
+    <aside class="notes">
+      Optional live demo: introduce a deliberate compile error, show it in the terminal, paste it
+      into the AI, get a fix. Normalize this loop. Students who think errors mean failure will disengage.
+      Students who understand errors as input to the next prompt will keep going.
+    </aside>
+  </section>
+
+  <section>
+    <h3>Open PROMPTS.md Right Now</h3>
+    <p style="font-size:0.83em;color:#aaa">Create this file in your repo. Here's a starter template:</p>
+    <pre><code class="language-markdown" data-trim>
+# PROMPTS.md — Snake Game (Week 1)
+
+## Prompt 1 — JFrame Setup
+
+**Prompt used:**
+I'm starting a Java project in VS Code. Create a single file called
+`SnakeGame.java`...
+
+**What it produced:**
+[One sentence: what did the AI give you?]
+
+**What I had to fix or change:**
+[Describe any edits you made and why]
+
+**Something unexpected:**
+[Did the AI make a choice you didn't expect? What was it?]
+    </code></pre>
+    <div class="callout callout-green fragment">
+      Do not wait until Friday to fill this in.
+      Write two sentences right after each AI conversation — it takes 2 minutes and saves 20.
+    </div>
+    <div class="callout callout-blue fragment">
+      ✅ <strong>Async checkpoint 5:</strong> Run Prompt 1, add the output to your repo, and write your first PROMPTS.md entry.
+    </div>
+    <aside class="notes">
+      Have students literally open a new file called PROMPTS.md in VS Code right now.
+      Show the template. Tell them: if they come to office hours without a PROMPTS.md,
+      it's much harder to help them because there's no record of what the AI actually produced.
+    </aside>
+  </section>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SUMMARY
+═══════════════════════════════════════════ -->
+<section>
+
+  <section>
+    <h2>Summary: The One Thing to Remember from Each Part</h2>
+    <table class="nice">
+      <thead><tr><th>Topic</th><th>The one thing</th></tr></thead>
+      <tbody>
+        <tr><td>Java setup</td><td><code>java -version</code> in the terminal confirms it worked</td></tr>
+        <tr><td>VS Code</td><td>Install the Extension Pack for Java; use the integrated terminal</td></tr>
+        <tr><td>GitHub</td><td>Commit early and often; commit messages should <em>mean something</em></td></tr>
+        <tr><td>Student Pack</td><td>Apply today with your school email; use Claude while you wait</td></tr>
+        <tr><td>Agentic AI</td><td>Specificity is the skill — vague prompt = vague code</td></tr>
+        <tr><td>PROMPTS.md</td><td>Open it now; maintain it throughout; it is a graded artifact (30%)</td></tr>
+      </tbody>
+    </table>
+    <aside class="notes">Quick summary. Read each row. Then wrap up with "What's next."</aside>
+  </section>
+
+  <section>
+    <h3>Your Async Checklist</h3>
+    <p style="font-size:0.82em;color:#aaa">Pause the recording and complete each step before moving on:</p>
+    <br>
+    <div class="step-box">📌 After Part 2 — run <code>java -version</code> in a terminal. See the version number.</div>
+    <div class="step-box">📌 After Part 3 — confirm Extension Pack for Java is installed in VS Code</div>
+    <div class="step-box">📌 After Part 4 — create your GitHub repo (<code>snake-game</code>) and clone it locally</div>
+    <div class="step-box">📌 After Part 6 — run <code>HelloWorld.java</code> and push it to GitHub</div>
+    <div class="step-box">📌 After Part 7 — run Prompt 1, add the output to your repo, write the first PROMPTS.md entry</div>
+    <br>
+    <div class="callout callout-blue">
+      Bring your <code>PROMPTS.md</code> to office hours — it makes troubleshooting much faster
+      because there's a record of what the AI actually produced.
+    </div>
+    <aside class="notes">End of lecture. Take questions. Remind students: submit the GitHub repo link by Friday 11:59 PM.</aside>
+  </section>
+
+  <section>
+    <h2>What's Next 🗓️</h2>
+    <div class="two-col" style="font-size:0.85em">
+      <div>
+        <p style="color:#ffc107"><strong>This week (Week 1):</strong></p>
+        <ul style="line-height:1.8">
+          <li>Run Prompts 2–4 to complete Snake</li>
+          <li>Add at least one personal extension</li>
+          <li>Maintain PROMPTS.md throughout</li>
+          <li>Submit GitHub link by <strong>Friday 11:59 PM</strong></li>
+        </ul>
+      </div>
+      <div>
+        <p style="color:#4299e1"><strong>Coming weeks:</strong></p>
+        <ul style="line-height:1.8">
+          <li><strong>Week 2:</strong> Space Invaders — learning MVC, three-class architecture</li>
+          <li><strong>Week 3:</strong> Your game — you write the prompts from scratch</li>
+        </ul>
+      </div>
+    </div>
+    <br>
+    <div class="callout callout-green">
+      <strong>Questions?</strong> Office hours times are on the syllabus. If the AI gives you something
+      that doesn't compile, paste the error back into the conversation — that is a normal part of the process.
+    </div>
+  </section>
+
+</section>
+
+</div><!-- /slides -->
+</div><!-- /reveal -->
+
+<!-- ── Reveal.js from CDN ──────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<!-- ── Mermaid from CDN ─────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+
+<script>
+  // ── Reveal initialization ────────────────────
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'slide',
+    transitionSpeed: 'fast',
+    backgroundTransition: 'fade',
+    controls: true,
+    progress: true,
+    center: true,
+    width: 1200,
+    height: 700,
+    margin: 0.04,
+    plugins: [RevealNotes, RevealHighlight]
+  });
+
+  // ── Mermaid initialization ────────────────────
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'dark',
+    themeVariables: {
+      primaryColor:       '#1e3a5f',
+      primaryTextColor:   '#ffffff',
+      primaryBorderColor: '#4299e1',
+      lineColor:          '#4299e1',
+      secondaryColor:     '#1a3a2e',
+      tertiaryColor:      '#2d2010',
+      background:         '#1a1a2e',
+      mainBkg:            '#1a1a2e',
+      nodeBorder:         '#4299e1',
+      clusterBkg:         '#151520',
+      titleColor:         '#ffffff',
+      edgeLabelBackground:'#151520',
+      fontSize:           '14px'
+    },
+    flowchart: { htmlLabels: true, curve: 'basis' }
+  });
+
+  // Render mermaid diagrams when a slide becomes visible
+  Reveal.on('ready',       () => mermaid.run({ querySelector: '.mermaid' }));
+  Reveal.on('slidechanged', () => mermaid.run({ querySelector: '.mermaid' }));
+
+  // ── Title-slide snake grid decoration ────────
+  (function buildSnakeGrid() {
+    const grid = document.getElementById('title-snake');
+    if (!grid) return;
+    // Row-major layout: 0=empty, 1=body, 2=food, 3=head
+    const layout = [
+      [0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,0,1,1,1,1,1,0,0,0,0,0],
+      [0,0,0,0,0,0,1,0,2,0,0,0],
+      [0,0,0,0,0,0,1,0,0,0,0,0],
+      [0,0,0,0,0,0,1,1,1,3,0,0],
+      [0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0,0,0]
+    ];
+    grid.innerHTML = '';
+    for (let r = 0; r < layout.length; r++) {
+      for (let c = 0; c < layout[r].length; c++) {
+        const cell = document.createElement('div');
+        cell.classList.add('sc');
+        if (layout[r][c] === 3) cell.classList.add('head');
+        else if (layout[r][c] === 1) cell.classList.add('body');
+        else if (layout[r][c] === 2) cell.classList.add('food');
+        grid.appendChild(cell);
+      }
+    }
+  })();
+</script>
+</body>
+</html>
