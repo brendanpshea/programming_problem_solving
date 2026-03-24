@@ -108,6 +108,65 @@
     table.nice td { padding: 0.25em 0.7em; border-bottom: 1px solid #2c2c2c; font-size: 0.75em; }
     table.nice tr:nth-child(even) td { background: rgba(255,255,255,0.04); }
 
+    /* ── Markdown slide styling ───────────────────────── */
+    .reveal section[data-markdown] {
+      text-align: left;
+    }
+    .reveal section[data-markdown] h3 {
+      margin-bottom: 0.45em;
+    }
+    .reveal section[data-markdown] p,
+    .reveal section[data-markdown] ul,
+    .reveal section[data-markdown] ol,
+    .reveal section[data-markdown] table,
+    .reveal section[data-markdown] blockquote {
+      font-size: 0.82em;
+      line-height: 1.55;
+    }
+    .reveal section[data-markdown] ul,
+    .reveal section[data-markdown] ol {
+      display: block;
+      margin: 0.35em 0 0.2em 1.2em;
+    }
+    .reveal section[data-markdown] li {
+      margin: 0.2em 0;
+    }
+    .reveal section[data-markdown] blockquote {
+      width: 100%;
+      margin: 0.7em 0 0;
+      padding: 0.4em 0.8em;
+      background: rgba(66,153,225,0.13);
+      border-left: 4px solid #4299e1;
+      border-radius: 0 8px 8px 0;
+      color: #e7eef8;
+      box-shadow: none;
+    }
+    .reveal section[data-markdown] table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.6em;
+    }
+    .reveal section[data-markdown] th {
+      background: #1e3a5f;
+      padding: 0.3em 0.7em;
+      text-align: left;
+      font-size: 0.78em;
+    }
+    .reveal section[data-markdown] td {
+      padding: 0.25em 0.7em;
+      border-bottom: 1px solid #2c2c2c;
+      font-size: 0.75em;
+      vertical-align: top;
+    }
+    .reveal section[data-markdown] tr:nth-child(even) td {
+      background: rgba(255,255,255,0.04);
+    }
+    .reveal section[data-markdown] hr {
+      border: none;
+      border-top: 1px solid #2a4a6a;
+      margin: 0.7em 0;
+    }
+
     /* ── Mermaid sizing inside slides ──────────────────── */
     .mermaid { font-size: 0.78em; max-width: 100%; overflow: hidden; }
     .mermaid svg { max-width: 100% !important; height: auto !important; }
@@ -308,19 +367,19 @@
     </aside>
   </section>
 
-  <section>
-    <h3>The PROMPTS.md Habit</h3>
-    <p style="color:#aaa;font-size:0.85em">Every week you maintain a file called <code>PROMPTS.md</code> in your repo.</p>
-    <br>
-    <div class="step-box fragment">📋 <strong>Copy &amp; paste</strong> every key prompt you used</div>
-    <div class="step-box fragment">📝 A brief note on <strong>what each prompt produced</strong></div>
-    <div class="step-box fragment">🔧 <strong>What you had to fix or change</strong>, and why</div>
-    <div class="step-box fragment">⚠️ At least <strong>one prompt that didn't work</strong> as expected — and what you did about it</div>
-    <br>
-    <div class="callout callout-green fragment">
-      Think of it as a <strong>lab notebook</strong> for your AI conversations. It makes your process visible
-      and shows how you are actually using the tools.
-    </div>
+  <section data-markdown>
+    <textarea data-template>
+### The `PROMPTS.md` Habit
+
+Every week you maintain a file called `PROMPTS.md` in your repo.
+
+- Copy and paste every key prompt you used
+- Add a brief note on what each prompt produced
+- Explain what you had to fix or change, and why
+- Include at least one prompt that did not work as expected, and what you did next
+
+> Think of it as a lab notebook for your AI conversations. It makes your process visible and shows how you are actually using the tools.
+    </textarea>
     <aside class="notes">
       PROMPTS.md is not optional documentation bolt-on. It's a primary artifact.
       The point is to make the student's process inspectable and discussable.
@@ -343,74 +402,52 @@
     <p style="color:#aaa">This is a CS class, not just a build-along. The tools have concepts behind them.</p>
   </section>
 
-  <section>
-    <h3>What an IDE Actually Is</h3>
-    <div class="two-col" style="font-size:0.82em">
-      <div class="theory-box">
-        <p><strong>IDE = Integrated Development Environment</strong></p>
-        <p style="color:#aaa">An IDE brings editing, compiling, running, debugging, navigation, and source control into one coordinated environment.</p>
-      </div>
-      <div class="theory-box">
-        <p><strong>Why this matters</strong></p>
-        <p style="color:#aaa">It reduces friction. Fewer tool jumps means faster feedback, fewer mistakes, and easier experimentation.</p>
-      </div>
-    </div>
-    <div class="callout callout-blue" style="margin-top:0.5em">
-      In this course, VS Code is functioning as an IDE even though it starts life as a lightweight editor. Extensions add the Java, Git, terminal, and AI capabilities that make it an integrated environment.
-    </div>
-    <div class="workflow-step"><span class="number-circle">1</span><div><strong>Edit</strong> code in one place</div></div>
-    <div class="workflow-step"><span class="number-circle">2</span><div><strong>Run</strong> and see output immediately</div></div>
-    <div class="workflow-step"><span class="number-circle">3</span><div><strong>Debug</strong> errors without leaving the environment</div></div>
-    <div class="workflow-step"><span class="number-circle">4</span><div><strong>Version</strong> your changes with Git in the same interface</div></div>
+  <section data-markdown>
+    <textarea data-template>
+### What an IDE Actually Is
+
+**IDE = Integrated Development Environment**
+
+An IDE brings editing, compiling, running, debugging, navigation, and source control into one coordinated environment.
+
+Why this matters:
+
+1. Edit code in one place
+2. Run and see output immediately
+3. Debug errors without leaving the environment
+4. Version your changes with Git in the same interface
+
+> In this course, VS Code is functioning as an IDE even though it starts life as a lightweight editor. Extensions add the Java, Git, terminal, and AI capabilities that make it an integrated environment.
+    </textarea>
   </section>
 
-  <section>
-    <h3>What Git Actually Tracks</h3>
-    <table class="nice">
-      <thead><tr><th>Concept</th><th>Meaning</th><th>Why students care</th></tr></thead>
-      <tbody>
-        <tr><td>Repository</td><td>A project plus its version history</td><td>Your working folder and its timeline live together</td></tr>
-        <tr><td>Commit</td><td>A named snapshot of the project state</td><td>You can return to known-good versions</td></tr>
-        <tr><td>Branch</td><td>An alternate line of development</td><td>Useful later for experiments, but not required yet</td></tr>
-        <tr><td>Remote</td><td>A copy of the repo on another machine/server</td><td>GitHub is the remote copy you submit</td></tr>
-      </tbody>
-    </table>
-    <div class="callout callout-blue" style="margin-top:0.5em">
-      Git does not care about “projects” in the human sense. It tracks file changes and snapshots over time.
-    </div>
-    <div class="callout" style="margin-top:0.4em">
-      That is why Git is so useful with AI-assisted programming: if an experiment goes badly, you are not relying on memory. You can return to a named snapshot instead.
-    </div>
+  <section data-markdown>
+    <textarea data-template>
+### What Git Actually Tracks
+
+| Concept | Meaning | Why students care |
+|---|---|---|
+| Repository | A project plus its version history | Your working folder and its timeline live together |
+| Commit | A named snapshot of the project state | You can return to known-good versions |
+| Branch | An alternate line of development | Useful later for experiments, but not required yet |
+| Remote | A copy of the repo on another machine/server | GitHub is the remote copy you submit |
+
+> Git does not care about "projects" in the human sense. It tracks file changes and snapshots over time. That is why Git is so useful with AI-assisted programming: if an experiment goes badly, you can return to a named snapshot instead of relying on memory.
+    </textarea>
   </section>
 
-  <section>
-    <h3>LLMs and Agents Are Not the Same Thing</h3>
-    <table class="nice">
-      <thead><tr><th>Term</th><th>Definition</th><th>Course meaning</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><strong>LLM</strong></td>
-          <td>A large language model that predicts likely next text based on context</td>
-          <td>The engine producing code suggestions and explanations</td>
-        </tr>
-        <tr>
-          <td><strong>Inline AI</strong></td>
-          <td>Short local completions while you type</td>
-          <td>Good for small edits and boilerplate</td>
-        </tr>
-        <tr>
-          <td><strong>Agentic AI</strong></td>
-          <td>A broader workflow where the model follows a scoped request, iterates, and helps you refine output</td>
-          <td>Good for whole features, architecture, debugging, and design conversations</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="callout callout-red" style="margin-top:0.5em">
-      An LLM produces plausible output. It does not know whether your program is correct until you test it.
-    </div>
-    <div class="callout" style="margin-top:0.4em">
-      Put differently: the model gives you candidate code. The compiler, runtime, and your own reasoning decide whether that candidate is actually acceptable.
-    </div>
+  <section data-markdown>
+    <textarea data-template>
+### LLMs and Agents Are Not the Same Thing
+
+| Term | Definition | Course meaning |
+|---|---|---|
+| **LLM** | A large language model that predicts likely next text based on context | The engine producing code suggestions and explanations |
+| **Inline AI** | Short local completions while you type | Good for small edits and boilerplate |
+| **Agentic AI** | A broader workflow where the model follows a scoped request, iterates, and helps you refine output | Good for whole features, architecture, debugging, and design conversations |
+
+> An LLM produces plausible output. It does not know whether your program is correct until you test it. The model gives you candidate code; the compiler, runtime, and your own reasoning decide whether that candidate is acceptable.
+    </textarea>
   </section>
 
   <section>
@@ -576,65 +613,38 @@ graph TD
     <p style="color:#aaa">Your development environment — where everything happens</p>
   </section>
 
-  <section>
-    <h3>Why VS Code?</h3>
-    <table class="nice">
-      <thead><tr><th>Editor</th><th>The case for it</th><th>The catch</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><strong>VS Code</strong> <span class="badge green">We use this</span></td>
-          <td>Free, lightweight, cross-platform, GitHub Copilot built-in, used professionally across many languages</td>
-          <td>Java support requires a few extensions</td>
-        </tr>
-        <tr>
-          <td>IntelliJ IDEA</td>
-          <td>Best-in-class Java tooling, smart refactoring</td>
-          <td>Free tier is limited; heavy; Java-focused only</td>
-        </tr>
-        <tr>
-          <td>Eclipse</td>
-          <td>Free, full-featured, been around forever</td>
-          <td>Dated UI; steep learning curve; slow on older machines</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="callout callout-green fragment" style="margin-top:0.7em">
-      Learning VS Code pays off permanently — it works for Python, JavaScript, C++, and more.
-      The skills transfer to every project after this one.
-    </div>
+  <section data-markdown>
+    <textarea data-template>
+### Why VS Code?
+
+| Editor | The case for it | The catch |
+|---|---|---|
+| **VS Code** | Free, lightweight, cross-platform, GitHub Copilot built-in, used professionally across many languages | Java support requires a few extensions |
+| IntelliJ IDEA | Best-in-class Java tooling, smart refactoring | Free tier is limited; heavy; Java-focused only |
+| Eclipse | Free, full-featured, been around forever | Dated UI; steep learning curve; slow on older machines |
+
+> Learning VS Code pays off permanently. It works for Python, JavaScript, C++, and more, so the workflow you learn here transfers to later courses and projects.
+    </textarea>
     <aside class="notes">
       Don't dwell here. The table is just context. Key message: VS Code is the professional default
       these days and GitHub Copilot integrates directly.
     </aside>
   </section>
 
-  <section>
-    <h3>Extensions to Install</h3>
-    <p style="font-size:0.82em;color:#aaa">Open Extensions (<kbd>Ctrl+Shift+X</kbd>) and search for each:</p>
-    <br>
-    <table class="nice">
-      <thead><tr><th>Extension</th><th>Extension ID</th><th>What it adds</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><strong>Extension Pack for Java</strong> <span class="badge green">Required</span></td>
-          <td><code>vscjava.vscode-java-pack</code></td>
-          <td>Language support, debugger, test runner, Maven — 6 extensions in one click</td>
-        </tr>
-        <tr>
-          <td><strong>GitHub Copilot</strong> <span class="badge">Required</span></td>
-          <td><code>GitHub.copilot</code></td>
-          <td>Inline AI completions as you type</td>
-        </tr>
-        <tr>
-          <td><strong>GitHub Copilot Chat</strong> <span class="badge">Required</span></td>
-          <td><code>GitHub.copilot-chat</code></td>
-          <td>The conversation panel — <strong>this is what we use most</strong></td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="callout fragment" style="margin-top:0.6em">
-      Installing the Extension Pack installs all 6 sub-extensions at once. That's intentional — it's the recommended Java setup.
-    </div>
+  <section data-markdown>
+    <textarea data-template>
+### Extensions to Install
+
+Open Extensions (`Ctrl+Shift+X`) and search for each:
+
+| Extension | Extension ID | What it adds |
+|---|---|---|
+| **Extension Pack for Java** | `vscjava.vscode-java-pack` | Language support, debugger, test runner, Maven; six extensions in one click |
+| **GitHub Copilot** | `GitHub.copilot` | Inline AI completions as you type |
+| **GitHub Copilot Chat** | `GitHub.copilot-chat` | The conversation panel; this is what we use most |
+
+> Installing the Extension Pack installs all six Java sub-extensions at once. That is intentional; it is the recommended beginner setup.
+    </textarea>
     <aside class="notes">
       Demo live: open Extensions, search for "vscjava.vscode-java-pack", click Install. Watch the progress bar.
       Show that multiple sub-extensions appear in the installed list.
@@ -894,16 +904,18 @@ graph LR
     </aside>
   </section>
 
-  <section>
-    <h3>Default Workflow: GitHub.com → Clone in VS Code</h3>
-    <div class="step-box"><strong>Step 1 (Browser):</strong> Create repo on GitHub.com named <code>snake-game</code> with README checked</div>
-    <div class="step-box"><strong>Step 2 (VS Code):</strong> Open Command Palette <kbd>Ctrl+Shift+P</kbd> and run <em>Git: Clone</em></div>
-    <div class="step-box"><strong>Step 3:</strong> Paste repo URL and choose local folder</div>
-    <div class="step-box"><strong>Step 4:</strong> Click <em>Open</em> when VS Code asks to open cloned repository</div>
-    <div class="step-box"><strong>Step 5:</strong> Work normally in VS Code; use Source Control panel for stage, commit, push, and sync</div>
-    <div class="callout callout-green" style="margin-top:0.5em">
-      Fill this in as you work, not afterward from memory.
-    </div>
+  <section data-markdown>
+    <textarea data-template>
+### Default Workflow: GitHub.com → Clone in VS Code
+
+1. **Browser:** create a repo on GitHub.com named `snake-game` with `README` checked
+2. **VS Code:** open the Command Palette with `Ctrl+Shift+P` and run `Git: Clone`
+3. Paste the repository URL and choose a local folder
+4. Click **Open** when VS Code asks to open the cloned repository
+5. Work normally in VS Code; use Source Control for stage, commit, push, and sync
+
+> This is the course default. Create on GitHub first, then clone in VS Code. That avoids the "I built everything locally and now Git is confusing" problem.
+    </textarea>
     <aside class="notes">
       Make this explicit: students should create on GitHub first, then clone in VS Code.
       This avoids "I built everything locally and now Git is confusing" at week-end.
@@ -1418,27 +1430,19 @@ graph TD
     </aside>
   </section>
 
-  <section>
-    <h3>When the AI Is Wrong</h3>
-    <p style="font-size:0.85em;color:#aaa">This will happen. It's expected. It's part of the workflow.</p>
-    <br>
-    <div class="step-box fragment">
-      <strong>Step 1:</strong> Copy the error from the VS Code terminal (the red text)
-    </div>
-    <div class="step-box fragment">
-      <strong>Step 2:</strong> Paste it back into Copilot Chat or Claude
-    </div>
-    <div class="step-box fragment">
-      <strong>Step 3:</strong> Add context: <em>"This happened when I tried to add the food logic"</em>
-    </div>
-    <div class="step-box fragment">
-      <strong>Step 4:</strong> Read the AI's fix before accepting it — does the explanation make sense?
-    </div>
-    <br>
-    <div class="callout callout-red fragment">
-      The AI can be <strong>confidently wrong</strong>. When something seems off, ask it to explain:
-      <em>"Why did you use a <code>LinkedList</code> here instead of an <code>ArrayList</code>?"</em>
-    </div>
+  <section data-markdown>
+    <textarea data-template>
+### When the AI Is Wrong
+
+This will happen. It is expected. It is part of the workflow.
+
+1. Copy the error from the VS Code terminal
+2. Paste it back into Copilot Chat or Claude
+3. Add context, such as: *"This happened when I tried to add the food logic"*
+4. Read the proposed fix before accepting it; ask whether the explanation makes sense
+
+> The AI can be confidently wrong. When something seems off, ask it to explain its choice: *"Why did you use a `LinkedList` here instead of an `ArrayList`?"*
+    </textarea>
     <aside class="notes">
       Optional live demo: introduce a deliberate compile error, show it in the terminal, paste it
       into the AI, get a fix. Normalize this loop. Students who think errors mean failure will disengage.
