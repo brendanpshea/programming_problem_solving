@@ -127,6 +127,41 @@
     .sc.body { background: #388e3c; }
     .sc.food { background: #ff5722; border-radius: 50%; }
 
+    /* ── Theory / concept boxes ───────────────────────── */
+    .theory-box {
+      background: rgba(155,89,182,0.10);
+      border: 1px solid #9b59b6;
+      border-radius: 8px;
+      padding: 0.4em 0.8em;
+      font-size: 0.82em;
+      text-align: left;
+    }
+    .number-circle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #4299e1;
+      color: #fff;
+      font-weight: bold;
+      width: 1.5em;
+      height: 1.5em;
+      border-radius: 50%;
+      font-size: 0.85em;
+      margin-right: 0.4em;
+      flex-shrink: 0;
+    }
+    .workflow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5em;
+      background: rgba(66,153,225,0.08);
+      border: 1px solid #2a4a6a;
+      border-radius: 8px;
+      padding: 0.3em 0.7em;
+      margin: 0.2em 0;
+      font-size: 0.8em;
+      text-align: left;
+    }
     /* ── Prompt diff highlight ─────────────────────────── */
     .weak-prompt {
       background: rgba(240,82,82,0.12);
@@ -161,14 +196,13 @@
   <h1 style="color:#58d68d">From Zero to Snake 🐍</h1>
   <p style="color:#aaa;font-size:0.9em">Setting Up Your Environment &amp; Meeting Your AI Collaborator</p>
   <br>
-  <!-- Mini snake grid ––– purely decorative -->
   <div class="snake-grid" id="title-snake"></div>
   <br>
-  <p style="color:#666;font-size:0.65em">Week 1 &nbsp;·&nbsp; Agentic AI Game Project Kickoff &nbsp;·&nbsp; ~75 minutes</p>
+  <p style="color:#666;font-size:0.65em">Week 1 &nbsp;·&nbsp; Agentic AI Game Project Kickoff &nbsp;·&nbsp; ~90 minutes</p>
   <aside class="notes">
-    Open by running the finished Snake game — let it play for 20–30 seconds before speaking.
-    Students should think "I want to build that." Then open VS Code and flash the ~200 lines
-    of generated code: "This is what an AI will write for you. Today we set up the tools."
+    Open by running the finished Snake game — 20–30 seconds of live gameplay. Let students watch.
+    Then open VS Code and flash the ~200 lines of generated code: "This is what an AI writes for you
+    in about 60 seconds with the right prompt. Today we set up every tool you need to do this."
   </aside>
 </section>
 
@@ -181,16 +215,18 @@
     <thead><tr><th>#</th><th>Topic</th><th>Time</th></tr></thead>
     <tbody>
       <tr><td>1</td><td>The Big Picture — what this project is really about</td><td>10 min</td></tr>
+      <tr><td>1.5</td><td>Core theory: IDEs, Git, LLMs, and agentic workflows</td><td>12 min</td></tr>
       <tr><td>2</td><td>Installing Java</td><td>10 min</td></tr>
       <tr><td>3</td><td>Installing &amp; configuring VS Code</td><td>10 min</td></tr>
-      <tr><td>4</td><td>GitHub setup &amp; version control basics</td><td>10 min</td></tr>
+      <tr><td>4</td><td>GitHub setup &amp; version control basics (VS Code first)</td><td>16 min</td></tr>
       <tr><td>5</td><td>Connecting GitHub Copilot</td><td>5 min</td></tr>
       <tr><td>6</td><td>Writing &amp; running your first Java program</td><td>10 min</td></tr>
       <tr><td>7</td><td>First look at agentic AI — Prompt 1 live</td><td>15 min</td></tr>
+      <tr><td>8</td><td>Snake deep dive: game loop, grid model, collisions, extension strategy</td><td>12 min</td></tr>
     </tbody>
   </table>
   <div class="callout callout-blue" style="margin-top:0.8em">
-    By the end of class: working dev environment, first Java program on GitHub, and Prompt 1 from the assignment run live.
+    By the end of class: working dev environment, first Java program on GitHub using VS Code workflow, Prompt 1 run live, and a clear Snake build plan.
   </div>
   <aside class="notes">Quick roadmap. Don't linger. Tell students: every part today has a hands-on checkpoint. Async students: pause the recording at each checkpoint label.</aside>
 </section>
@@ -283,6 +319,67 @@
       PROMPTS.md is not optional documentation bolt-on. It's a primary artifact. The grade rubric weights
       it at 30% precisely because the process matters more than the output here.
     </aside>
+  </section>
+
+  <section>
+    <h3>Core Theory Crash Course: IDEs, Git, LLMs, Agents</h3>
+    <table class="nice">
+      <thead><tr><th>Concept</th><th>Definition</th><th>Why it matters in this project</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>IDE</strong></td>
+          <td>Integrated Development Environment. Editor + compiler integration + debugger + terminal + source control tools in one place.</td>
+          <td>Reduces context switching. Faster feedback loops when iterating with AI.</td>
+        </tr>
+        <tr>
+          <td><strong>Git</strong></td>
+          <td>Distributed version control system tracking snapshots of your code over time.</td>
+          <td>Lets you experiment safely with AI-generated code and recover instantly.</td>
+        </tr>
+        <tr>
+          <td><strong>LLM</strong></td>
+          <td>Large language model trained to predict text/code from context.</td>
+          <td>Generates code fast, but does not guarantee correctness.</td>
+        </tr>
+        <tr>
+          <td><strong>Agentic workflow</strong></td>
+          <td>LLM used as a collaborative process: prompt, generate, run, inspect, revise, document.</td>
+          <td>This process is the real learning target of the final project.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout callout-blue" style="margin-top:0.6em">
+      The project is designed around a feedback loop: faster loops create better software and better learning.
+    </div>
+    <aside class="notes">
+      Explain that an IDE is not just a text editor. It orchestrates tools and lowers friction.
+      Clarify that LLMs predict plausible code, not truth. The student's job is to validate.
+    </aside>
+  </section>
+
+  <section>
+    <h3>From Prompting to Engineering: The Skill Stack</h3>
+    <div class="mermaid">
+graph LR
+    A["Specify clearly"] --> B["Generate quickly"]
+    B --> C["Run and observe"]
+    C --> D["Diagnose failures"]
+    D --> E["Refine prompt or code"]
+    E --> F["Version and document"]
+    F --> A
+    style A fill:#1e3a5f,stroke:#4299e1,color:#fff
+    style C fill:#2d2010,stroke:#ffc107,color:#fff
+    style D fill:#2d1010,stroke:#ef5350,color:#fff
+    style F fill:#1a3a2e,stroke:#48c78e,color:#fff
+    </div>
+    <div class="two-col" style="font-size:0.8em;margin-top:0.5em">
+      <div class="callout callout-red">
+        Common novice mistake: treat AI output as final answer.
+      </div>
+      <div class="callout callout-green">
+        Target behavior: treat AI output as draft 1, then test and iterate.
+      </div>
+    </div>
   </section>
 
 </section>
@@ -687,6 +784,50 @@ graph LR
       Show the Student Pack page briefly. The Copilot access alone is more valuable than most students realize.
       Emphasize the Claude fallback — no one should be blocked from starting because Copilot isn't active yet.
     </aside>
+  </section>
+
+  <section>
+    <h3>Default Workflow: GitHub.com → Clone in VS Code</h3>
+    <div class="step-box"><strong>Step 1 (Browser):</strong> Create repo on GitHub.com named <code>snake-game</code> with README checked</div>
+    <div class="step-box"><strong>Step 2 (VS Code):</strong> Open Command Palette <kbd>Ctrl+Shift+P</kbd> and run <em>Git: Clone</em></div>
+    <div class="step-box"><strong>Step 3:</strong> Paste repo URL and choose local folder</div>
+    <div class="step-box"><strong>Step 4:</strong> Click <em>Open</em> when VS Code asks to open cloned repository</div>
+    <div class="step-box"><strong>Step 5:</strong> Work normally in VS Code; use Source Control panel for stage, commit, push, and sync</div>
+    <div class="callout callout-green" style="margin-top:0.5em">
+      This is the course default. Do not start local-only and figure out Git later.
+    </div>
+    <aside class="notes">
+      Make this explicit: students should create on GitHub first, then clone in VS Code.
+      This avoids "I built everything locally and now Git is confusing" at week-end.
+    </aside>
+  </section>
+
+  <section>
+    <h3>VS Code Source Control: Exact Buttons to Click</h3>
+    <div class="two-col" style="font-size:0.82em">
+      <div class="os-box">
+        <p><strong>Commit flow in GUI</strong></p>
+        <ol style="line-height:1.65">
+          <li>Open Source Control (<kbd>Ctrl+Shift+G</kbd>)</li>
+          <li>Click <strong>+</strong> next to files (or Stage All)</li>
+          <li>Type a commit message in the message box</li>
+          <li>Click <strong>Commit</strong> (checkmark)</li>
+          <li>Click <strong>Sync Changes</strong> to push</li>
+        </ol>
+      </div>
+      <div class="os-box">
+        <p><strong>When students get stuck</strong></p>
+        <ul>
+          <li><strong>No files shown?</strong> Save file first</li>
+          <li><strong>Push blocked?</strong> Pull first, then push</li>
+          <li><strong>Auth prompt?</strong> Sign into GitHub in VS Code</li>
+          <li><strong>Wrong branch?</strong> Check status bar branch name</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout callout-blue" style="margin-top:0.5em">
+      Terminal commands are always valid, but VS Code Source Control should be the default student workflow for this course.
+    </div>
   </section>
 
 </section>
@@ -1117,6 +1258,76 @@ I'm starting a Java project in VS Code. Create a single file called
 </section>
 
 <!-- ═══════════════════════════════════════════
+     PART 8 — SNAKE DEEP DIVE
+═══════════════════════════════════════════ -->
+<section>
+
+  <section>
+    <div class="part-header">
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 8 &nbsp;·&nbsp; 12 MINUTES</p>
+      <h2 style="margin:0.2em 0">Snake Deep Dive</h2>
+    </div>
+    <br>
+    <p style="color:#aaa">How the game works under the hood before you build it</p>
+  </section>
+
+  <section>
+    <h3>Snake Architecture in One Screen</h3>
+    <div class="mermaid">
+graph TD
+    A["Timer tick (every 120-150 ms)"] --> B["Read pending direction"]
+    B --> C["Compute new head cell"]
+    C --> D{"Collision?"}
+    D -- "Wall/self" --> E["Game over"]
+    D -- "No" --> F{"Food?"}
+    F -- "Yes" --> G["Grow snake + score++ + spawn food"]
+    F -- "No" --> H["Move forward: add head, remove tail"]
+    G --> I["Repaint panel"]
+    H --> I
+    I --> A
+    style A fill:#1e3a5f,stroke:#4299e1,color:#fff
+    style E fill:#2d1010,stroke:#ef5350,color:#fff
+    style G fill:#1a3a2e,stroke:#48c78e,color:#fff
+    </div>
+    <aside class="notes">
+      Students should understand the update loop before writing code. This mental model helps them debug.
+    </aside>
+  </section>
+
+  <section>
+    <h3>Data Structures and Why They Fit</h3>
+    <table class="nice">
+      <thead><tr><th>Game concept</th><th>Java type</th><th>Why this choice</th></tr></thead>
+      <tbody>
+        <tr><td>Snake body</td><td><code>LinkedList&lt;Point&gt;</code></td><td>Fast add/remove at head and tail each tick</td></tr>
+        <tr><td>Direction</td><td><code>enum Direction {UP, DOWN, LEFT, RIGHT}</code></td><td>Prevents invalid string values and typo bugs</td></tr>
+        <tr><td>Food position</td><td><code>Point</code></td><td>Simple x,y coordinate for one pellet</td></tr>
+        <tr><td>Game state</td><td><code>boolean running</code>, <code>int score</code></td><td>Clear control over loop and UI messaging</td></tr>
+        <tr><td>Random spawn</td><td><code>Random</code></td><td>Uniform random food placement on grid</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-blue" style="margin-top:0.5em">
+      Strong prompt tip: ask the AI to explain each data structure choice in one sentence.
+    </div>
+  </section>
+
+  <section>
+    <h3>Incremental Build Plan for Week 1</h3>
+    <div class="step-box">1. Window only: JFrame + GamePanel, no logic</div>
+    <div class="step-box">2. Grid and snake rendering: fixed initial snake, paint squares</div>
+    <div class="step-box">3. Timer movement loop: move head forward every tick</div>
+    <div class="step-box">4. Input handling: arrow keys update direction safely</div>
+    <div class="step-box">5. Food spawn and growth: score increments on eat</div>
+    <div class="step-box">6. Collision and game over: wall + self checks</div>
+    <div class="step-box">7. Polish extension: speed curve, restart, theme, or high score</div>
+    <div class="callout callout-green" style="margin-top:0.5em">
+      Commit after every stage. Each stage should be runnable before moving on.
+    </div>
+  </section>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
      SUMMARY
 ═══════════════════════════════════════════ -->
 <section>
@@ -1127,10 +1338,12 @@ I'm starting a Java project in VS Code. Create a single file called
       <thead><tr><th>Topic</th><th>The one thing</th></tr></thead>
       <tbody>
         <tr><td>Java setup</td><td><code>java -version</code> in the terminal confirms it worked</td></tr>
+        <tr><td>Tool theory</td><td>IDE + Git + LLM + Agent each have distinct roles in your workflow</td></tr>
         <tr><td>VS Code</td><td>Install the Extension Pack for Java; use the integrated terminal</td></tr>
-        <tr><td>GitHub</td><td>Commit early and often; commit messages should <em>mean something</em></td></tr>
+        <tr><td>GitHub</td><td>Default flow is create repo on GitHub, then clone and operate from VS Code Source Control</td></tr>
         <tr><td>Student Pack</td><td>Apply today with your school email; use Claude while you wait</td></tr>
         <tr><td>Agentic AI</td><td>Specificity is the skill — vague prompt = vague code</td></tr>
+        <tr><td>Snake strategy</td><td>Build in increments: render first, then move, then collide, then polish</td></tr>
         <tr><td>PROMPTS.md</td><td>Open it now; maintain it throughout; it is a graded artifact (30%)</td></tr>
       </tbody>
     </table>
