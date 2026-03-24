@@ -221,10 +221,11 @@
       <tr><td>3.5</td><td>Early Java sanity check</td></tr>
       <tr><td>4</td><td>GitHub setup &amp; version control basics (VS Code first)</td></tr>
       <tr><td>5</td><td>Hello Snake in your cloned repo</td></tr>
-      <tr><td>6</td><td>Simple Snake with inline + agentic AI</td></tr>
-      <tr><td>7</td><td>Prompt engineering and debugging loop</td></tr>
-      <tr><td>8</td><td>Snake deep dive: history, prompts, and design theory</td></tr>
-      <tr><td>9</td><td>Extending Snake: from baseline game to ambitious variants</td></tr>
+      <tr><td>6</td><td>Introducing Swing: from basic Java to GUI programs</td></tr>
+      <tr><td>7</td><td>Simple Snake with inline + agentic AI</td></tr>
+      <tr><td>8</td><td>Prompt engineering and debugging loop</td></tr>
+      <tr><td>9</td><td>Snake deep dive: history, prompts, and design theory</td></tr>
+      <tr><td>10</td><td>Extending Snake: from baseline game to ambitious variants</td></tr>
     </tbody>
   </table>
   <div class="callout callout-blue" style="margin-top:0.8em">
@@ -1036,13 +1037,133 @@ public class HelloSnake {
 </section>
 
 <!-- ═══════════════════════════════════════════
-     PART 6 — SIMPLE SNAKE WITH AI
+     PART 6 — INTRODUCING SWING
 ═══════════════════════════════════════════ -->
 <section>
 
   <section>
     <div class="part-header">
       <p style="color:#aaa;margin:0;font-size:0.7em">PART 6</p>
+      <h2 style="margin:0.2em 0">Introducing Swing</h2>
+    </div>
+    <br>
+    <p style="color:#aaa">How GUI programming grows directly out of the Java ideas students already know</p>
+  </section>
+
+  <section data-markdown>
+    <textarea data-template>
+### Swing Is Not "Different Java"
+
+Swing is a **Java GUI library**.
+
+That means students are still using the same core things they already know from basic Java:
+
+- classes
+- objects
+- methods
+- fields
+- constructors
+- inheritance
+
+The difference is that now those Java objects represent **windows, panels, buttons, timers, and events** instead of only console output.
+
+> Swing is best understood as **basic Java plus a graphical library**, not as a totally new programming language.
+    </textarea>
+  </section>
+
+  <section data-markdown>
+    <textarea data-template>
+### How Swing Connects to Earlier Java Topics
+
+| Earlier topic | Swing version of the same idea |
+|---|---|
+| Class | `JFrame`, `JPanel`, `Timer` are classes |
+| Object | `new JFrame()` creates an object in memory |
+| Method | `setVisible`, `repaint`, `paintComponent` are methods |
+| Inheritance | `class SnakeStarter extends JPanel` means "my panel is a specialized panel" |
+| Parameters | Window size, colors, coordinates, and delays are passed into methods |
+| State | Snake position, score, and direction live in fields |
+
+The conceptual jump is smaller than it first appears. The syntax is still Java; the library is what changed.
+    </textarea>
+  </section>
+
+  <section data-markdown>
+    <textarea data-template>
+### The Three Swing Ideas Students Need First
+
+1. **`JFrame` is the window**
+   The outer container the user sees on screen.
+
+2. **`JPanel` is the drawing surface**
+   The place where the game scene is painted.
+
+3. **`paintComponent(Graphics g)` is where drawing happens**
+   Java calls this when the panel needs to be redrawn.
+
+For week 1, this is enough. Students do **not** need the whole Swing API before they can start building Snake.
+    </textarea>
+  </section>
+
+  <section data-markdown>
+    <textarea data-template>
+### Console Programs vs. Swing Programs
+
+**Console program mental model:**
+
+1. Start `main`
+2. Run top to bottom
+3. Print output
+4. End
+
+**Swing program mental model:**
+
+1. Start `main`
+2. Build window and panel objects
+3. Hand control to the GUI event loop
+4. React to repaint requests, key presses, and timer ticks
+
+This is why GUI code feels different: it is **event-driven**, not purely top-to-bottom.
+    </textarea>
+  </section>
+
+  <section>
+    <h3>Why Swing Fits This Course</h3>
+    <div class="two-col" style="font-size:0.82em">
+      <div class="os-box">
+        <p><strong>Why we use it now</strong></p>
+        <ul>
+          <li>Comes with standard Java installations</li>
+          <li>Good enough for 2D teaching games</li>
+          <li>Connects directly to classes, methods, and inheritance</li>
+          <li>Keeps the focus on programming structure, not tool complexity</li>
+        </ul>
+      </div>
+      <div class="os-box">
+        <p><strong>What students should notice</strong></p>
+        <ul>
+          <li><code>extends JPanel</code> is inheritance in action</li>
+          <li><code>@Override</code> marks a method you are redefining</li>
+          <li>The snake game state lives in fields on the panel object</li>
+          <li>The GUI redraws because methods are being called repeatedly</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout callout-blue" style="margin-top:0.5em">
+      Transition: the next part uses a tiny Swing panel so students can see these ideas in code before the full Snake architecture appears.
+    </div>
+  </section>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PART 7 — SIMPLE SNAKE WITH AI
+═══════════════════════════════════════════ -->
+<section>
+
+  <section>
+    <div class="part-header">
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 7</p>
       <h2 style="margin:0.2em 0">Simple Snake with Inline and Agentic AI</h2>
     </div>
     <br>
@@ -1148,13 +1269,13 @@ public class SnakeStarter extends JPanel {
 </section>
 
 <!-- ═══════════════════════════════════════════
-     PART 7 — AGENTIC AI
+     PART 8 — AGENTIC AI
 ═══════════════════════════════════════════ -->
 <section>
 
   <section>
     <div class="part-header">
-      <p style="color:#aaa;margin:0;font-size:0.7em">PART 7</p>
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 8</p>
       <h2 style="margin:0.2em 0">First Look at Agentic AI</h2>
     </div>
     <br>
@@ -1366,13 +1487,13 @@ I'm starting a Java project in VS Code. Create a single file called
 </section>
 
 <!-- ═══════════════════════════════════════════
-     PART 8 — SNAKE DEEP DIVE
+     PART 9 — SNAKE DEEP DIVE
 ═══════════════════════════════════════════ -->
 <section>
 
   <section>
     <div class="part-header">
-      <p style="color:#aaa;margin:0;font-size:0.7em">PART 8</p>
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 9</p>
       <h2 style="margin:0.2em 0">Snake Deep Dive</h2>
     </div>
     <br>
@@ -1476,13 +1597,13 @@ graph TD
 </section>
 
 <!-- ═══════════════════════════════════════════
-     PART 9 — EXTENDING SNAKE
+     PART 10 — EXTENDING SNAKE
 ═══════════════════════════════════════════ -->
 <section>
 
   <section>
     <div class="part-header">
-      <p style="color:#aaa;margin:0;font-size:0.7em">PART 9</p>
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 10</p>
       <h2 style="margin:0.2em 0">Extending Snake</h2>
     </div>
     <br>
@@ -1545,6 +1666,7 @@ graph TD
         <tr><td>Tool theory</td><td>IDE + Git + LLM + Agent each have distinct roles in your workflow</td></tr>
         <tr><td>VS Code</td><td>Install the Extension Pack for Java; use the integrated terminal</td></tr>
         <tr><td>GitHub</td><td>Default flow is create repo on GitHub, then clone and operate from VS Code Source Control</td></tr>
+        <tr><td>Swing</td><td>It is basic Java plus a GUI library: classes, objects, methods, inheritance, and events in visual form</td></tr>
         <tr><td>Student Pack</td><td>Apply today with your school email; use Claude while you wait</td></tr>
         <tr><td>Agentic AI</td><td>Specificity is the skill — vague prompt = vague code</td></tr>
         <tr><td>Snake strategy</td><td>Build in increments: render first, then move, then collide, then polish</td></tr>
@@ -1564,10 +1686,11 @@ graph TD
     <div class="step-box">📌 After Part 3.5 — run <code>HelloWorld.java</code> as a local setup check</div>
     <div class="step-box">📌 After Part 4 — create your GitHub repo (<code>snake-game</code>) and clone it locally</div>
     <div class="step-box">📌 After Part 5 — in <code>snake-game</code>, run <code>HelloSnake.java</code> and push to GitHub</div>
-    <div class="step-box">📌 After Part 6 — use inline and chat AI to build a tiny SnakeStarter shell and commit it</div>
-    <div class="step-box">📌 After Part 7 — run Prompt 1, add the output to your repo, write the first PROMPTS.md entry</div>
-    <div class="step-box">📌 After Part 8 — match each seed prompt to the design idea it teaches</div>
-    <div class="step-box">📌 After Part 9 — choose one extension path before continuing the project</div>
+    <div class="step-box">📌 After Part 6 — be able to explain the role of <code>JFrame</code>, <code>JPanel</code>, and <code>paintComponent</code></div>
+    <div class="step-box">📌 After Part 7 — use inline and chat AI to build a tiny SnakeStarter shell and commit it</div>
+    <div class="step-box">📌 After Part 8 — run Prompt 1, add the output to your repo, write the first PROMPTS.md entry</div>
+    <div class="step-box">📌 After Part 9 — match each seed prompt to the design idea it teaches</div>
+    <div class="step-box">📌 After Part 10 — choose one extension path before continuing the project</div>
     <br>
     <div class="callout callout-blue">
       Bring your <code>PROMPTS.md</code> to office hours — it makes troubleshooting much faster
@@ -1610,6 +1733,7 @@ graph TD
 
 <!-- ── Reveal.js from CDN ──────────────────────── -->
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/markdown/markdown.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
 <!-- ── Mermaid from CDN ─────────────────────────── -->
@@ -1631,7 +1755,7 @@ graph TD
     margin: 0.02,
     minScale: 0.1,
     maxScale: 2.0,
-    plugins: [RevealNotes, RevealHighlight]
+    plugins: [RevealMarkdown, RevealNotes, RevealHighlight]
   });
 
   // ── Mermaid initialization ────────────────────
