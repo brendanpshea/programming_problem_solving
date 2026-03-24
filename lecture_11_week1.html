@@ -198,7 +198,7 @@
   <br>
   <div class="snake-grid" id="title-snake"></div>
   <br>
-  <p style="color:#666;font-size:0.65em">Week 1 &nbsp;·&nbsp; Agentic AI Game Project Kickoff &nbsp;·&nbsp; ~90 minutes</p>
+  <p style="color:#666;font-size:0.65em">Week 1 &nbsp;·&nbsp; Agentic AI Game Project Kickoff</p>
   <aside class="notes">
     Open by running the finished Snake game — 20–30 seconds of live gameplay. Let students watch.
     Then open VS Code and flash the ~200 lines of generated code: "This is what an AI writes for you
@@ -212,17 +212,18 @@
 <section>
   <h2>Today's Roadmap</h2>
   <table class="nice">
-    <thead><tr><th>#</th><th>Topic</th><th>Time</th></tr></thead>
+    <thead><tr><th>#</th><th>Topic</th></tr></thead>
     <tbody>
-      <tr><td>1</td><td>The Big Picture — what this project is really about</td><td>10 min</td></tr>
-      <tr><td>1.5</td><td>Core theory: IDEs, Git, LLMs, and agentic workflows</td><td>12 min</td></tr>
-      <tr><td>2</td><td>Installing Java</td><td>10 min</td></tr>
-      <tr><td>3</td><td>Installing &amp; configuring VS Code</td><td>10 min</td></tr>
-      <tr><td>4</td><td>GitHub setup &amp; version control basics (VS Code first)</td><td>16 min</td></tr>
-      <tr><td>5</td><td>Connecting GitHub Copilot</td><td>5 min</td></tr>
-      <tr><td>6</td><td>Writing &amp; running your first Java program</td><td>10 min</td></tr>
-      <tr><td>7</td><td>First look at agentic AI — Prompt 1 live</td><td>15 min</td></tr>
-      <tr><td>8</td><td>Snake deep dive: game loop, grid model, collisions, extension strategy</td><td>12 min</td></tr>
+      <tr><td>1</td><td>The Big Picture — what this project is really about</td></tr>
+      <tr><td>1.5</td><td>Core theory: IDEs, Git, LLMs, and agentic workflows</td></tr>
+      <tr><td>2</td><td>Installing Java</td></tr>
+      <tr><td>3</td><td>Installing &amp; configuring VS Code</td></tr>
+      <tr><td>3.5</td><td>Early Java sanity check</td></tr>
+      <tr><td>4</td><td>GitHub setup &amp; version control basics (VS Code first)</td></tr>
+      <tr><td>5</td><td>Hello Snake in your cloned repo</td></tr>
+      <tr><td>6</td><td>Simple Snake with inline + agentic AI</td></tr>
+      <tr><td>7</td><td>Prompt engineering and debugging loop</td></tr>
+      <tr><td>8</td><td>Snake deep dive: game loop, grid model, collisions, extension strategy</td></tr>
     </tbody>
   </table>
   <div class="callout callout-blue" style="margin-top:0.8em">
@@ -238,7 +239,7 @@
 
   <section>
     <div class="part-header">
-      <p style="color:#aaa;margin:0;font-size:0.7em">PART 1 &nbsp;·&nbsp; 10 MINUTES</p>
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 1</p>
       <h2 style="margin:0.2em 0">The Big Picture</h2>
     </div>
     <br>
@@ -391,7 +392,7 @@ graph LR
 
   <section>
     <div class="part-header">
-      <p style="color:#aaa;margin:0;font-size:0.7em">PART 2 &nbsp;·&nbsp; 10 MINUTES</p>
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 2</p>
       <h2 style="margin:0.2em 0">Installing Java ☕</h2>
     </div>
     <br>
@@ -510,7 +511,7 @@ graph TD
 
   <section>
     <div class="part-header">
-      <p style="color:#aaa;margin:0;font-size:0.7em">PART 3 &nbsp;·&nbsp; 10 MINUTES</p>
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 3</p>
       <h2 style="margin:0.2em 0">Installing VS Code</h2>
     </div>
     <br>
@@ -654,7 +655,7 @@ graph TD
 
   <section>
     <div class="part-header">
-      <p style="color:#aaa;margin:0;font-size:0.7em">PART 3.5 &nbsp;·&nbsp; 8 MINUTES</p>
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 3.5</p>
       <h2 style="margin:0.2em 0">Early Java Sanity Check</h2>
     </div>
     <br>
@@ -697,7 +698,7 @@ public class HelloWorld {
 
   <section>
     <div class="part-header">
-      <p style="color:#aaa;margin:0;font-size:0.7em">PART 4 &nbsp;·&nbsp; 10 MINUTES</p>
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 4</p>
       <h2 style="margin:0.2em 0">GitHub &amp; Version Control</h2>
     </div>
     <br>
@@ -876,91 +877,13 @@ graph LR
 </section>
 
 <!-- ═══════════════════════════════════════════
-     PART 5 — GITHUB COPILOT
+     PART 5 — HELLO SNAKE IN CLONED REPO
 ═══════════════════════════════════════════ -->
 <section>
 
   <section>
     <div class="part-header">
-      <p style="color:#aaa;margin:0;font-size:0.7em">PART 5 &nbsp;·&nbsp; 5 MINUTES</p>
-      <h2 style="margin:0.2em 0">Connecting GitHub Copilot</h2>
-    </div>
-  </section>
-
-  <section>
-    <h3>Activating Copilot in VS Code</h3>
-    <p style="font-size:0.85em;color:#aaa">Three steps, once your Student Pack is approved:</p>
-    <br>
-    <div class="step-box fragment">
-      <strong>1.</strong> Install <strong>GitHub Copilot</strong> and <strong>GitHub Copilot Chat</strong> extensions
-      (done in Part 3 if you followed along)
-    </div>
-    <div class="step-box fragment">
-      <strong>2.</strong> <kbd>Ctrl+Shift+P</kbd> → type <em>"GitHub Copilot: Sign In"</em> → sign in with your GitHub account
-    </div>
-    <div class="step-box fragment">
-      <strong>3.</strong> Once the Student Pack is approved, Copilot activates automatically —
-      you'll see the Copilot icon in the bottom status bar
-    </div>
-    <br>
-    <div class="callout callout-blue fragment">
-      <strong>Not approved yet?</strong> Open <strong>claude.ai</strong> in a browser — copy the AI's output, paste into VS Code.
-      Same workflow, different tool. No one is blocked.
-    </div>
-    <aside class="notes">
-      Have Claude open in a browser tab as the live fallback. Many students won't have Copilot
-      approved yet. That's fine — today's demo will use one or the other.
-    </aside>
-  </section>
-
-  <section>
-    <h3>Inline Suggestions vs. Copilot Chat</h3>
-    <div class="two-col" style="font-size:0.83em">
-      <div class="os-box">
-        <p style="color:#ffc107;margin-top:0"><strong>💡 Inline Suggestions</strong></p>
-        <p>Start typing → Copilot offers a completion;<br><kbd>Tab</kbd> to accept, <kbd>Esc</kbd> to dismiss</p>
-        <hr style="border-color:#333">
-        <p style="color:#48c78e;font-size:0.85em">Good for:</p>
-        <ul style="font-size:0.82em">
-          <li>Completing a line you started</li>
-          <li>Repetitive patterns (getters/setters)</li>
-          <li>Remembering method names</li>
-        </ul>
-        <p style="color:#ef5350;font-size:0.82em">Not great for getting a whole game</p>
-      </div>
-      <div class="os-box" style="border-color:#4299e1">
-        <p style="color:#4299e1;margin-top:0"><strong>💬 Copilot Chat Panel</strong></p>
-        <p>Ask questions, request whole files, iterate on results — a real conversation</p>
-        <hr style="border-color:#333">
-        <p style="color:#48c78e;font-size:0.85em">What we use for this project ✅</p>
-        <ul style="font-size:0.82em">
-          <li>Full seed prompts from the assignment</li>
-          <li>Pasting compiler errors to get fixes</li>
-          <li>Asking "why did you do it this way?"</li>
-        </ul>
-      </div>
-    </div>
-    <div class="callout callout-red fragment" style="margin-top:0.7em">
-      Copilot is not an oracle. It is confidently wrong sometimes.
-      <strong>Read what it writes. Run it. Debug it.</strong>
-    </div>
-    <aside class="notes">
-      Make the contrast clear. Inline suggestions are useful once they're writing their own extension code.
-      For the seed prompt phase, Chat is the tool. The "confidently wrong" point is key —
-      foreshadow that error-debugging is a normal part of the workflow.
-    </aside>
-  </section>
-
-</section>
-
-<!-- ═══════════════════════════════════════════
-     PART 6 — HELLO WORLD
-═══════════════════════════════════════════ -->
-<section>
-
-  <section>
-    <div class="part-header">
-      <p style="color:#aaa;margin:0;font-size:0.7em">PART 6 &nbsp;·&nbsp; 10 MINUTES</p>
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 5</p>
       <h2 style="margin:0.2em 0">Hello Snake in Your Cloned Repo</h2>
     </div>
     <br>
@@ -986,98 +909,143 @@ public class HelloSnake {
         </tr>
         <tr>
           <td><code>public static void main(String[] args)</code></td>
-          <td>The entry point — Java <em>always</em> starts here, in every program you will ever run</td>
+          <td>The entry point — Java always starts here.</td>
         </tr>
         <tr>
           <td><code>System.out.println(...)</code></td>
-          <td>Prints text to terminal. This verifies your cloned project runs Java code before adding Swing.</td>
+          <td>Verifies your cloned repository runs Java before Swing logic.</td>
         </tr>
       </tbody>
     </table>
-    <aside class="notes">
-      Walk through every single line. Students have seen Java before but probably in a web editor with
-      hidden boilerplate. Demystify each piece — especially that the filename and class name must match
-      exactly (including case). If students get mysterious "class not found" errors, it's usually this.
-    </aside>
   </section>
 
   <section>
-    <h3>Run HelloSnake and Commit via VS Code</h3>
+    <h3>Run and Commit via VS Code</h3>
     <div class="two-col" style="font-size:0.85em">
       <div class="os-box">
-        <p>▶️ <strong>Green Play Button</strong></p>
-        <p style="color:#aaa">Top-right corner of the editor window.<br>
-        One click — VS Code handles compile and run.</p>
-        <br>
-        <p style="color:#48c78e;font-size:0.85em">Use this most of the time ✅</p>
-      </div>
-      <div class="os-box">
-        <p>💻 <strong>Terminal (manual)</strong></p>
+        <p>▶️ <strong>Run</strong></p>
         <div class="cmd-block" style="font-size:0.85em">
           <span class="prompt">$ </span>javac HelloSnake.java<br>
           <span class="prompt">$ </span>java HelloSnake
         </div>
-        <p style="color:#aaa;font-size:0.82em">Two steps: compile → run<br>
-        You'll see <code>HelloSnake.class</code> appear — bytecode generated correctly</p>
+      </div>
+      <div class="os-box">
+        <p>🔀 <strong>Commit</strong></p>
+        <div class="cmd-block" style="font-size:0.85em">
+          <span class="prompt">$ </span>git add .<br>
+          <span class="prompt">$ </span>git commit -m "Add HelloSnake.java in cloned snake-game repo"<br>
+          <span class="prompt">$ </span>git push
+        </div>
       </div>
     </div>
-    <br>
-    <div class="callout callout-blue fragment">
-      In class default flow: create repository on GitHub, clone in VS Code, create <code>HelloSnake.java</code>, run it, then commit from Source Control.
+    <div class="callout callout-blue" style="margin-top:0.6em">
+      Equivalent GUI flow in VS Code: Source Control → Stage → Commit → Sync.
     </div>
-    <aside class="notes">
-      Run it both ways live. Show the HelloWorld.class file that appears when you compile manually.
-      Ask: "What do you think is inside that .class file?" (Compiled bytecode — not readable text.)
-    </aside>
+    <div class="callout" style="margin-top:0.4em">
+      ✅ Async checkpoint: in cloned <code>snake-game</code>, run <code>HelloSnake.java</code> and push it.
+    </div>
   </section>
 
-    <section>
-    <h3>Bridge to Snake: Add a Tiny Prompt-Ready Scaffold</h3>
-    <pre><code class="language-java" data-trim>
-  public class HelloSnake {
-    public static void main(String[] args) {
-      int gridSize = 20;
-      int cellSize = 30;
-      System.out.println("Snake setup: " + gridSize + "x" + gridSize + " grid");
-      System.out.println("Cell size: " + cellSize + " px");
-    }
-}
-    </code></pre>
-    <div class="callout fragment" style="margin-top:0.6em">
-      This creates continuity: the same file evolves from console output to Swing window in Prompt 1.
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PART 6 — SIMPLE SNAKE WITH AI
+═══════════════════════════════════════════ -->
+<section>
+
+  <section>
+    <div class="part-header">
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 6</p>
+      <h2 style="margin:0.2em 0">Simple Snake with Inline and Agentic AI</h2>
     </div>
-    <aside class="notes">
-      Run it quickly. Students recognize the constructs. Then immediately move to the commit step —
-      this is their first real commit and it matters psychologically.
-    </aside>
+    <br>
+    <p style="color:#aaa">Use both AI modes on one tiny Snake starter so students can compare strengths</p>
   </section>
 
   <section>
-    <h3>Commit in Your snake-game Repository 🎉</h3>
+    <h3>Inline AI Exercise: Small Local Change</h3>
+    <pre><code class="language-java" data-trim>
+import java.awt.*;
+import javax.swing.*;
+
+public class SnakeStarter extends JPanel {
+    private final int gridSize = 20;
+    private final int cellSize = 30;
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.setColor(new Color(40, 40, 40));
+        g.fillRect(0, 0, gridSize * cellSize, gridSize * cellSize);
+    }
+}
+    </code></pre>
+    <div class="callout callout-green" style="margin-top:0.6em">
+      Use inline completion to add: "draw a 3-segment green snake near center".
+    </div>
+    <div class="callout">
+      Inline AI is best for short, local edits where file structure is already fixed.
+    </div>
+  </section>
+
+  <section>
+    <h3>Agentic AI Exercise: Structured Prompt</h3>
+    <div class="callout callout-blue" style="font-style:italic;line-height:1.7">
+      "In <code>SnakeStarter.java</code>, add a <code>main</code> method that opens a 600x600 JFrame titled 'Snake Starter'.
+      Keep one file. Add <code>LinkedList&lt;Point&gt;</code> with 3 segments and draw it in green.
+      Do not add movement yet."
+    </div>
+    <div class="two-col" style="font-size:0.82em;margin-top:0.6em">
+      <div class="os-box">
+        <p><strong>Why this is agentic mode</strong></p>
+        <ul>
+          <li>Multiple constraints in one instruction</li>
+          <li>Scope boundary is explicit</li>
+          <li>Design choices are requested</li>
+        </ul>
+      </div>
+      <div class="os-box">
+        <p><strong>Validation checklist</strong></p>
+        <ul>
+          <li>Compiles/runs after paste</li>
+          <li>No extra classes you did not ask for</li>
+          <li>Prompt constraints respected</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h3>Inline vs Agentic: Conceptual Comparison</h3>
+    <table class="nice">
+      <thead><tr><th>Need</th><th>Inline</th><th>Agentic chat</th></tr></thead>
+      <tbody>
+        <tr><td>Add one draw call</td><td>Best choice</td><td>Overkill</td></tr>
+        <tr><td>Add timer and update loop</td><td>Possible, brittle</td><td>Best choice</td></tr>
+        <tr><td>Refactor architecture</td><td>Weak</td><td>Strong</td></tr>
+        <tr><td>Fix tiny syntax issue</td><td>Strong</td><td>Also works</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-red" style="margin-top:0.6em">
+      Both modes still require compile/run verification.
+    </div>
+  </section>
+
+  <section>
+    <h3>Checkpoint Commit for SnakeStarter</h3>
     <div class="cmd-block">
       <span class="prompt">$ </span>git add .<br>
-      <span class="prompt">$ </span>git commit -m "Add HelloSnake.java in cloned snake-game repo"<br>
+      <span class="prompt">$ </span>git commit -m "Add SnakeStarter baseline with inline and chat-guided edits"<br>
       <span class="prompt">$ </span>git push
     </div>
-    <br>
-    <div class="callout callout-green fragment">
-      Refresh GitHub in your browser — your file is there. That's a real commit in a real repository.
-    </div>
-    <br>
-    <div class="two-col fragment" style="font-size:0.82em">
+    <div class="two-col" style="font-size:0.82em;margin-top:0.6em">
       <div class="callout callout-blue">
-        <strong>Prefer a GUI?</strong><br>
-        Source Control tab (<kbd>Ctrl+Shift+G</kbd>) → "+" to stage → type message → checkmark to commit → sync button to push
+        Record in <code>PROMPTS.md</code>: one inline completion and one chat prompt you used.
       </div>
-      <div class="callout">
-        ✅ <strong>Async checkpoint 4:</strong><br>
-        In cloned <code>snake-game</code>, run <code>HelloSnake.java</code> and push it before continuing
+      <div class="callout callout-green">
+        ✅ Async checkpoint: build and commit a runnable <code>SnakeStarter.java</code> shell.
       </div>
     </div>
-    <aside class="notes">
-      Do this live. The moment the commit appears on GitHub is a small milestone — make it feel like one.
-      Some students have never committed code to GitHub before. This is their first.
-    </aside>
   </section>
 
 </section>
@@ -1089,7 +1057,7 @@ public class HelloSnake {
 
   <section>
     <div class="part-header">
-      <p style="color:#aaa;margin:0;font-size:0.7em">PART 7 &nbsp;·&nbsp; 15 MINUTES</p>
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 7</p>
       <h2 style="margin:0.2em 0">First Look at Agentic AI</h2>
     </div>
     <br>
@@ -1280,7 +1248,7 @@ I'm starting a Java project in VS Code. Create a single file called
     </code></pre>
     <div class="callout callout-green fragment">
       Do not wait until Friday to fill this in.
-      Write two sentences right after each AI conversation — it takes 2 minutes and saves 20.
+      Write two sentences right after each AI conversation.
     </div>
     <div class="callout callout-blue fragment">
       ✅ <strong>Async checkpoint 5:</strong> Run Prompt 1, add the output to your repo, and write your first PROMPTS.md entry.
@@ -1301,7 +1269,7 @@ I'm starting a Java project in VS Code. Create a single file called
 
   <section>
     <div class="part-header">
-      <p style="color:#aaa;margin:0;font-size:0.7em">PART 8 &nbsp;·&nbsp; 12 MINUTES</p>
+      <p style="color:#aaa;margin:0;font-size:0.7em">PART 8</p>
       <h2 style="margin:0.2em 0">Snake Deep Dive</h2>
     </div>
     <br>
@@ -1395,7 +1363,8 @@ graph TD
     <div class="step-box">📌 After Part 3 — confirm Extension Pack for Java is installed in VS Code</div>
     <div class="step-box">📌 After Part 4 — create your GitHub repo (<code>snake-game</code>) and clone it locally</div>
     <div class="step-box">📌 After Part 3.5 — run <code>HelloWorld.java</code> as a local setup check</div>
-    <div class="step-box">📌 After Part 6 — in <code>snake-game</code>, run <code>HelloSnake.java</code> and push to GitHub</div>
+    <div class="step-box">📌 After Part 5 — in <code>snake-game</code>, run <code>HelloSnake.java</code> and push to GitHub</div>
+    <div class="step-box">📌 After Part 6 — use inline and chat AI to build a tiny SnakeStarter shell and commit it</div>
     <div class="step-box">📌 After Part 7 — run Prompt 1, add the output to your repo, write the first PROMPTS.md entry</div>
     <br>
     <div class="callout callout-blue">
