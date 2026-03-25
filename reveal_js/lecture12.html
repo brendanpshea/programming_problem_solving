@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MVC, Space Invaders, and Testing: Structuring Code and Prompts Like a Software Engineer</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/night.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/monokai.css">
+  <link rel="stylesheet" href="lecture-theme.css">
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ═══════════════════════════════════════════════════════ TITLE -->
+<section>
+  <div class="hero-grid">
+    <div class="part">
+      <div class="kicker">Lecture 12</div>
+      <h1>MVC, Space Invaders, and Testing: Structuring Code and Prompts Like a Software Engineer</h1>
+      <p class="subtitle">How to split a growing program into Model, View, and Controller — and why that split makes agentic AI prompts sharper, debugging easier, and game logic testable without a running window.</p>
+      <div class="badge-line">
+        <span class="badge">MVC pattern</span>
+        <span class="badge">Space Invaders</span>
+        <span class="badge">ModelTester</span>
+        <span class="badge">Swing</span>
+        <span class="badge">Agentic AI</span>
+      </div>
+    </div>
+    <div class="hero-panel">
+      <div class="card-title">The Central Idea</div>
+      <p>In Lecture 11, Snake lived in one file. That was intentional — it let you focus on tools and workflow.</p>
+      <p>In this lecture, Space Invaders lives in <strong>three files</strong>. That is also intentional. When a program grows, mixing responsibilities in one place makes every problem harder to find and every AI prompt harder to write.</p>
+      <p>MVC is the solution. It is not a rule imposed from outside. It is a pattern that emerges when programmers take "which code belongs where?" seriously.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ ROADMAP -->
+<section data-markdown>
+  <textarea data-template>
+## Roadmap
+
+1. Why one file stops working — the coupling problem
+2. What MVC is and where each responsibility lives
+3. Designing Space Invaders using MVC before writing any code
+4. The four seed prompts, layer by layer
+5. How the MVC split makes AI prompts more precise
+6. What software testing is and why it matters
+7. Building a `ModelTester` class in plain Java
+8. Testing the Model without Swing — five behaviors
+9. What JUnit is (and why you don't need it yet)
+10. Debugging strategies when the AI gives you something wrong
+11. Extensions and what comes next
+
+> The goal this week is not just a working game. It is a game you can explain, extend, and test one layer at a time.
+  </textarea>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 1 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 1</div>
+    <h2>Why One File Stops Working</h2>
+    <p class="subtitle">Snake in one file was a reasonable starting point. Understanding why that approach has limits is what motivates MVC.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### The Coupling Problem
+
+When game logic, drawing code, and input handling all live in the same class, they become **coupled**.
+
+**Coupled** means: a change in one part unexpectedly affects another.
+
+Examples of coupling causing real problems:
+
+- You want to test whether collision detection works, but it calls `repaint()`, which requires a live window
+- You want to change the color of aliens, but the color is buried next to movement logic
+- You give the AI a bug to fix, but the AI cannot tell whether to edit the drawing code or the game-state code
+- You want to add a second level, but score, position, and paint calls are all tangled together
+
+> Coupling is not a beginner mistake. It is what naturally happens when you write code that "just works" without thinking about where each piece belongs.
+  </textarea>
+</section>
+
+<section>
+  <h3>What "Tangled" Code Looks Like</h3>
+  <div class="cols-2">
+    <div>
+      <div class="card-title" style="color:var(--rose);margin-bottom:0.4em;">One class doing too much</div>
+      <pre><code class="language-java" data-trim>
+// all in GamePanel
+void paintComponent(Graphics g) {
+  // draw aliens
+  // also check if they hit bottom
+  // also update score
+  // also draw score
+  // also play sound??
+}
+
+void keyPressed(KeyEvent e) {
+  // move player
+  // also check collision
+  // also update lives
+}
+      </code></pre>
+    </div>
+    <div>
+      <div class="card-title" style="color:var(--mint);margin-bottom:0.4em;">What this makes hard</div>
+      <ul>
+        <li>You cannot test collision logic without painting</li>
+        <li>AI does not know which edits are safe</li>
+        <li>Fixing a drawing bug might break movement</li>
+        <li>Adding a feature means reading all of it</li>
+      </ul>
+      <div class="warn-box">
+        A tangled file is not a sign of failure. It is a sign that the project has grown past what one class was designed to do.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 2 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 2</div>
+    <h2>What MVC Is</h2>
+    <p class="subtitle">Model-View-Controller is a design pattern — a named, reusable solution to the problem of separating responsibilities in an interactive program.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### MVC: Three Responsibilities, Three Classes
+
+**MVC** stands for **Model-View-Controller**.
+
+It is a **design pattern**: a named, reusable solution to a recurring problem.
+
+| Layer | Responsibility | The test |
+|---|---|---|
+| Model | game state and rules | no Swing imports allowed |
+| View | drawing what the Model describes | reads Model, never changes it |
+| Controller | input handling and wiring | calls Model methods, triggers View |
+
+The "test" column is the most useful practical guide.
+
+If you want to add a Swing import to the Model, stop and ask: is this game logic, or is this drawing? If it is drawing, it belongs in the View.
+  </textarea>
+</section>
+
+<section>
+  <h3>MVC in a Diagram</h3>
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart LR
+  U([User input]) --> C[Controller]
+  C -->|calls methods on| M[Model]
+  M -->|state changes| M
+  C -->|triggers repaint| V[View]
+  V -->|reads state from| M
+  V -->|renders to| S([Screen])
+    </div>
+  </div>
+  <div class="cols-3" style="margin-top:0.6em;">
+    <div class="mini-card layer-model">
+      <div class="mvc-label m">Model</div>
+      <p style="margin:0">Knows the truth about the game. Never draws anything.</p>
+    </div>
+    <div class="mini-card layer-view">
+      <div class="mvc-label v">View</div>
+      <p style="margin:0">Knows how to show what the Model knows. Never decides anything.</p>
+    </div>
+    <div class="mini-card layer-ctrl">
+      <div class="mvc-label c">Controller</div>
+      <p style="margin:0">Knows when to connect the two. Owns the game loop.</p>
+    </div>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### A Short History of MVC
+
+MVC was first described in the late 1970s by Trygve Reenskaug at Xerox PARC, originally for Smalltalk applications.
+
+The core insight was that interactive programs have three distinct concerns:
+
+- what the program knows
+- what the user sees
+- how user actions connect to program state
+
+That insight proved durable. MVC and its descendants appear in web frameworks, mobile apps, game engines, and desktop applications today.
+
+> Understanding MVC means understanding a design vocabulary that transfers to almost any interactive programming context you will encounter in the future.
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Why MVC Makes AI Prompts Better
+
+The MVC split directly improves the quality of agentic AI interactions.
+
+Compare:
+
+**Vague:** "Fix the bug where the alien shoots through the player"
+
+**Precise (MVC-aware):** "In `GameModel.java`, the `checkAlienBulletCollision` method is not reducing player lives correctly. Here is the method. The player's bounding box is stored as a `Rectangle` field. Fix the collision check without touching the View or Controller."
+
+The second prompt:
+
+- names the file
+- names the method
+- describes the expected behavior
+- constrains the scope of the fix
+
+> MVC gives you the vocabulary to write prompts like the second one. That vocabulary is part of what you are learning this week.
+  </textarea>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 3 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 3</div>
+    <h2>Designing Space Invaders Before Writing Code</h2>
+    <p class="subtitle">A brief design step before the first prompt prevents the most common MVC mistake: letting the AI decide what belongs where.</p>
+  </div>
+</section>
+
+<section>
+  <h3>Space Invaders: What Each Layer Owns</h3>
+  <div class="cols-3">
+    <div class="card layer-model">
+      <div class="mvc-label m">Model — GameModel.java</div>
+      <ul>
+        <li>Player position (x only)</li>
+        <li>Player bullet</li>
+        <li>Alien grid (5 × 11)</li>
+        <li>Alien bullets (list)</li>
+        <li>Score and lives</li>
+        <li>Movement logic</li>
+        <li>Collision detection</li>
+        <li>Game-over flag</li>
+      </ul>
+    </div>
+    <div class="card layer-view">
+      <div class="mvc-label v">View — GameView.java</div>
+      <ul>
+        <li>Extends <code>JPanel</code></li>
+        <li>Holds a reference to Model</li>
+        <li>Draws player, aliens, bullets</li>
+        <li>Draws score and lives</li>
+        <li>Draws game-over message</li>
+        <li>No game logic</li>
+        <li>No state mutation</li>
+      </ul>
+    </div>
+    <div class="card layer-ctrl">
+      <div class="mvc-label c">Controller — GameController.java</div>
+      <ul>
+        <li>Has <code>main</code> method</li>
+        <li>Creates Model, View, Frame</li>
+        <li>Owns the <code>Timer</code></li>
+        <li>Owns the <code>KeyListener</code></li>
+        <li>Calls Model methods on input</li>
+        <li>Calls <code>repaint()</code> each tick</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### The Design Question to Ask Before Every Feature
+
+Before writing a feature — or writing a prompt to generate one — ask:
+
+**"Which layer does this belong to?"**
+
+| Feature | Layer | Reason |
+|---|---|---|
+| alien moves right until edge, then descends | Model | it is a rule |
+| alien is drawn as a green rectangle | View | it is visual |
+| spacebar fires a bullet | Controller | it is input |
+| bullet is removed when it hits an alien | Model | it is collision logic |
+| hit alien disappears from screen | View | it reads Model state |
+| score increases by 10 | Model | it is a state change |
+
+If you can answer this question before prompting, the AI has far less room to mix things up.
+  </textarea>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 3b: SETUP -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Before You Prompt</div>
+    <h2>Create the Repo and Open Copilot Chat</h2>
+    <p class="subtitle">Same workflow as Week 1 — but now you know why each step matters.</p>
+  </div>
+</section>
+
+<section>
+  <h3>Step 1 — Create the GitHub Repo</h3>
+  <div class="cols-2">
+    <div>
+      <ol>
+        <li>Go to <strong>github.com</strong> and sign in.</li>
+        <li>Create a new repository named <code>space-invaders</code>.</li>
+        <li>Check <strong>Add a README</strong>.</li>
+        <li>Click <strong>Create repository</strong>.</li>
+        <li>Copy the repository URL.</li>
+      </ol>
+      <div class="good-box" style="margin-top:0.6em;">
+        Create the repo first, then clone it. Writing code in a random folder and trying to "add Git later" creates avoidable confusion.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Why a fresh repo for Week 2?</div>
+      <p>Space Invaders is a different project from Snake. It has a different file structure (three files instead of one) and a different architecture (MVC). Keeping them in separate repos keeps your Git history clean and makes each project easier to navigate on GitHub.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h3>Step 2 — Clone and Open in VS Code</h3>
+  <div class="cols-2">
+    <div>
+      <ol>
+        <li>Open VS Code.</li>
+        <li>Press <code>Ctrl+Shift+P</code> → run <strong>Git: Clone</strong>.</li>
+        <li>Paste the repository URL.</li>
+        <li>Choose a local folder.</li>
+        <li>Click <strong>Open</strong> when VS Code asks.</li>
+      </ol>
+      <pre><code class="language-bash" data-trim>
+# Verify you're inside the repo
+git status
+# Should say: On branch main, nothing to commit
+      </code></pre>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0.45em;">
+      <div class="mini-card"><strong>Good sign:</strong> Explorer shows the <code>space-invaders</code> folder with <code>README.md</code> inside.</div>
+      <div class="mini-card"><strong>Good sign:</strong> Source Control sidebar shows the branch name.</div>
+      <div class="mini-card warn-box" style="margin:0;"><strong>Stop here if:</strong> VS Code does not recognize the folder as a Git repository. Fix this before writing any code.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h3>Step 3 — Open Copilot Chat</h3>
+  <div class="cols-2">
+    <div>
+      <p>With the repo open, launch Copilot Chat:</p>
+      <ul>
+        <li>Click the <strong>Copilot Chat</strong> icon in the sidebar, or</li>
+        <li>Press <code>Ctrl+Alt+I</code> (Windows/Linux) or <code>Cmd+Opt+I</code> (Mac)</li>
+      </ul>
+      <div class="good-box" style="margin-top:0.5em;">
+        Copilot Chat can see the files you have open in the editor. When you ask it to create or edit a file, make sure the relevant file is open so Copilot reads its current content — not a guess about what might be in it.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Two Copilot modes — reminder</div>
+      <table style="margin-top:0.2em;">
+        <tr><th>Mode</th><th>Best for</th></tr>
+        <tr><td><strong>Inline</strong></td><td>Small local edits, completing obvious next lines</td></tr>
+        <tr><td><strong>Chat</strong></td><td>Full prompts, multi-line generation, debugging conversations, MVC-scoped changes</td></tr>
+      </table>
+      <p style="margin-top:0.5em;">For this project, <strong>Chat is the primary tool.</strong> The seed prompts are designed for Chat, not inline completion.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 4 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 4</div>
+    <h2>The Four Seed Prompts, Layer by Layer</h2>
+    <p class="subtitle">The prompts follow MVC order deliberately. Build the skeleton first, then fill each layer in isolation.</p>
+  </div>
+</section>
+
+<section>
+  <h3>Prompt 1: The MVC Skeleton</h3>
+  <div class="prompt-box">
+    <p>I am building Space Invaders in Java using Swing with a strict Model-View-Controller structure. Create three files: <code>GameModel.java</code>, <code>GameView.java</code>, and <code>GameController.java</code>. <code>GameView</code> should extend <code>JPanel</code>. <code>GameController</code> should contain the <code>main</code> method, create the <code>JFrame</code>, and wire the three classes together. <code>GameModel</code> must have no Swing imports. For now, add only placeholder comments inside each class explaining what it will do. The program should compile and open a blank window.</p>
+  </div>
+  <div class="cols-2" style="margin-top:0.55em;">
+    <div class="card">
+      <div class="card-title">Why this first</div>
+      <p>A blank but compiling skeleton proves the three-file structure works before any logic is added. If the skeleton does not compile, fix that before anything else.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">What to verify</div>
+      <ul>
+        <li>Three separate files exist</li>
+        <li><code>GameModel</code> has no Swing imports</li>
+        <li>A blank window opens</li>
+        <li>No extra classes or logic were added</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h3>Prompt 2: Building the Model</h3>
+  <div class="prompt-box">
+    <p>Fill in <code>GameModel.java</code>. It should store: the player's x position (they move horizontally only), a <code>Rectangle</code> for the player's bullet (null when not fired), a 5-by-11 boolean grid for the alien formation, a list of alien bullet rectangles, the current score, lives remaining (start at 3), and a game-over boolean. Add methods to: move the player left or right by a fixed amount, fire a player bullet if one is not already in flight, move the player's bullet upward each tick, move the alien formation right until the edge then down and reverse, fire alien bullets at random intervals, and check collisions between bullets and aliens or the player. No Swing imports. Use <code>java.awt.Rectangle</code> for bounds only.</p>
+  </div>
+  <blockquote>
+    Allowing <code>java.awt.Rectangle</code> in the Model is a pragmatic choice — it is a geometry class, not a GUI class. The rule is "no Swing," not "no java.awt."
+  </blockquote>
+</section>
+
+<section>
+  <h3>Prompt 3: Building the View</h3>
+  <div class="prompt-box">
+    <p>Fill in <code>GameView.java</code>. It should extend <code>JPanel</code> and take a <code>GameModel</code> reference in its constructor. Override <code>paintComponent</code> to draw: the player as a white rectangle, the alien grid as green rectangles using the Model's boolean grid, the player bullet as a yellow rectangle (only if the model's bullet field is not null), alien bullets as red rectangles, score in the top-left corner, lives in the top-right corner, and a centered game-over message when the model's game-over flag is true. The View must not call any Model mutating methods. It only reads state.</p>
+  </div>
+  <div class="good-box">
+    A useful check: after pasting this output, search <code>GameView.java</code> for any method call that modifies state (e.g., <code>setScore</code>, <code>moveBullet</code>). If you find one, the AI violated the View contract and that line needs to move.
+  </div>
+</section>
+
+<section>
+  <h3>Prompt 4: Wiring the Controller</h3>
+  <div class="prompt-box">
+    <p>Fill in <code>GameController.java</code>. The <code>main</code> method should create a <code>GameModel</code>, a <code>GameView</code>, and a 600-by-650 <code>JFrame</code>. Add a <code>KeyListener</code> on the frame that calls <code>model.movePlayerLeft()</code> and <code>model.movePlayerRight()</code> on arrow keys, and <code>model.firePlayerBullet()</code> on spacebar. Add a <code>javax.swing.Timer</code> at 16 milliseconds that calls model update methods (move bullet, move aliens, fire alien bullets, check collisions) and then repaints the view. Stop the timer when the model's game-over flag is true.</p>
+  </div>
+  <div class="cols-2" style="margin-top:0.5em;">
+    <div class="mini-card layer-ctrl"><strong>Timer at 16ms</strong> ≈ 60 frames per second. This is the game loop.</div>
+    <div class="mini-card layer-ctrl"><strong>KeyListener on the frame</strong>, not the panel, because the frame receives focus by default.</div>
+  </div>
+</section>
+
+<section>
+  <h3>After the Seed Prompts: Commit the Baseline</h3>
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart LR
+  A[Prompt 1\nSkeleton] --> B[Run + verify]
+  B --> C[git commit]
+  C --> D[Prompt 2\nModel]
+  D --> E[Run + verify]
+  E --> F[git commit]
+  F --> G[Prompt 3\nView]
+  G --> H[Run + verify]
+  H --> I[git commit]
+  I --> J[Prompt 4\nController]
+  J --> K[Run full game]
+  K --> L[git commit]
+    </div>
+  </div>
+  <blockquote>
+    One commit per prompt. If Prompt 4 breaks something, you can return to the Prompt 3 commit. That is the point of version control.
+  </blockquote>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 5 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 5</div>
+    <h2>How MVC Makes Agentic AI Prompts More Precise</h2>
+    <p class="subtitle">The design pattern and the prompting practice reinforce each other. A clear architecture produces a clearer conversation with the AI.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### The Scope Constraint Is a Prompt Ingredient
+
+When you know which layer a feature belongs to, your prompt can include an explicit scope constraint.
+
+Examples:
+
+- **"In `GameModel.java` only…"** — the AI knows not to touch the View
+- **"Without adding any Swing imports…"** — enforces the Model rule
+- **"In `GameView.java`, change only `paintComponent`…"** — limits the surface area of the change
+- **"The Controller should call a new Model method; define that method in the Model…"** — coordinates a two-file change explicitly
+
+> Every scope constraint you include in a prompt is one fewer decision the AI makes without you.
+  </textarea>
+</section>
+
+<section>
+  <h3>Three Prompts for Going Beyond the Seed</h3>
+  <div class="cols-3">
+    <div class="card">
+      <div class="card-title">Adding shields</div>
+      <div class="prompt-box" style="margin-top:0.3em;font-size:0.62em;">
+        In <code>GameModel.java</code>, add a list of shield rectangles positioned between the player and the alien formation. Reduce a shield's health when hit by a bullet from either side. Remove the shield when health reaches zero. No Swing imports.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Drawing shields</div>
+      <div class="prompt-box" style="margin-top:0.3em;font-size:0.62em;">
+        In <code>GameView.java</code>'s <code>paintComponent</code> method only, draw the shields from the model's shield list. Use the shield's health value to choose a color from full green to dim red. Do not call any model mutating methods.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Increasing speed</div>
+      <div class="prompt-box" style="margin-top:0.3em;font-size:0.62em;">
+        In <code>GameModel.java</code>, increase the alien movement speed each time an alien is destroyed. Expose a method the Controller can call to get the current recommended timer interval. Do not touch the View.
+      </div>
+    </div>
+  </div>
+  <blockquote style="margin-top:0.6em;">
+    Notice that each prompt names the file, names the method or field, and states the constraint. That is the pattern to practice.
+  </blockquote>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### When the AI Violates the Layer Boundary
+
+The AI will sometimes add game logic to the View, or Swing imports to the Model.
+
+This is not a catastrophic failure — it is a prompt to respond to.
+
+Useful follow-up:
+
+> "The code you added to `GameView.java` calls `model.setScore()`. That is a state mutation and should not be in the View. Move that call to an appropriate method in the Controller or Model. Keep the View read-only."
+
+That follow-up works because you can explain *why* the fix is needed, not just *that* a fix is needed. That is what understanding MVC gives you.
+  </textarea>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 6 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 6</div>
+    <h2>What Software Testing Is and Why It Matters</h2>
+    <p class="subtitle">Testing is the practice of writing code that checks other code. It is especially valuable when working with AI-generated output.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### The Problem Testing Solves
+
+When the AI generates code, you need a way to check whether it is correct.
+
+Running the full game and watching it play is one approach. But it has limits:
+
+- some bugs only appear in rare situations
+- a visual check cannot tell you *why* something is wrong
+- if you change the Model later, you cannot easily verify that old behavior still works
+
+**Automated tests** solve this by writing code that checks behavior directly.
+
+A test is a small program that:
+
+1. sets up a specific situation
+2. runs one piece of logic
+3. checks that the result matches what was expected
+4. reports pass or fail automatically
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Why MVC Makes Testing Possible Here
+
+Testing game code usually requires the game to run — which means a window, a timer, and keyboard events.
+
+But the Model has **no Swing imports**.
+
+That means you can:
+
+- create a `GameModel` in a test
+- call its methods directly
+- check the result
+- with no window, no timer, no screen
+
+This is the practical payoff of the "no Swing in the Model" rule.
+
+> MVC does not just organize code for humans. It makes code testable by machines.
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### What a Test Framework Does (Conceptually)
+
+Before reaching for a library, it helps to understand what a test framework actually does.
+
+A framework like JUnit runs a collection of small check methods and reports which ones passed and which ones failed. That is all.
+
+You can build that same structure in plain Java — and doing so makes the concept clearer than adding a new tool would.
+
+In this course, you will write a `ModelTester` class that does exactly that: creates a `GameModel`, calls its methods, and prints `PASS` or `FAIL` to the terminal.
+
+> Understanding what a tool does before you use the tool is a pattern worth building early.
+  </textarea>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 7 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 7</div>
+    <h2>Building a ModelTester Class in Plain Java</h2>
+    <p class="subtitle">No new libraries, no setup. Just a <code>main</code> method, a few helper methods, and the same GameModel your game already uses.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Your Tests Depend on the Code the AI Wrote
+
+This is an important point before writing any tests.
+
+`ModelTester` calls methods on `GameModel` by name — `getLives()`, `getPlayerX()`, `firePlayerBullet()`, and so on. But **the AI may have named those methods differently** in your game.
+
+The good news: because you are using Copilot inside VS Code, it can read your open files. If you have `GameModel.java` open when you ask Copilot to write tests, it will use the actual method names from your file rather than inventing ones.
+
+If a test still fails to compile with a **`cannot find symbol`** error, that means there is a naming mismatch. That is not a logic bug — it is a name problem. Either:
+
+- fix the method name in the test to match what Copilot wrote, or
+- ask Copilot: *"The method `getLives` does not exist in `GameModel.java`. What getter should I use for lives?"*
+
+> Always have `GameModel.java` open in the editor when asking Copilot to write or fix tests.
+  </textarea>
+</section>
+
+<section>
+  <h3>The ModelTester Pattern</h3>
+  <pre><code class="language-java" data-trim>
+public class ModelTester {
+
+    static int passed = 0;
+    static int failed = 0;
+
+    static void check(String testName, boolean condition) {
+        if (condition) {
+            System.out.println("PASS: " + testName);
+            passed++;
+        } else {
+            System.out.println("FAIL: " + testName);
+            failed++;
+        }
+    }
+
+    public static void main(String[] args) {
+        testInitialState();
+        testPlayerMovement();
+        testBulletFiring();
+        testAlienDestruction();
+        testGameOver();
+
+        System.out.println("\n" + passed + " passed, " + failed + " failed.");
+    }
+}
+  </code></pre>
+  <blockquote>
+    <code>check</code> is the only new concept here. Everything else is Java you already know: <code>static</code> fields, <code>if</code>, <code>System.out.println</code>, method calls.
+  </blockquote>
+</section>
+
+<section>
+  <h3>Writing the Test Methods</h3>
+  <pre><code class="language-java" data-trim>
+static void testInitialState() {
+    GameModel model = new GameModel();
+    check("player starts with 3 lives",   model.getLives() == 3);
+    check("score starts at zero",         model.getScore() == 0);
+    check("no bullet at start",           model.getPlayerBullet() == null);
+    check("game is not over at start",    !model.isGameOver());
+}
+
+static void testPlayerMovement() {
+    GameModel model = new GameModel();
+    int startX = model.getPlayerX();
+    model.movePlayerRight();
+    check("moving right increases x",     model.getPlayerX() > startX);
+
+    // Drive the player as far left as possible
+    for (int i = 0; i < 200; i++) model.movePlayerLeft();
+    check("player x never goes below 0",  model.getPlayerX() >= 0);
+}
+
+static void testBulletFiring() {
+    GameModel model = new GameModel();
+    model.firePlayerBullet();
+    check("firing creates a bullet",      model.getPlayerBullet() != null);
+    model.firePlayerBullet();             // fire again while one is in flight
+    check("cannot fire a second bullet",  model.getPlayerBullet() != null);
+    // (this is a weak check — we want exactly one bullet, not two)
+}
+  </code></pre>
+</section>
+
+<section>
+  <h3>Running ModelTester</h3>
+  <div class="cols-2">
+    <div>
+      <p>Compile and run from the terminal exactly like any other Java file:</p>
+      <pre><code class="language-bash" data-trim>
+javac GameModel.java ModelTester.java
+java ModelTester
+      </code></pre>
+      <div class="warn-box">
+        <strong>Compile error before any output?</strong> Check that every method name in ModelTester matches what the AI actually wrote in GameModel. A <code>cannot find symbol</code> error means a name mismatch, not a logic bug — update the test to match, or ask the AI to add the missing method.
+      </div>
+      <p style="margin-top:0.5em;">Expected output when everything passes:</p>
+      <pre><code class="language-text" data-trim>
+PASS: player starts with 3 lives
+PASS: score starts at zero
+PASS: no bullet at start
+PASS: moving right increases x
+
+4 passed, 0 failed.
+      </code></pre>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-title">What a failure looks like</div>
+        <pre><code class="language-text" style="font-size:0.72em;" data-trim>
+PASS: player starts with 3 lives
+PASS: score starts at zero
+FAIL: no bullet at start
+PASS: moving right increases x
+
+3 passed, 1 failed.
+        </code></pre>
+        <p style="margin-top:0.5em;">A single <code>FAIL</code> line tells you exactly which check to look at. That is the whole point.</p>
+      </div>
+      <div class="mini-card" style="margin-top:0.5em;">
+        <strong>Note:</strong> your output will differ based on which tests you wrote and what the AI named its methods. That is expected.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 8 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 8</div>
+    <h2>Testing the Model Without Swing — Five Behaviors</h2>
+    <p class="subtitle">These tests check real game logic. Each one would be tedious or impossible to verify just by watching the game.</p>
+  </div>
+</section>
+
+<section>
+  <h3>Five Behaviors Worth Checking</h3>
+  <div class="cols-2">
+    <div>
+      <pre><code class="language-java" data-trim>
+static void testAlienDestruction() {
+    GameModel model = new GameModel();
+    int before = model.getAlienCount();
+    model.destroyAlien(0, 0);
+    check("alien count decreases on hit",
+        model.getAlienCount() == before - 1);
+    check("score increases on hit",
+        model.getScore() > 0);
+}
+
+static void testGameOver() {
+    GameModel model = new GameModel();
+    // Destroy all aliens
+    for (int row = 0; row < 5; row++)
+        for (int col = 0; col < 11; col++)
+            model.destroyAlien(row, col);
+    model.checkCollisions();
+    check("game over when all aliens gone",
+        model.isGameOver());
+}
+      </code></pre>
+    </div>
+    <div class="card">
+      <div class="card-title">Why each check matters</div>
+      <ul>
+        <li><strong>Alien count</strong> — grid bookkeeping; easy to get the off-by-one wrong</li>
+        <li><strong>Score increase</strong> — confirms the Model updates state, not the View</li>
+        <li><strong>Game-over flag</strong> — you cannot easily see this by playing; you'd need to destroy all 55 aliens manually</li>
+        <li><strong>Boundary clamping</strong> — the player wrapping or going off-screen is a common AI mistake</li>
+        <li><strong>Bullet uniqueness</strong> — double-firing is invisible at 60fps but causes bugs later</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Asking Copilot to Write ModelTester Methods
+
+Because you are using Copilot inside VS Code, it can already read your open files. You do not need to paste code into the chat.
+
+Open both `GameModel.java` and `ModelTester.java` in the editor, then ask in Copilot Chat:
+
+> "Looking at `GameModel.java`, add a static test method to `ModelTester.java` called `testPlayerBoundary`. It should call the player's left-movement method two hundred times and use the `check` helper to verify the player's x position never goes below zero. Hook it into `main`."
+
+Copilot will read the actual method names from the open file and use them correctly.
+
+If a generated test still does not compile, the most common causes are:
+
+- the Model method exists but has a different name than Copilot expected — ask: *"The method `getPlayerX` does not exist in `GameModel.java`. What is the correct getter name?"*
+- the Model is missing a getter the test needs — ask Copilot to add it to `GameModel.java`
+- the AI assumed a parameter the method does not take — read the error and ask Copilot to fix the call
+
+> If the test reveals a bug, paste the `FAIL` output back into the AI conversation. A test name plus `FAIL` is already a precise bug description.
+  </textarea>
+</section>
+
+<section>
+  <h3>What to Do When a Check Fails</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6em;margin-top:0.3em;">
+    <div style="display:flex;flex-direction:column;gap:0.45em;">
+      <div class="card" style="border-left:4px solid var(--rose);">
+        <div class="card-title" style="color:var(--rose);">Step 1 — Read the output</div>
+        <p style="margin:0;">Is it a <strong>compile error</strong> (<code>cannot find symbol</code>) or a <strong>runtime FAIL</strong> (the check ran but the condition was false)?</p>
+        <div class="mini-card" style="margin-top:0.4em;">Compile error → naming mismatch. Fix the method name in the test or ask Copilot to add the missing getter to the Model.</div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--gold);">
+        <div class="card-title" style="color:var(--gold);">Step 2 — Is the check itself wrong?</div>
+        <p style="margin:0;">Re-read the condition. Did you write <code>== 3</code> when the model starts with 0? Fix the test and re-run before touching the Model.</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0.45em;">
+      <div class="card" style="border-left:4px solid var(--orange);">
+        <div class="card-title" style="color:var(--orange);">Step 3 — Find the Model method</div>
+        <p style="margin:0;">Open <code>GameModel.java</code> and read the method the check is testing. Is the logic obviously wrong? In Copilot Chat, ask: <em>"The check [name] is failing. Here is the method — what is wrong with the logic?"</em></p>
+      </div>
+      <div class="card" style="border-left:4px solid var(--mint);">
+        <div class="card-title" style="color:var(--mint);">Step 4 — Apply, re-run, commit</div>
+        <p style="margin:0;">Accept Copilot's fix, run <code>ModelTester</code> again. If all checks pass, commit. If a new check fails, repeat from Step 1. Record the conversation in <code>PROMPTS.md</code>.</p>
+      </div>
+    </div>
+  </div>
+  <div class="good-box" style="margin-top:0.5em;">
+    A <code>FAIL</code> line with a descriptive name is already a precise bug report. Copilot Chat can see your open files — describe which check failed and ask what the method should do.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 9 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 9</div>
+    <h2>What JUnit Is — and Why You Don't Need It Yet</h2>
+    <p class="subtitle">JUnit does the same thing ModelTester does, with more automation. Knowing the concept first makes the library easier to learn later.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### ModelTester vs. JUnit Side by Side
+
+| Concept | ModelTester | JUnit 5 |
+|---|---|---|
+| Mark a test | a method name starting with `test` | `@Test` annotation |
+| Check a value | `check("desc", value == expected)` | `assertEquals(expected, actual)` |
+| Run all tests | call each method from `main` | test runner discovers them automatically |
+| Report results | `System.out.println("PASS/FAIL")` | colored pass/fail in IDE panel |
+| Setup needed | none — plain Java | JUnit JAR on the classpath |
+
+JUnit removes the manual wiring. But the underlying idea — set up a situation, run logic, check the result — is identical.
+
+> When you use JUnit in a future course, you will already understand what it is doing.
+  </textarea>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 9 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 10</div>
+    <h2>Debugging Strategies When the AI Is Wrong</h2>
+    <p class="subtitle">The AI will produce broken code. That is not a sign that something went wrong with your prompt — it is a normal part of the workflow. The question is how to respond efficiently.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Three Categories of AI Output Problems
+
+| Category | Example | Response |
+|---|---|---|
+| Compile error | missing import, mismatched type | paste the full error; ask for a fix |
+| Runtime error | `NullPointerException` in `paintComponent` | paste stack trace; name the line |
+| Logic error | alien wraps to wrong side | describe exact behavior vs. expected |
+
+Logic errors are the hardest because the program runs — it is just wrong.
+
+For logic errors, the most useful debugging habit is:
+
+1. write a test that captures the expected behavior
+2. run the test — it should fail
+3. ask the AI to fix the Model method so the test passes
+4. run the test again — it should now pass
+
+> A failing test is a precise description of a bug. That is more useful than a paragraph of prose.
+  </textarea>
+</section>
+
+<section>
+  <h3>Reading a Stack Trace</h3>
+  <pre><code class="language-text" data-trim>
+Exception in thread "AWT-EventQueue-0"
+  java.lang.NullPointerException: Cannot invoke
+  "java.awt.Rectangle.intersects(java.awt.Rectangle)"
+  because "this.playerBullet" is null
+    at GameModel.checkCollisions(GameModel.java:87)
+    at GameController.lambda$main$0(GameController.java:34)
+    at javax.swing.Timer.fireActionPerformed(Timer.java:313)
+  </code></pre>
+  <div class="cols-2" style="margin-top:0.5em;">
+    <div class="card">
+      <div class="card-title">What to read</div>
+      <ul>
+        <li>The exception type: <code>NullPointerException</code></li>
+        <li>The message: <code>playerBullet is null</code></li>
+        <li>Your code in the trace: <code>GameModel.java:87</code></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Useful follow-up prompt</div>
+      <div class="prompt-box" style="margin-top:0.2em;font-size:0.62em;">
+        In <code>GameModel.checkCollisions</code> at line 87, I am getting a NullPointerException because <code>playerBullet</code> is null when the method is called. Add a null check before the intersection test. Do not change any other logic.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### The PROMPTS.md Entry for a Debugging Conversation
+
+When something breaks, the debugging conversation belongs in `PROMPTS.md` too.
+
+A useful entry:
+
+```markdown
+## Debugging: NullPointerException in checkCollisions
+
+Error received:
+[paste stack trace]
+
+What I understood:
+playerBullet can be null when no bullet is in flight,
+but checkCollisions was calling .intersects() without checking.
+
+Follow-up prompt:
+[paste the prompt you used to fix it]
+
+Result:
+AI added a null guard. Test now passes. Committed.
+```
+
+This record is more valuable than the fix itself — it shows that you understood the problem.
+  </textarea>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 10 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 11</div>
+    <h2>Extensions and What Comes Next</h2>
+    <p class="subtitle">Once the baseline runs and the core tests pass, extensions are more controlled because the architecture is in place.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Good First Extensions for Space Invaders
+
+Each extension stays within the MVC structure. Start with one — verify it works — then move to the next.
+
+| Extension | Layer(s) | What makes it tractable |
+|---|---|---|
+| Alien shooting | Model (bullet list + timing) | Add a list of alien bullets; fire one at random each N ticks |
+| Increasing alien speed | Model (movement rate) | Expose a speed field; increment it when an alien is destroyed |
+| Restart on R key | Controller (key) + Model (reset method) | Add a `reset()` to Model; Controller calls it on R press |
+| High score | Model (track max across resets) | One extra field; View draws it alongside score |
+| UFO bonus ship | Model (spawn + score) + View (draw) | Spawn a `Rectangle` on a timer; 300 points on hit |
+| Shields / bunkers | Model (health list) + View (draw with damage color) | Four shield objects with health 3; both bullet types reduce health |
+
+> Commit after each extension. If the next one breaks something, your previous working state is one `git checkout` away.
+  </textarea>
+</section>
+
+<section class="advanced-extensions">
+  <h3>Advanced Extensions — Expect Iteration</h3>
+  <p style="font-size:0.7em;margin-bottom:0.5em;">These are harder. The AI will give you a first attempt that needs several rounds of follow-up. That iteration is the point — practice directing Copilot through a multi-step problem.</p>
+  <div class="cols-2">
+    <div style="display:flex;flex-direction:column;gap:0.32em;min-width:0;">
+      <div class="card">
+        <div class="card-title">Alien formation animation</div>
+        <p style="margin:0;">Alternate between two alien sprite states every N ticks to simulate the classic flicker. Model tracks a boolean <code>animFrame</code>; View draws different shapes based on it. The iteration challenge: keeping animation and movement in sync without doubling the speed.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Multiple waves</div>
+        <p style="margin:0;">When all aliens are destroyed, spawn a new formation that is faster. Model needs a wave counter and a <code>respawnAliens()</code> method. The iteration challenge: the game-over condition and the wave-clear condition are easy to confuse.</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0.32em;min-width:0;">
+      <div class="card">
+        <div class="card-title">Difficulty scaling</div>
+        <p style="margin:0;">Alien speed, fire rate, and bullet speed all increase per wave. Model exposes multipliers; Controller passes the current wave to the timer interval calculation. The iteration challenge: getting the curve to feel playable rather than instantly impossible.</p>
+      </div>
+      <div class="card">
+        <div class="card-title">Sound effects</div>
+        <p style="margin:0;">Use <code>javax.sound.sampled</code> to play a clip on fire, hit, and death. Controller triggers sound calls — not the Model. The iteration challenge: the AI's first attempt often blocks the game loop; ask it to use a daemon thread.</p>
+      </div>
+    </div>
+  </div>
+  <div class="warn-box" style="margin-top:0.35em;">
+    For any advanced extension: describe the expected behavior precisely, ask Copilot for a first attempt, run it, then report exactly what went wrong. Repeat. The conversation log in <code>PROMPTS.md</code> is especially valuable here.
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Week 3 Preview: Your Own Game
+
+In Week 3, you will choose your own game — Pac-Man, Breakout, Tetris, Asteroids, or something of your own design.
+
+The MVC structure from this week carries forward directly.
+
+The skills that transfer:
+
+- writing a spec before prompting
+- building layer by layer with a commit after each
+- testing the Model without Swing
+- writing prompts that name the file, the method, and the constraint
+- reading errors as evidence, not as failure
+
+> The game changes. The workflow does not.
+  </textarea>
+</section>
+
+<!-- ══════════════════════════════════════════════ RELATED PROJECTS -->
+<section>
+  <h2>Related Projects</h2>
+  <p style="font-size:0.72em;margin-bottom:0.55em;">MVC is not specific to Space Invaders. Once your code is split into Model, View, and Controller, you can apply the same structure to any game — and each new project sharpens your ability to write precise, layer-aware prompts.</p>
+  <div class="cols-3">
+    <div class="card">
+      <div class="card-title">Pac-Man <span class="muted" style="font-weight:400;text-transform:none;">— Atari era</span></div>
+      <p style="margin:0 0 0.3em;">Model owns the maze (a 2-D tile array), Pac-Man position, ghost positions, and pellet count. View draws tiles. Controller runs the ghost AI each tick.</p>
+      <p class="muted" style="font-size:0.56em;margin:0;"><strong>LLM strategy:</strong> prompt Model first with a hard-coded <code>boolean[][]</code> maze. Once movement and wall collision work, ask for one ghost that follows a fixed path before adding chase logic.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Centipede <span class="muted" style="font-weight:400;text-transform:none;">— Atari era</span></div>
+      <p style="margin:0 0 0.3em;">Model manages a list of segments, each with its own position and direction. Segments separate when hit. Mushrooms are a second tile layer the Model tracks.</p>
+      <p class="muted" style="font-size:0.56em;margin:0;"><strong>LLM strategy:</strong> prompt for a single-segment centipede that descends correctly. Add splitting only after one segment works from end to end.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Tetris <span class="muted" style="font-weight:400;text-transform:none;">— 8-bit era</span></div>
+      <p style="margin:0 0 0.3em;">Model owns the board grid and the falling piece (position + rotation). Line-clear logic lives entirely in the Model. View renders the grid; no game logic touches paint calls.</p>
+      <p class="muted" style="font-size:0.56em;margin:0;"><strong>LLM strategy:</strong> describe each piece as a <code>int[][]</code> shape. Prompt for placement and gravity before rotation. Test line-clear logic with <code>ModelTester</code> before connecting the View.</p>
+    </div>
+  </div>
+  <div class="cols-2" style="margin-top:0.5em;">
+    <div class="card">
+      <div class="card-title">Donkey Kong <span class="muted" style="font-weight:400;text-transform:none;">— 8-bit era</span></div>
+      <p style="margin:0 0 0.3em;">Model manages Mario's position and jump arc, barrel positions, and platform layout. A gravity constant applied each tick is enough to produce realistic jumping if the Model exposes a <code>velY</code> field.</p>
+      <p class="muted" style="font-size:0.56em;margin:0;"><strong>LLM strategy:</strong> platform layout first as a list of rectangles. Prompt for jump/fall physics before adding barrels. Use <code>ModelTester</code> to verify landing and death detection.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Frogger <span class="muted" style="font-weight:400;text-transform:none;">— Atari/8-bit</span></div>
+      <p style="margin:0 0 0.3em;">Model tracks lane objects as lists of <code>Lane</code> records, each with speed and direction. Controller moves all lanes each tick. View draws rows. Collision and safe-zone logic stay in the Model.</p>
+      <p class="muted" style="font-size:0.56em;margin:0;"><strong>LLM strategy:</strong> implement one lane completely before adding more. Each lane type (traffic, log, turtle) follows the same interface — prompt for one, then ask Copilot to apply the pattern.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ SUMMARY -->
+<section data-markdown>
+  <textarea data-template>
+## Summary
+
+By the end of this workflow, you should understand that:
+
+- **coupling** is what happens when responsibilities are not separated, and MVC is the solution
+- the **Model** holds state and rules, with no Swing imports
+- the **View** draws what the Model describes, without mutating anything
+- the **Controller** wires them together, owns the timer, and handles input
+- **MVC makes AI prompts more precise** because you can name the file, the method, and the scope
+- **`ModelTester`** checks Model behavior in plain Java without requiring a running game
+- a **`FAIL` line** with a descriptive test name is a more precise bug description than prose
+- **JUnit** does the same thing with annotations and a test runner — the concept carries directly
+- the **same workflow** — design, prompt, run, test, commit, document — applies to every week
+
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+## Reader Checklist
+
+Before moving on, you should be able to say yes to each of these:
+
+- I can explain what coupling is and why MVC reduces it.
+- I can name what belongs in each of the three MVC layers for Space Invaders.
+- I know why `GameModel` is not allowed to have Swing imports.
+- I have read all four seed prompts and understand why they are in that order.
+- I can write a prompt that names a file, a method, and a scope constraint.
+- I can write a `ModelTester` class with a `check` helper and at least three test methods.
+- I know what JUnit is and how it relates to what `ModelTester` does manually.
+- I know what a stack trace is and how to read it to find which line failed.
+- I know what to put in `PROMPTS.md` when a debugging conversation happens.
+  </textarea>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/markdown/markdown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+<script src="lecture-init.js"></script>
+</body>
+</html>

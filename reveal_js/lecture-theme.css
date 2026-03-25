@@ -1,0 +1,471 @@
+/* ═══════════════════════════════════════════════════════════════════
+   lecture-theme.css
+   Shared styles for COMP 2243 reveal.js lecture slides.
+   Include after reveal.js core CSS in every lecture file.
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg: #0f1728;
+  --bg-soft: #172033;
+  --panel: #1a2438;
+  --panel-soft: #223049;
+  --line: #334765;
+  --line-strong: #5c7aa7;
+  --text: #f4f7fc;
+  --muted: #bcc9df;
+  --gold: #ffd84d;
+  --cyan: #63f0ff;
+  --rose: #ff6f91;
+  --mint: #49e29c;
+  --lavender: #95a8ff;
+  --violet: #b794ff;
+  --orange: #ff9f43;
+}
+
+/* ── Base ────────────────────────────────────────────────────────── */
+
+.reveal {
+  font-family: "Aptos", "Segoe UI", system-ui, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top right, rgba(127, 231, 255, 0.12), transparent 26%),
+    radial-gradient(circle at bottom left, rgba(255, 151, 172, 0.1), transparent 22%),
+    linear-gradient(180deg, #0b1220 0%, #111a2c 100%);
+}
+
+.reveal .slides { text-align: left; }
+.reveal section { box-sizing: border-box; }
+
+.reveal .slides section:not(.part-slide) {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 0.72em 0.9em !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.035);
+}
+
+/* ── Typography ──────────────────────────────────────────────────── */
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 {
+  font-family: Georgia, "Times New Roman", serif;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  line-height: 1.06;
+}
+
+.reveal h1 {
+  font-size: 1.7em;
+  color: #f5c842 !important;
+  margin: 0 0 0.16em;
+  text-shadow: 0 2px 12px rgba(255, 200, 60, 0.18);
+}
+
+.reveal h2 {
+  font-size: 1.18em;
+  color: #7fd8e8 !important;
+  margin: 0 0 0.22em;
+  padding-bottom: 0.14em;
+  border-bottom: 2px solid rgba(220, 100, 130, 0.6) !important;
+}
+
+.reveal h3 {
+  font-size: 0.92em;
+  color: #f0d890 !important;
+  margin: 0 0 0.2em;
+  padding: 0.14em 0.4em 0.14em 0.52em;
+  border-left: 4px solid rgba(220, 100, 130, 0.65) !important;
+  border-radius: 0 10px 10px 0;
+  background: linear-gradient(90deg, rgba(255, 111, 145, 0.14), rgba(255, 159, 67, 0.06), transparent) !important;
+}
+
+.reveal p,
+.reveal li,
+.reveal td,
+.reveal th,
+.reveal blockquote {
+  font-size: 0.71em;
+  line-height: 1.35;
+}
+
+.reveal p { margin: 0.25em 0 0.5em; }
+
+.reveal strong { color: #fff0ba; }
+.reveal em     { color: #e4edff; }
+
+/* ── Code ────────────────────────────────────────────────────────── */
+
+.reveal code {
+  font-family: Consolas, "Cascadia Code", monospace;
+  font-size: 0.9em;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 6px;
+  padding: 0.08em 0.26em;
+}
+
+.reveal pre {
+  width: 100%;
+  margin: 0.35em 0;
+  box-shadow: none;
+}
+
+.reveal pre code {
+  max-height: 390px;
+  padding: 0.95em 1em;
+  border-radius: 14px;
+  font-size: 0.76em;
+  line-height: 1.46;
+  background: linear-gradient(180deg, #0b111c 0%, #111927 100%);
+  border: 1px solid #2a3952;
+}
+
+/* ── Tables ──────────────────────────────────────────────────────── */
+
+.reveal table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.45em;
+}
+
+.reveal th {
+  text-align: left;
+  padding: 0.3em 0.55em;
+  background: rgba(95, 135, 190, 0.28);
+  border-bottom: 1px solid #5c7aa7;
+  color: #eef6ff;
+}
+
+.reveal td {
+  padding: 0.26em 0.55em;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  vertical-align: top;
+}
+
+.reveal tr:nth-child(even) td { background: rgba(255,255,255,0.025); }
+
+/* ── Lists ───────────────────────────────────────────────────────── */
+
+.reveal ul,
+.reveal ol {
+  margin: 0.16em 0 0.1em 1.02em;
+  padding-left: 0.38em;
+}
+
+.reveal li { margin: 0.07em 0; }
+.reveal ul li::marker { color: #63f0ff; }
+.reveal ol li::marker { color: #ffd84d; font-weight: 700; }
+
+.reveal ul li,
+.reveal ol li {
+  padding: 0.08em 0.3em 0.08em 0.36em;
+  border-radius: 0 10px 10px 0;
+}
+
+.reveal ul li {
+  background: linear-gradient(90deg, rgba(99, 240, 255, 0.13), rgba(149, 168, 255, 0.05), transparent) !important;
+  border-left: 3px solid rgba(99, 240, 255, 0.6) !important;
+}
+
+.reveal ol li {
+  background: linear-gradient(90deg, rgba(255, 216, 77, 0.13), rgba(255, 159, 67, 0.06), transparent) !important;
+  border-left: 3px solid rgba(255, 200, 60, 0.6) !important;
+}
+
+/* ── Blockquote / HR ─────────────────────────────────────────────── */
+
+.reveal blockquote {
+  width: 100%;
+  margin: 0.6em 0 0;
+  padding: 0.54em 0.78em;
+  background: rgba(96, 137, 199, 0.16);
+  border-left: 5px solid #6faeff;
+  border-radius: 0 12px 12px 0;
+  color: #eef5ff;
+}
+
+.reveal hr {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin: 0.7em 0;
+}
+
+/* ── Part slides ─────────────────────────────────────────────────── */
+
+.part-slide {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.part {
+  width: min(100%, 36em);
+  background:
+    radial-gradient(circle at top right, rgba(255, 207, 112, 0.12), transparent 28%),
+    linear-gradient(135deg, #182238 0%, #121a2c 100%);
+  border: 1px solid rgba(127, 231, 255, 0.22);
+  border-radius: 20px;
+  padding: 0.9em 1em 0.82em;
+  box-shadow: 0 18px 36px rgba(0,0,0,0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.part::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #ff6f91, #ff9f43, #ffd84d, #63f0ff, #b794ff);
+}
+
+.part .kicker {
+  display: inline-block;
+  margin-bottom: 0.55em;
+  padding: 0.14em 0.52em;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  color: #ffeab0;
+  font-size: 0.57em;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.part h2 {
+  margin-bottom: 0.08em;
+  color: #ffd84d !important;
+  border-bottom: none !important;
+  padding-bottom: 0;
+  font-size: 1.3em;
+  text-shadow: 0 2px 14px rgba(255, 216, 77, 0.2);
+}
+
+.part .subtitle {
+  color: var(--muted);
+  font-size: 0.68em;
+  line-height: 1.28;
+  margin-top: 0.26em;
+  max-width: 28em;
+}
+
+/* ── Grid layouts ────────────────────────────────────────────────── */
+
+.hero-grid,
+.cols-2,
+.cols-3,
+.term-grid {
+  display: grid;
+  gap: 0.65em;
+  align-items: start;
+}
+
+.hero-grid  { grid-template-columns: 1fr 1fr; overflow: hidden; }
+.cols-2     { grid-template-columns: 1fr 1fr; }
+.cols-3     { grid-template-columns: repeat(3, 1fr); }
+.term-grid  { grid-template-columns: repeat(auto-fill, minmax(11.4em, 1fr)); }
+
+.hero-grid > *, .cols-2 > *, .cols-3 > * { min-width: 0; overflow: hidden; }
+.hero-grid .part  { width: 100%; box-sizing: border-box; }
+.hero-grid .part h1 { font-size: 1.15em; }
+
+/* ── Cards ───────────────────────────────────────────────────────── */
+
+.hero-panel {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 14px;
+  padding: 0.72em 0.78em;
+}
+
+.card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 14px;
+  padding: 0.62em 0.72em;
+}
+
+.mini-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 10px;
+  padding: 0.38em 0.52em;
+}
+
+.card-title {
+  font-size: 0.65em;
+  font-weight: 700;
+  color: #ffd84d;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin-bottom: 0.32em;
+}
+
+.term {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 12px;
+  padding: 0.44em 0.52em;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.term h4 {
+  font-size: 0.7em;
+  margin: 0 0 0.14em;
+  color: #ffd84d;
+}
+
+.term p {
+  font-size: 0.56em;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* ── Badges ──────────────────────────────────────────────────────── */
+
+.badge-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  margin-top: 0.45em;
+}
+
+.badge {
+  font-size: 0.56em;
+  padding: 0.18em 0.52em;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #d4e6ff;
+}
+
+/* ── Callout boxes ───────────────────────────────────────────────── */
+
+.prompt-box {
+  background: rgba(255, 216, 77, 0.07);
+  border: 1px solid rgba(255, 216, 77, 0.3);
+  border-radius: 12px;
+  padding: 0.52em 0.72em;
+  font-size: 0.66em;
+  color: #fff8dd;
+  margin-top: 0.5em;
+}
+
+.warn-box {
+  background: rgba(255, 111, 145, 0.09);
+  border: 1px solid rgba(255, 111, 145, 0.3);
+  border-radius: 12px;
+  padding: 0.52em 0.72em;
+  font-size: 0.66em;
+  color: #ffeef3;
+  margin-top: 0.5em;
+}
+
+.good-box {
+  background: rgba(73, 226, 156, 0.07);
+  border: 1px solid rgba(73, 226, 156, 0.3);
+  border-radius: 12px;
+  padding: 0.52em 0.72em;
+  font-size: 0.66em;
+  color: #e0fff2;
+  margin-top: 0.5em;
+}
+
+/* ── Monospace command display ───────────────────────────────────── */
+
+.cmd {
+  font-family: Consolas, "Cascadia Code", monospace;
+  font-size: 0.64em;
+  font-weight: 700;
+  color: #63f0ff;
+  background: rgba(99, 240, 255, 0.07);
+  border: 1px solid rgba(99, 240, 255, 0.18);
+  border-radius: 6px;
+  padding: 0.06em 0.32em;
+}
+
+/* ── Mermaid diagrams ────────────────────────────────────────────── */
+
+.mermaid-wrap {
+  background: linear-gradient(135deg, rgba(26,36,56,0.9), rgba(18,26,44,0.95));
+  border: 1px solid rgba(99,240,255,0.4);
+  border-radius: 14px;
+  padding: 0.7em;
+  margin-top: 0.4em;
+  overflow: hidden;
+}
+
+.mermaid-wrap .mermaid       { max-height: 260px; overflow: hidden; font-size: 0.9em; }
+.mermaid-wrap.mermaid-large .mermaid { max-height: 380px; font-size: 0.82em; }
+
+.mermaid svg {
+  max-width: 100% !important;
+  max-height: 210px !important;
+  height: auto !important;
+  width: auto !important;
+}
+
+.mermaid-large .mermaid svg { max-height: 350px !important; }
+
+/* ── MVC layer color coding (Lecture 12+) ────────────────────────── */
+
+.layer-model { border-left: 4px solid var(--mint)    !important; background: rgba(73,226,156,0.07)  !important; }
+.layer-view  { border-left: 4px solid var(--lavender) !important; background: rgba(149,168,255,0.07) !important; }
+.layer-ctrl  { border-left: 4px solid var(--orange)   !important; background: rgba(255,159,67,0.07)  !important; }
+
+.mvc-label {
+  font-size: 0.55em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.2em;
+}
+.mvc-label.m { color: var(--mint); }
+.mvc-label.v { color: var(--lavender); }
+.mvc-label.c { color: var(--orange); }
+
+/* ── Lecture 12 advanced extensions slide ───────────────────────── */
+
+.advanced-extensions h3 {
+  margin-bottom: 0.25em;
+}
+
+.advanced-extensions > p {
+  font-size: 0.66em !important;
+  margin-bottom: 0.32em !important;
+  line-height: 1.25;
+}
+
+.advanced-extensions .cols-2 {
+  gap: 0.42em;
+}
+
+.advanced-extensions .card {
+  padding: 0.45em 0.58em;
+}
+
+.advanced-extensions .card-title {
+  margin-bottom: 0.2em;
+  font-size: 0.58em;
+}
+
+.advanced-extensions .card p {
+  font-size: 0.59em;
+  line-height: 1.22;
+}
+
+.advanced-extensions .warn-box {
+  margin-top: 0.28em !important;
+  padding: 0.42em 0.6em;
+  font-size: 0.6em;
+  line-height: 1.2;
+}
+
+/* ── Utilities ───────────────────────────────────────────────────── */
+
+.small { font-size: 0.78em; }
+.muted { color: #bcc9df; }
