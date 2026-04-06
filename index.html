@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programming and Problem Solving</title>
+  <style>
+    :root {
+      --accent: #4f8ef7;
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --green: #3fb950;
+      --orange: #d29922;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 860px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 3rem; }
+    header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+    header p { color: var(--muted); font-size: 1.05rem; }
+    header a { color: var(--accent); text-decoration: none; }
+    header a:hover { text-decoration: underline; }
+
+    section { margin-bottom: 2.5rem; }
+    section h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      transition: border-color 0.15s;
+    }
+    .card:hover { border-color: var(--accent); }
+
+    .card-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+    }
+    .card-title {
+      font-size: 0.97rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .card-links {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.22rem 0.65rem;
+      border-radius: 5px;
+      text-decoration: none;
+      border: 1px solid transparent;
+    }
+    .btn-colab {
+      background: #f9ab00;
+      color: #000;
+    }
+    .btn-colab:hover { background: #e09900; }
+    .btn-slides {
+      background: transparent;
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .btn-slides:hover { background: var(--accent); color: #000; }
+    .btn-gh {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--muted);
+    }
+    .btn-gh:hover { border-color: var(--text); color: var(--text); }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Programming and Problem Solving</h1>
+    <p>Brendan Shea, PhD &mdash;
+      <a href="https://github.com/brendanpshea/programming_problem_solving">GitHub Repository</a>
+    </p>
+  </header>
+
+  <!-- NOTEBOOKS -->
+  <section>
+    <h2>Colab Notebooks</h2>
+    <div class="card-grid">
+
+      <div class="card">
+        <span class="card-label">Week 1</span>
+        <span class="card-title">Hello World &amp; Variables</span>
+        <div class="card-links">
+          <a class="btn btn-colab"
+             href="https://colab.research.google.com/github/brendanpshea/programming_problem_solving/blob/main/Java_01_HelloWorld_Variables.ipynb"
+             target="_blank">Open in Colab</a>
+          <a class="btn btn-gh"
+             href="https://github.com/brendanpshea/programming_problem_solving/blob/main/Java_01_HelloWorld_Variables.ipynb"
+             target="_blank">GitHub</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-label">Week 2</span>
+        <span class="card-title">Control Structures &amp; Arrays</span>
+        <div class="card-links">
+          <a class="btn btn-colab"
+             href="https://colab.research.google.com/github/brendanpshea/programming_problem_solving/blob/main/Java_02_ControlStructures_Arrays.ipynb"
+             target="_blank">Open in Colab</a>
+          <a class="btn btn-gh"
+             href="https://github.com/brendanpshea/programming_problem_solving/blob/main/Java_02_ControlStructures_Arrays.ipynb"
+             target="_blank">GitHub</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-label">Week 3</span>
+        <span class="card-title">Algorithms</span>
+        <div class="card-links">
+          <a class="btn btn-colab"
+             href="https://colab.research.google.com/github/brendanpshea/programming_problem_solving/blob/main/Java_03_Algorithms.ipynb"
+             target="_blank">Open in Colab</a>
+          <a class="btn btn-gh"
+             href="https://github.com/brendanpshea/programming_problem_solving/blob/main/Java_03_Algorithms.ipynb"
+             target="_blank">GitHub</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-label">Week 4</span>
+        <span class="card-title">Methods</span>
+        <div class="card-links">
+          <a class="btn btn-colab"
+             href="https://colab.research.google.com/github/brendanpshea/programming_problem_solving/blob/main/Java_04_Methods.ipynb"
+             target="_blank">Open in Colab</a>
+          <a class="btn btn-gh"
+             href="https://github.com/brendanpshea/programming_problem_solving/blob/main/Java_04_Methods.ipynb"
+             target="_blank">GitHub</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-label">Week 5</span>
+        <span class="card-title">Robust Data &amp; Input Validation</span>
+        <div class="card-links">
+          <a class="btn btn-colab"
+             href="https://colab.research.google.com/github/brendanpshea/programming_problem_solving/blob/main/Java_05_RobustData.ipynb"
+             target="_blank">Open in Colab</a>
+          <a class="btn btn-gh"
+             href="https://github.com/brendanpshea/programming_problem_solving/blob/main/Java_05_RobustData.ipynb"
+             target="_blank">GitHub</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-label">Week 6</span>
+        <span class="card-title">Collections</span>
+        <div class="card-links">
+          <a class="btn btn-colab"
+             href="https://colab.research.google.com/github/brendanpshea/programming_problem_solving/blob/main/Java_06_Collections.ipynb"
+             target="_blank">Open in Colab</a>
+          <a class="btn btn-gh"
+             href="https://github.com/brendanpshea/programming_problem_solving/blob/main/Java_06_Collections.ipynb"
+             target="_blank">GitHub</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-label">Week 7</span>
+        <span class="card-title">Intro to OOP</span>
+        <div class="card-links">
+          <a class="btn btn-colab"
+             href="https://colab.research.google.com/github/brendanpshea/programming_problem_solving/blob/main/Java_07_IntroOOP.ipynb"
+             target="_blank">Open in Colab</a>
+          <a class="btn btn-gh"
+             href="https://github.com/brendanpshea/programming_problem_solving/blob/main/Java_07_IntroOOP.ipynb"
+             target="_blank">GitHub</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-label">Week 8</span>
+        <span class="card-title">Inheritance &amp; Polymorphism</span>
+        <div class="card-links">
+          <a class="btn btn-colab"
+             href="https://colab.research.google.com/github/brendanpshea/programming_problem_solving/blob/main/Java_08_InheritancePolymorphism.ipynb"
+             target="_blank">Open in Colab</a>
+          <a class="btn btn-gh"
+             href="https://github.com/brendanpshea/programming_problem_solving/blob/main/Java_08_InheritancePolymorphism.ipynb"
+             target="_blank">GitHub</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-label">Week 9</span>
+        <span class="card-title">Exceptions</span>
+        <div class="card-links">
+          <a class="btn btn-colab"
+             href="https://colab.research.google.com/github/brendanpshea/programming_problem_solving/blob/main/Java_09_Exceptions.ipynb"
+             target="_blank">Open in Colab</a>
+          <a class="btn btn-gh"
+             href="https://github.com/brendanpshea/programming_problem_solving/blob/main/Java_09_Exceptions.ipynb"
+             target="_blank">GitHub</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-label">Week 10</span>
+        <span class="card-title">Lambdas &amp; Streams</span>
+        <div class="card-links">
+          <a class="btn btn-colab"
+             href="https://colab.research.google.com/github/brendanpshea/programming_problem_solving/blob/main/Java_10_Lambdas_Streams.ipynb"
+             target="_blank">Open in Colab</a>
+          <a class="btn btn-gh"
+             href="https://github.com/brendanpshea/programming_problem_solving/blob/main/Java_10_Lambdas_Streams.ipynb"
+             target="_blank">GitHub</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PRESENTATIONS -->
+  <section>
+    <h2>Slide Presentations</h2>
+    <div class="card-grid">
+
+      <div class="card">
+        <span class="card-label">Lecture 11</span>
+        <span class="card-title">Modern Software Engineering with Snake: IDEs, Git, GUIs &amp; Agentic Coding</span>
+        <div class="card-links">
+          <a class="btn btn-slides"
+             href="reveal_js/lecture_11.html"
+             target="_blank">View Slides</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-label">Lecture 12</span>
+        <span class="card-title">MVC, Space Invaders &amp; Testing: Structuring Code and Prompts Like a Software Engineer</span>
+        <div class="card-links">
+          <a class="btn btn-slides"
+             href="reveal_js/lecture12.html"
+             target="_blank">View Slides</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      &copy; Brendan Shea, PhD &mdash;
+      <a href="https://github.com/brendanpshea/programming_problem_solving">brendanpshea/programming_problem_solving</a>
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>
