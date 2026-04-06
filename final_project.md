@@ -44,6 +44,10 @@ In `PROMPTS.md`, record:
 
 Think of this as a lab notebook for your AI conversations. It makes your process visible and helps you reflect on what you're actually learning.
 
+For **Weeks 1 and 2**, you must go beyond the seed prompts and include **at least 5 additional prompts of your own choosing each week**.
+
+For **Week 3**, you must include **at least 10 total prompts**.
+
 ---
 
 ## Week 1 — Snake
@@ -73,6 +77,8 @@ Use these prompts in order to get started. Copy them into your AI tool, read wha
 ### After the seed prompts
 
 Once your game is running, **take it somewhere of your own.** Here are some ideas — pick one or invent your own:
+
+You are required to use **at least 5 additional prompts of your own choosing** after the seed prompts this week.
 
 - Add a high score that persists across games
 - Add speed levels that increase as the score grows
@@ -139,6 +145,8 @@ This week, your game must be split into exactly these three classes: `GameModel.
 
 Extend the game using your own AI prompts. Some directions:
 
+You are required to use **at least 5 additional prompts of your own choosing** after the seed prompts this week.
+
 - Add shields/bunkers the player can hide behind (and aliens can destroy)
 - Add alien shooting that fires downward at intervals
 - Add a UFO that crosses the top of the screen for bonus points
@@ -176,7 +184,7 @@ A game of your choosing, built in Java with Swing, using MVC. You are not given 
 
 If you want a suggested direction, a Pac-Man outline is provided as an optional starting point (see the course page). You are not required to use it.
 
-Other options: Breakout, Tetris, Frogger, Asteroids, a puzzle game, a game of your own invention. If you're unsure whether your idea is in scope, ask.
+Other options: Breakout, Tetris, Frogger, a puzzle game, a game of your own invention. If you're unsure whether your idea is in scope, ask.
 
 ### How to start
 
@@ -198,9 +206,10 @@ From there, the conversation is yours.
 
 Submit a link to your GitHub repository. It must contain:
 
-- Your game files — at minimum three MVC classes
-- `PROMPTS.md` — a complete log of your AI conversation including your spec-writing prompts, your build prompts, and at least one example of the AI producing something wrong and how you corrected it
+- Your game files — **at least 3 separate Java files**, with at minimum three MVC classes
+- `PROMPTS.md` — a complete log of your AI conversation including your spec-writing prompts, your build prompts, and at least one example of the AI producing something wrong and how you corrected it. It must include **at least 10 total prompts**.
 - `README.md` with your spec and a description of what you built
+- A **5-minute video demo** of your final project, submitted as either a YouTube link or a MediaSpace link (available through your RCTC account)
 
 Your game must run and be playable in some form. It does not need to be complete or polished.
 
