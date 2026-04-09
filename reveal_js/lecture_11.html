@@ -790,7 +790,7 @@ Why this is a good inline task:
 <section>
   <h3>Agentic AI Exercise: A Larger Structured Change</h3>
   <div class="prompt-box">
-    <p>In <code>SnakeStarter.java</code>, add a <code>main</code> method that opens a 600x600 <code>JFrame</code> titled <code>Snake Starter</code>. Keep everything in one file. Add a <code>LinkedList&lt;Point&gt;</code> with three snake segments and draw them in green on the panel. Do not add movement yet.</p>
+    <p>In <code>SnakeStarter.java</code>, add a <code>main</code> method that opens a 600x600 <code>JFrame</code> titled <code>Snake Starter</code>. Keep everything in one file. Add a starting snake that is three segments long and draw it in green on the panel. Do not add movement yet.</p>
   </div>
   <div class="cols-2" style="margin-top:0.55em;">
     <div class="card">
@@ -883,7 +883,7 @@ That makes Snake a strong first GUI project.
 <section>
   <h3>Prompt 2: Draw a Board and a Starting Snake</h3>
   <div class="prompt-box">
-    <p>Now extend <code>SnakeGame.java</code>. Keep it as one file. Add a dark background grid and draw a starting snake that is three segments long. Store the snake body as a <code>LinkedList&lt;Point&gt;</code>. Explain briefly in code comments why <code>LinkedList&lt;Point&gt;</code> is a reasonable choice here. Do not add movement yet.</p>
+    <p>Now extend <code>SnakeGame.java</code>. Keep it as one file. Add a dark background grid and draw a starting snake that is three segments long near the center of the board, facing right. Each cell should be a 30x30 pixel square. Draw the snake in green and the background in dark gray. Do not add movement yet.</p>
   </div>
   <blockquote>
     This prompt is about representation. Before a game can move, it needs a way to store where things are.
@@ -893,7 +893,7 @@ That makes Snake a strong first GUI project.
 <section>
   <h3>Prompt 3: Add Movement and Keyboard Input</h3>
   <div class="prompt-box">
-    <p>Now add basic movement to <code>SnakeGame.java</code>. Use a Swing <code>Timer</code> so the snake updates at regular intervals. Add arrow key controls that change direction safely. Do not allow an immediate reversal directly into the snake's own body. Keep the code in one file and keep the logic readable for a beginner.</p>
+    <p>Make the snake move automatically using a Swing timer that ticks every 150 milliseconds. Add arrow key controls so the player can steer, but don't allow the snake to reverse direction. For now, have the snake wrap around the edges instead of dying. Make sure the panel can receive keyboard input.</p>
   </div>
   <div class="mermaid-wrap">
     <div class="mermaid">
@@ -912,12 +912,12 @@ flowchart LR
 <section>
   <h3>Prompt 4: Add Food, Growth, Score, and Game Over</h3>
   <div class="prompt-box">
-    <p>Extend <code>SnakeGame.java</code> again. Add one food item at a random grid location. When the snake reaches the food, increase the score, grow the snake, and place a new food item. End the game if the snake hits a wall or itself. Display a simple game-over message and the score. Keep the file beginner-readable and avoid introducing advanced patterns yet.</p>
+    <p>Add a food pellet that spawns at a random empty cell. When the snake eats it, grow by one segment and spawn new food. Add collision detection: hitting a wall or the snake's own body should end the game, stop movement, and show a "Game Over" message with the final score. Display the current score in the top-left corner during play. When the game is over, let the player press R to reset everything and play again.</p>
   </div>
   <div class="cols-3" style="margin-top:0.5em;">
     <div class="mini-card"><strong>Food</strong><br><span class="muted">creates reward</span></div>
-    <div class="mini-card"><strong>Growth</strong><br><span class="muted">changes state over time</span></div>
     <div class="mini-card"><strong>Game over</strong><br><span class="muted">creates consequences and rules</span></div>
+    <div class="mini-card"><strong>Restart</strong><br><span class="muted">closes the loop for the player</span></div>
   </div>
 </section>
 
@@ -1035,7 +1035,7 @@ Result: The AI drew a snake and grid correctly.
 
 Fixes: I had to add one missing import.
 
-Observation: The AI chose LinkedList<Point>, which fits head/tail updates.
+Observation: The AI chose LinkedList for the snake body — worth asking it to explain why.
 ```
 
 > If these slides are the textbook, `PROMPTS.md` is the lab notebook.
