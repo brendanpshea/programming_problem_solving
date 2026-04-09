@@ -7,3 +7,7 @@
 ## Prompt 2 — Grid and snake
 
 > Now add a 20x20 grid to `GamePanel`. Represent the snake as a `LinkedList<Point>` where each `Point` is a grid cell. Start the snake with 3 segments near the center, moving right. Draw the grid cells as 30x30 pixel squares. Draw the snake in green and leave everything else dark gray. Same things with prompts and git commit.
+
+## Prompt 3 — Game loop and movement
+
+> Add a `javax.swing.Timer` that fires every 150 milliseconds. On each tick, move the snake one cell in its current direction by adding a new head and removing the tail. Repaint the panel on each tick. The snake should wrap around the edges for now instead of dying. Same as before with prompts.md and git commit.

@@ -1,6 +1,7 @@
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -30,12 +31,29 @@ class GamePanel extends JPanel {
     static final int GRID_SIZE = 20;
 
     LinkedList<Point> snake = new LinkedList<>();
+    int dirX = 1, dirY = 0; // moving right
+
+    Timer timer;
 
     GamePanel() {
         // Start with 3 segments near center, moving right
         snake.add(new Point(11, 10));
         snake.add(new Point(10, 10));
         snake.add(new Point(9, 10));
+
+        timer = new Timer(150, e -> {
+            move();
+            repaint();
+        });
+        timer.start();
+    }
+
+    void move() {
+        Point head = snake.getFirst();
+        int newX = (head.x + dirX + GRID_SIZE) % GRID_SIZE;
+        int newY = (head.y + dirY + GRID_SIZE) % GRID_SIZE;
+        snake.addFirst(new Point(newX, newY));
+        snake.removeLast();
     }
 
     @Override
