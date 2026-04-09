@@ -7,6 +7,8 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -24,6 +26,8 @@ public class SnakeGame {
 
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
+
+            gamePanel.requestFocusInWindow();
         });
     }
 }
@@ -34,7 +38,8 @@ class GamePanel extends JPanel {
     static final int GRID_SIZE = 20;
 
     LinkedList<Point> snake = new LinkedList<>();
-    int dirX = 1, dirY = 0; // moving right
+    int dirX = 1, dirY = 0;   // current direction
+    int nextDirX = 1, nextDirY = 0; // buffered direction from key press
 
     Point food;
     int score = 0;
@@ -44,18 +49,54 @@ class GamePanel extends JPanel {
     Timer timer;
 
     GamePanel() {
-        // Start with 3 segments near center, moving right
-        snake.add(new Point(11, 10));
-        snake.add(new Point(10, 10));
-        snake.add(new Point(9, 10));
+        setFocusable(true);
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_UP:
+                        if (dirY != 1) { nextDirX = 0; nextDirY = -1; }
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        if (dirY != -1) { nextDirX = 0; nextDirY = 1; }
+                        break;
+                    case KeyEvent.VK_LEFT:
+                        if (dirX != 1) { nextDirX = -1; nextDirY = 0; }
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        if (dirX != -1) { nextDirX = 1; nextDirY = 0; }
+                        break;
+                    case KeyEvent.VK_R:
+                        if (gameOver) restart();
+                        break;
+                }
+            }
+        });
 
-        spawnFood();
+        initGame();
 
         timer = new Timer(150, e -> {
             move();
             repaint();
         });
         timer.start();
+    }
+
+    void initGame() {
+        snake.clear();
+        snake.add(new Point(11, 10));
+        snake.add(new Point(10, 10));
+        snake.add(new Point(9, 10));
+        dirX = 1; dirY = 0;
+        nextDirX = 1; nextDirY = 0;
+        score = 0;
+        gameOver = false;
+        spawnFood();
+    }
+
+    void restart() {
+        initGame();
+        timer.restart();
     }
 
     void spawnFood() {
@@ -67,6 +108,10 @@ class GamePanel extends JPanel {
     }
 
     void move() {
+        // Apply buffered direction
+        dirX = nextDirX;
+        dirY = nextDirY;
+
         Point head = snake.getFirst();
         int newX = head.x + dirX;
         int newY = head.y + dirY;
@@ -80,7 +125,7 @@ class GamePanel extends JPanel {
 
         Point newHead = new Point(newX, newY);
 
-        // Self collision (exclude tail, which will move away)
+        // Self collision (exclude tail, which moves away this tick)
         if (snake.subList(0, snake.size() - 1).contains(newHead)) {
             timer.stop();
             gameOver = true;
@@ -125,17 +170,36 @@ class GamePanel extends JPanel {
         g.setFont(new Font("Arial", Font.BOLD, 16));
         g.drawString("Score: " + score, 8, 20);
 
-        // Draw game over message
+        // Draw game over overlay
         if (gameOver) {
-            String msg = "Game Over";
             g.setFont(new Font("Arial", Font.BOLD, 48));
             FontMetrics fm = g.getFontMetrics();
-            int x = (getWidth() - fm.stringWidth(msg)) / 2;
-            int y = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
-            g.setColor(new Color(0, 0, 0, 160));
-            g.fillRect(x - 10, y - fm.getAscent() - 4, fm.stringWidth(msg) + 20, fm.getHeight() + 8);
+            String line1 = "Game Over";
+            String line2 = "Score: " + score;
+            String line3 = "Press R to restart";
+
+            int x1 = (getWidth() - fm.stringWidth(line1)) / 2;
+            int x2 = (getWidth() - fm.stringWidth(line2)) / 2;
+
+            g.setFont(new Font("Arial", Font.BOLD, 18));
+            fm = g.getFontMetrics();
+            int x3 = (getWidth() - fm.stringWidth(line3)) / 2;
+
+            int centerY = getHeight() / 2;
+
+            g.setColor(new Color(0, 0, 0, 180));
+            g.fillRect(0, centerY - 80, getWidth(), 130);
+
+            g.setFont(new Font("Arial", Font.BOLD, 48));
             g.setColor(Color.WHITE);
-            g.drawString(msg, x, y);
+            g.drawString(line1, x1, centerY - 20);
+
+            g.setFont(new Font("Arial", Font.BOLD, 24));
+            g.drawString(line2, x2, centerY + 20);
+
+            g.setFont(new Font("Arial", Font.PLAIN, 18));
+            g.setColor(new Color(200, 200, 200));
+            g.drawString(line3, x3, centerY + 50);
         }
     }
 }
