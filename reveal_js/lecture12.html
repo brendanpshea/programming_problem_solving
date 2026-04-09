@@ -46,7 +46,7 @@
 1. Why one file stops working — the coupling problem
 2. What MVC is and where each responsibility lives
 3. Designing Space Invaders using MVC before writing any code
-4. The four seed prompts, layer by layer
+4. The five seed prompts, layer by layer
 5. How the MVC split makes AI prompts more precise
 6. What software testing is and why it matters
 7. Building a `ModelTester` class in plain Java
@@ -380,15 +380,15 @@ git status
 <section class="part-slide">
   <div class="part">
     <div class="kicker">Part 4</div>
-    <h2>The Four Seed Prompts, Layer by Layer</h2>
-    <p class="subtitle">The prompts follow MVC order deliberately. Build the skeleton first, then fill each layer in isolation.</p>
+    <h2>The Five Seed Prompts, Layer by Layer</h2>
+    <p class="subtitle">The prompts follow MVC order deliberately. Build the skeleton first, fill each layer in isolation, then verify the Model with a plain-Java tester.</p>
   </div>
 </section>
 
 <section>
   <h3>Prompt 1: The MVC Skeleton</h3>
   <div class="prompt-box">
-    <p>I am building Space Invaders in Java using Swing with a strict Model-View-Controller structure. Create three files: <code>GameModel.java</code>, <code>GameView.java</code>, and <code>GameController.java</code>. <code>GameView</code> should extend <code>JPanel</code>. <code>GameController</code> should contain the <code>main</code> method, create the <code>JFrame</code>, and wire the three classes together. <code>GameModel</code> must have no Swing imports. For now, add only placeholder comments inside each class explaining what it will do. The program should compile and open a blank window.</p>
+    <p>I'm building Space Invaders in Java using Swing, split into three files: <code>GameModel.java</code>, <code>GameView.java</code>, and <code>GameController.java</code>. <code>GameView</code> should extend <code>JPanel</code> and be hosted in a <code>JFrame</code>. <code>GameController</code> should have the <code>main</code> method and wire the three classes together. <code>GameModel</code> must have no Swing imports. For now, just create the three class shells with placeholder comments describing what each class will do. The program should compile and open a blank window.</p>
   </div>
   <div class="cols-2" style="margin-top:0.55em;">
     <div class="card">
@@ -410,7 +410,7 @@ git status
 <section>
   <h3>Prompt 2: Building the Model</h3>
   <div class="prompt-box">
-    <p>Fill in <code>GameModel.java</code>. It should store: the player's x position (they move horizontally only), a <code>Rectangle</code> for the player's bullet (null when not fired), a 5-by-11 boolean grid for the alien formation, a list of alien bullet rectangles, the current score, lives remaining (start at 3), and a game-over boolean. Add methods to: move the player left or right by a fixed amount, fire a player bullet if one is not already in flight, move the player's bullet upward each tick, move the alien formation right until the edge then down and reverse, fire alien bullets at random intervals, and check collisions between bullets and aliens or the player. No Swing imports. Use <code>java.awt.Rectangle</code> for bounds only.</p>
+    <p>Fill in <code>GameModel.java</code>. The model should track: the player's horizontal position, the alien formation (5 rows of 11), the player's bullet (one at a time), alien bullets, the score, and lives remaining (start with 3). Add logic to: move the player left and right, fire a player bullet if one isn't already in flight, advance the player's bullet each tick, move the alien formation right until the edge then down and reverse, fire alien bullets at random intervals, and detect collisions between bullets and aliens or the player. No Swing imports.</p>
   </div>
   <blockquote>
     Allowing <code>java.awt.Rectangle</code> in the Model is a pragmatic choice — it is a geometry class, not a GUI class. The rule is "no Swing," not "no java.awt."
@@ -420,7 +420,7 @@ git status
 <section>
   <h3>Prompt 3: Building the View</h3>
   <div class="prompt-box">
-    <p>Fill in <code>GameView.java</code>. It should extend <code>JPanel</code> and take a <code>GameModel</code> reference in its constructor. Override <code>paintComponent</code> to draw: the player as a white rectangle, the alien grid as green rectangles using the Model's boolean grid, the player bullet as a yellow rectangle (only if the model's bullet field is not null), alien bullets as red rectangles, score in the top-left corner, lives in the top-right corner, and a centered game-over message when the model's game-over flag is true. The View must not call any Model mutating methods. It only reads state.</p>
+    <p>Fill in <code>GameView.java</code>. It should take a reference to the model and draw everything the player sees: the player, the alien formation, both sets of bullets, the score, and remaining lives. Show a centered game-over message when the game ends. The view should only read from the model — it must never change game state.</p>
   </div>
   <div class="good-box">
     A useful check: after pasting this output, search <code>GameView.java</code> for any method call that modifies state (e.g., <code>setScore</code>, <code>moveBullet</code>). If you find one, the AI violated the View contract and that line needs to move.
@@ -430,11 +430,33 @@ git status
 <section>
   <h3>Prompt 4: Wiring the Controller</h3>
   <div class="prompt-box">
-    <p>Fill in <code>GameController.java</code>. The <code>main</code> method should create a <code>GameModel</code>, a <code>GameView</code>, and a 600-by-650 <code>JFrame</code>. Add a <code>KeyListener</code> on the frame that calls <code>model.movePlayerLeft()</code> and <code>model.movePlayerRight()</code> on arrow keys, and <code>model.firePlayerBullet()</code> on spacebar. Add a <code>javax.swing.Timer</code> at 16 milliseconds that calls model update methods (move bullet, move aliens, fire alien bullets, check collisions) and then repaints the view. Stop the timer when the model's game-over flag is true.</p>
+    <p>Fill in <code>GameController.java</code>. Add keyboard controls so the player can move left and right with the arrow keys and fire with the spacebar. Add a game loop using a Swing timer that updates the model each tick and redraws the view. Stop the loop when the game is over.</p>
   </div>
   <div class="cols-2" style="margin-top:0.5em;">
     <div class="mini-card layer-ctrl"><strong>Timer at 16ms</strong> ≈ 60 frames per second. This is the game loop.</div>
     <div class="mini-card layer-ctrl"><strong>KeyListener on the frame</strong>, not the panel, because the frame receives focus by default.</div>
+  </div>
+</section>
+
+<section>
+  <h3>Prompt 5: Basic Model Testing</h3>
+  <div class="prompt-box">
+    <p>Create a separate file called <code>ModelTester.java</code> with a <code>main</code> method. It should create a <code>GameModel</code>, call its methods directly, and print <code>PASS</code> or <code>FAIL</code> for each check. Write tests for at least five behaviors: the player cannot move past the left or right edge, firing while a bullet is already in flight does nothing, a bullet that reaches the top is removed, destroying an alien increases the score, and losing all lives triggers the game-over state. No testing libraries — just plain Java.</p>
+  </div>
+  <div class="cols-2" style="margin-top:0.55em;">
+    <div class="card">
+      <div class="card-title">Why this prompt matters</div>
+      <p>The Model has no Swing — so it can be tested without opening a window. This prompt checks whether the AI's game logic is actually correct, not just whether it compiles.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">What to verify</div>
+      <ul>
+        <li><code>ModelTester</code> compiles with <code>GameModel</code></li>
+        <li>All five checks print <code>PASS</code></li>
+        <li>No Swing imports in <code>ModelTester</code></li>
+        <li>Tests call real model methods, not stubs</li>
+      </ul>
+    </div>
   </div>
 </section>
 
@@ -454,6 +476,9 @@ flowchart LR
   I --> J[Prompt 4\nController]
   J --> K[Run full game]
   K --> L[git commit]
+  L --> M[Prompt 5\nModelTester]
+  M --> N[All PASS]
+  N --> O[git commit]
     </div>
   </div>
   <blockquote>
