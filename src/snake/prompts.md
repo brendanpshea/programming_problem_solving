@@ -11,3 +11,7 @@
 ## Prompt 3 — Game loop and movement
 
 > Add a `javax.swing.Timer` that fires every 150 milliseconds. On each tick, move the snake one cell in its current direction by adding a new head and removing the tail. Repaint the panel on each tick. The snake should wrap around the edges for now instead of dying. Same as before with prompts.md and git commit.
+
+## Prompt 4 — Food, collision, and score
+
+> Add a food pellet that appears at a random empty grid cell. When the snake's head reaches the food, grow the snake by one segment and spawn new food. Add wall and self-collision — when the snake hits the edge or its own body, stop the timer and display "Game Over" in the center of the panel. Show the current score (number of food eaten) in the top-left corner.
