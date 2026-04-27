@@ -736,6 +736,124 @@ switch (model.getState()) {
   <p class="muted" style="font-size:0.7em;margin-top:0.4em;">A state enum in the Model lets the View pick what to draw without holding any logic of its own. Adding a pause state later is a one-line change.</p>
 </section>
 
+<!-- ═══════════════════════════════════════════════════════ PART 10b -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 10b</div>
+    <h2>Adding Real Art (Optionally)</h2>
+    <p class="subtitle">Free, legal sprites are one download away. Swapping rectangles for art is a small View change — the Model never knows.</p>
+  </div>
+</section>
+
+<section>
+  <h3>Where to Get Art</h3>
+  <div class="cols-2">
+    <div class="card">
+      <div class="card-title">OpenGameArt.org</div>
+      <p style="font-size:0.8em;">Huge library of free, community-contributed game art. Filter by license — most assets are <strong>CC0</strong> (no attribution required) or <strong>CC-BY</strong> (credit the artist).</p>
+      <ul style="font-size:0.7em;">
+        <li>Search "2D" + your game type</li>
+        <li>Prefer PNG with transparency</li>
+        <li>For CC-BY, credit the artist in your <code>README.md</code></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Kenney.nl</div>
+      <p style="font-size:0.8em;">Curated asset packs aimed at beginners. Everything is <strong>CC0</strong>. Cleaner and more consistent than OpenGameArt, smaller selection.</p>
+      <ul style="font-size:0.7em;">
+        <li>Asset packs are zipped and themed</li>
+        <li>Great for "I need a paddle, ball, and bricks" needs</li>
+        <li>No attribution needed (but it's polite)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="warn-box" style="margin-top:0.5em;">
+    Browsing for the perfect sprite is a rabbit hole. <strong>Timebox it to 20 minutes.</strong> Pick something good enough and move on — you can always swap art later, and your grade does not depend on visual taste.
+  </div>
+</section>
+
+<section>
+  <h3>The Asset Workflow</h3>
+  <ol style="font-size:0.85em;">
+    <li>Make an <code>assets/</code> folder in your repo, alongside your <code>.java</code> files</li>
+    <li>Download a PNG (use PNG — JPG has no transparency and will draw ugly white squares)</li>
+    <li>Drop it in <code>assets/</code> and commit it to Git</li>
+    <li>Load it <strong>once</strong> in the View's constructor — never inside <code>paintComponent</code>, which runs every frame</li>
+    <li>Draw it with <code>g.drawImage(...)</code> using the Model's coordinates</li>
+    <li>If you used a CC-BY asset, add an <strong>Art credits</strong> section to your <code>README.md</code></li>
+  </ol>
+  <div class="good-box" style="margin-top:0.5em;">
+    The Model never changes. <code>alien.x</code> and <code>alien.y</code> are still the same integers — the View just decides whether to draw a green rectangle or a sprite at that position. This is the MVC payoff.
+  </div>
+</section>
+
+<section>
+  <h3>The Code Change — That's It</h3>
+  <div class="cols-2">
+    <div>
+      <div class="card-title" style="color:var(--rose);margin-bottom:0.3em;">Before</div>
+      <pre><code class="language-java" data-trim>
+// in GameView
+public void paintComponent(Graphics g) {
+    super.paintComponent(g);
+    for (Alien a : model.getAliens()) {
+        g.setColor(Color.GREEN);
+        g.fillRect(a.x, a.y, 30, 30);
+    }
+}
+      </code></pre>
+    </div>
+    <div>
+      <div class="card-title" style="color:var(--mint);margin-bottom:0.3em;">After</div>
+      <pre><code class="language-java" data-trim>
+// in GameView
+private Image alienSprite;
+
+public GameView(GameModel model) {
+    this.model = model;
+    try {
+        alienSprite = ImageIO.read(
+            new File("assets/alien.png"));
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+
+public void paintComponent(Graphics g) {
+    super.paintComponent(g);
+    for (Alien a : model.getAliens()) {
+        g.drawImage(alienSprite,
+            a.x, a.y, 30, 30, null);
+    }
+}
+      </code></pre>
+    </div>
+  </div>
+  <p class="muted" style="font-size:0.7em;margin-top:0.4em;">No Model changes. No Controller changes. The four-argument <code>drawImage</code> would use the sprite's natural size — the six-argument version (with <code>w, h</code>) scales it to match your grid.</p>
+</section>
+
+<section>
+  <h3>Things That Will Bite You</h3>
+  <div class="cols-2">
+    <div>
+      <ul style="font-size:0.78em;">
+        <li><strong>Loading every frame.</strong> If <code>ImageIO.read</code> is inside <code>paintComponent</code>, your game will run at 2 FPS. Load in the constructor.</li>
+        <li><strong>JPG instead of PNG.</strong> JPG has no alpha channel — you'll get a white box around your sprite. Always use PNG.</li>
+        <li><strong>Size mismatch.</strong> A 64×64 sprite drawn at 30×30 may look fuzzy. Either pick assets near your grid size, or scale explicitly with <code>drawImage(img, x, y, w, h, null)</code>.</li>
+        <li><strong>File not found.</strong> Run your game from the project root, not from <code>src/</code>. The path is relative to where Java was launched.</li>
+      </ul>
+    </div>
+    <div>
+      <div class="card-title">Sprite sheets — stretch only</div>
+      <p style="font-size:0.78em;">Many OpenGameArt downloads are <em>sprite sheets</em>: one PNG with many frames in a grid. Using them requires <code>img.getSubimage(...)</code> and a frame counter for animation.</p>
+      <p style="font-size:0.78em;">For a Week 3 MVP, <strong>use single-image-per-entity</strong>. Treat sprite-sheet animation as a stretch goal after the game is fully playable.</p>
+      <div class="warn-box" style="margin-top:0.5em;font-size:0.78em;">
+        If your game does not yet have a working game-over and restart cycle, you should not be looking at sprite sheets.
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══════════════════════════════════════════════════════ PART 11 -->
 <section class="part-slide">
   <div class="part">
