@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Game: Driving the Build Yourself</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/night.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/monokai.css">
+  <link rel="stylesheet" href="lecture-theme.css">
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ═══════════════════════════════════════════════════════ TITLE -->
+<section>
+  <div class="hero-grid">
+    <div class="part">
+      <div class="kicker">Lecture 13</div>
+      <h1>Your Game: Driving the Build Yourself</h1>
+      <p class="subtitle">Week 3 has no seed prompts. The design is now your problem. This lecture covers the skills the seed prompts were hiding — writing a spec, scoping a project you can finish, prompting across many files, and recovering when the AI goes off the rails.</p>
+      <div class="badge-line">
+        <span class="badge">Spec writing</span>
+        <span class="badge">AI interviews</span>
+        <span class="badge">Scope</span>
+        <span class="badge">Vertical slices</span>
+        <span class="badge">Debugging</span>
+        <span class="badge">Final project</span>
+      </div>
+    </div>
+    <div class="hero-panel">
+      <div class="card-title">The Central Idea</div>
+      <p>In Weeks 1 and 2 you followed prompts someone else wrote. The game design was a given. Your job was to read what the AI produced, fix what was wrong, and extend it.</p>
+      <p>Week 3 is different. Nobody hands you a design. You write the spec, you choose the scope, you decide what the Model holds and what the Controller does. The AI is still your collaborator — but only as good as the direction you give it.</p>
+      <p>The skill this week is <strong>directing</strong> the AI, not just using it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ ROADMAP -->
+<section data-markdown>
+  <textarea data-template>
+## Roadmap
+
+1. What's actually different about Week 3
+2. Scope — the failure mode no one warns you about
+3. Letting the AI interview you
+4. From interview transcript to written spec
+5. The MVP / vertical slice principle
+6. Prompt strategies when there are no seed prompts
+7. Managing the AI's context drift
+8. Debugging your own game
+9. Refactoring as the file grows
+10. Polish on a budget
+11. The PROMPTS.md as a record of judgment
+12. The 5-minute video demo
+13. What you actually learned this semester
+
+> The goal is not just a working game. It is a game that *you* designed, scoped, built, and can defend.
+  </textarea>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ INTERFACES -->
+<section>
+  <h3>Two Kinds of AI Interface</h3>
+  <p style="font-size:0.8em;">Most of what follows works in either kind of tool, but the <em>mechanics</em> differ. Know which one you're in.</p>
+  <div class="cols-2">
+    <div class="card">
+      <div class="card-title">Chat AI</div>
+      <p style="font-size:0.8em;margin:0 0 0.3em;">claude.ai, ChatGPT, Gemini in a browser. You paste code in, it gives code back, you paste it into your editor.</p>
+      <ul style="font-size:0.7em;">
+        <li>Best for: spec interviews, design discussions, "explain this error"</li>
+        <li>You manually move code in and out</li>
+        <li>The AI never touches your files</li>
+        <li>Drift is common — the AI's idea of your code lags reality</li>
+      </ul>
+    </div>
+    <div class="card layer-ctrl">
+      <div class="card-title">Agentic AI</div>
+      <p style="font-size:0.8em;margin:0 0 0.3em;">GitHub Copilot agent mode, Claude Code, Cursor, Google Antigravity. The AI reads and edits files directly, runs commands, sees compile errors itself.</p>
+      <ul style="font-size:0.7em;">
+        <li>Best for: scoped edits, refactors, "make this test pass"</li>
+        <li>The AI sees your real files — no pasting needed</li>
+        <li>It can run the build and react to errors</li>
+        <li>It can also delete or rewrite more than you intended — review every diff</li>
+      </ul>
+    </div>
+  </div>
+  <div class="good-box" style="margin-top:0.5em;">
+    Most students will use both: chat for thinking, agentic for editing. The interview pattern in Part 3 is pure chat. The scoped-edit and refactor patterns later use either, but they look different in each.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 1 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 1</div>
+    <h2>What's Actually Different About Week 3</h2>
+    <p class="subtitle">The seed prompts are gone. Understanding what they were doing for you is the first step in replacing them.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### What the Seed Prompts Were Doing for You
+
+In Weeks 1 and 2, the seed prompts quietly handled four things:
+
+- **Scoping** — "a Snake game on a 20x20 grid" is small enough to finish
+- **Architecture** — the prompts told you which classes to make and what each one held
+- **Order** — skeleton first, then movement, then collision, then game over
+- **Vocabulary** — they used terms like *grid cell*, *Swing timer*, *bounding box*
+
+When you write your own prompts in Week 3, you take over all four jobs.
+
+> The AI is excellent at "build X." It is bad at "decide what X should be." Most Week 3 difficulty comes from skipping the deciding.
+  </textarea>
+</section>
+
+<section>
+  <h3>Where Week 3 Projects Actually Fail</h3>
+  <div class="cols-2">
+    <div>
+      <div class="card-title" style="color:var(--rose);margin-bottom:0.4em;">Common failure modes</div>
+      <ul>
+        <li>The game was too ambitious — student spent three days on a menu system and never got to gameplay</li>
+        <li>The student described the game in vibes ("a fun puzzle game") and the AI built a different game each time it was asked</li>
+        <li>Files grew to 600 lines and the AI started forgetting what was in them</li>
+        <li>An early bug was patched over instead of fixed; later features built on the broken patch</li>
+        <li>No `ModelTester` was written, so bugs only surfaced through gameplay</li>
+      </ul>
+    </div>
+    <div>
+      <div class="card-title" style="color:var(--mint);margin-bottom:0.4em;">What works instead</div>
+      <ul>
+        <li>A small, well-defined game finished early, then polished</li>
+        <li>A written spec the AI can be re-grounded on</li>
+        <li>A playable vertical slice within the first hour</li>
+        <li>Scoped prompts that name the file and method to change</li>
+        <li>A `ModelTester` extended with each new behavior</li>
+      </ul>
+      <div class="good-box" style="margin-top:0.5em;">
+        Finished and small beats ambitious and broken. Every time.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 2 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 2</div>
+    <h2>Scope — The Failure Mode No One Warns You About</h2>
+    <p class="subtitle">Most failed Week 3 projects are not failures of code. They are failures of scope.</p>
+  </div>
+</section>
+
+<section>
+  <h3>The Scope Thermometer</h3>
+  <div class="cols-3" style="margin-top:0.4em;">
+    <div class="card layer-view">
+      <div class="card-title">Safe — pick this</div>
+      <ul>
+        <li><strong>Pong</strong></li>
+        <li><strong>Breakout</strong></li>
+        <li><strong>Asteroids</strong> (simple)</li>
+        <li><strong>Snake variants</strong></li>
+      </ul>
+      <p class="muted" style="font-size:0.6em;margin:0.4em 0 0;">One core mechanic. Few entity types. Finishable in a week with time left for polish.</p>
+    </div>
+    <div class="card layer-ctrl">
+      <div class="card-title">Real but doable</div>
+      <ul>
+        <li><strong>Frogger</strong></li>
+        <li><strong>Tetris</strong></li>
+        <li><strong>Missile Command</strong></li>
+        <li><strong>Centipede</strong></li>
+      </ul>
+      <p class="muted" style="font-size:0.6em;margin:0.4em 0 0;">Multiple entity types or a non-trivial rule (line-clearing, lane logic). Possible if you start early.</p>
+    </div>
+    <div class="card layer-model">
+      <div class="card-title" style="color:var(--rose)">Danger zone</div>
+      <ul>
+        <li><strong>Pac-Man with 4 ghost AIs</strong></li>
+        <li><strong>Platformer with levels</strong></li>
+        <li><strong>RPG with inventory</strong></li>
+        <li><strong>Multiplayer anything</strong></li>
+      </ul>
+      <p class="muted" style="font-size:0.6em;margin:0.4em 0 0;">Possible — but most students who start here finish nothing playable. Cut the scope, then cut again.</p>
+    </div>
+  </div>
+  <div class="warn-box" style="margin-top:0.6em;">
+    Rule of thumb: if you cannot describe the core gameplay loop in two sentences, your idea is too big. Cut until you can.
+  </div>
+</section>
+
+<section>
+  <h3>How to Cut Scope: A Worked Example</h3>
+  <div class="cols-2">
+    <div>
+      <div class="card-title" style="color:var(--rose);margin-bottom:0.4em;">Original idea</div>
+      <p>"Pac-Man with four ghosts that each have different personalities, fruit bonus items, multiple levels, a high score table, and power pellets that let Pac-Man eat ghosts."</p>
+      <p class="muted" style="font-size:0.65em;">Five major systems. Each one is a multi-day project. None of them are the <em>core</em> game.</p>
+    </div>
+    <div>
+      <div class="card-title" style="color:var(--mint);margin-bottom:0.4em;">Cut down</div>
+      <p>"Pac-Man eats pellets in a fixed maze. One ghost chases him by moving toward his current cell. Game ends when all pellets are gone (win) or the ghost touches Pac-Man (lose)."</p>
+      <p class="muted" style="font-size:0.65em;">One entity type beyond the player. One rule per system. Win and lose conditions both stated. <em>This</em> is the MVP.</p>
+    </div>
+  </div>
+  <div class="good-box" style="margin-top:0.5em;">
+    The original idea is not gone — it is the stretch goal. Build the cut-down version first. Add features only after it works end-to-end.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 3 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 3</div>
+    <h2>Let the AI Interview You</h2>
+    <p class="subtitle">Before asking the AI to <em>write</em> anything, ask it to <em>ask you</em> questions. The AI is more useful as an interviewer than as an oracle.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### The Mistake This Avoids
+
+The most common Week 3 first prompt:
+
+> "Build me a Breakout game in Java with Swing using MVC."
+
+The AI will happily build *a* Breakout game. But it will not be *your* Breakout game — because you did not tell it what your Breakout game is. Then you spend two hours rewriting decisions the AI made for you while you weren't looking.
+
+A better first move: don't ask for code at all. Ask the AI to interview you about what you want.
+  </textarea>
+</section>
+
+<section>
+  <h3>The Interview Prompt</h3>
+  <div class="prompt-box">
+    <p>I want to build a <strong>[game name]</strong> in Java with Swing using MVC. Before we write any code, interview me. Ask me <strong>one question at a time</strong> about gameplay, controls, win and loss conditions, and what should be on the screen. After about 8 questions, summarize what I told you as a one-page spec organized by Model, View, and Controller.</p>
+  </div>
+  <div class="cols-2" style="margin-top:0.5em;">
+    <div class="card">
+      <div class="card-title">Why "one at a time"</div>
+      <p>A wall of ten questions gets a wall of ten half-thought answers. One at a time forces a real decision before the next question lands. This is the same reason teachers do not hand you the whole exam before reading the first question.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Why "summarize as a spec"</div>
+      <p>The summary is structured around MVC because the rest of your project is structured around MVC. The interview ends with an artifact you can immediately use — not just a chat transcript.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h3>A Real Interview — Excerpt</h3>
+  <div style="font-size:0.7em;">
+  <div class="card" style="margin-bottom:0.4em;">
+    <div class="card-title">AI</div>
+    <p style="margin:0;">In your Frogger, what happens when the frog is hit by a car — does it lose a life and respawn at the start, or is the game over immediately?</p>
+  </div>
+  <div class="card layer-ctrl" style="margin-bottom:0.4em;">
+    <div class="card-title">You</div>
+    <p style="margin:0;">Loses a life and respawns. Three lives total.</p>
+  </div>
+  <div class="card" style="margin-bottom:0.4em;">
+    <div class="card-title">AI</div>
+    <p style="margin:0;">Got it. When the frog is on a log floating across water, does it move with the log automatically, or does the player still have to press keys to keep up?</p>
+  </div>
+  <div class="card layer-ctrl" style="margin-bottom:0.4em;">
+    <div class="card-title">You</div>
+    <p style="margin:0;">It moves with the log. If the log carries the frog off-screen, that's a death.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">AI</div>
+    <p style="margin:0;">Good — that means the Model needs to know which lane the frog is in and whether that lane has a "carrier" object under it. Next question: how many lanes total, and in what order?</p>
+  </div>
+  </div>
+  <div class="good-box" style="margin-top:0.5em;font-size:0.7em;">
+    Notice: by question 3, the AI is already starting to think in terms of the Model. That is the whole point — the interview shapes the design <em>before</em> any code exists to constrain it.
+  </div>
+</section>
+
+<section>
+  <h3>Variations Worth Knowing</h3>
+  <div class="cols-2">
+    <div class="card">
+      <div class="card-title">The skeptic</div>
+      <p>"Now play devil's advocate. What is still underspecified in what I told you? What will be ambiguous when I start coding?"</p>
+      <p class="muted" style="font-size:0.65em;margin:0;">Use after the spec summary. Catches the gaps you didn't notice.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">The scope reviewer</div>
+      <p>"Given a one-week deadline and that I'm a beginner, which features in this spec should I cut for an MVP? Which are stretch goals?"</p>
+      <p class="muted" style="font-size:0.65em;margin:0;">Trades on the AI's pattern-matching: it has seen many failed projects and knows what cuts first.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">The user simulator</div>
+      <p>"Pretend you are a player who has just opened my game. Walk through your first 60 seconds. Where do you get confused? What do you want to do that the spec doesn't allow?"</p>
+      <p class="muted" style="font-size:0.65em;margin:0;">Reveals missing onboarding, missing pause keys, missing restart logic.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">The MVC auditor</div>
+      <p>"Look at my spec and tell me, for each rule, which MVC layer it belongs in. Flag any rule that seems to live in two layers."</p>
+      <p class="muted" style="font-size:0.65em;margin:0;">Surfaces Model/View confusion before it ends up in code.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 4 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 4</div>
+    <h2>From Interview to Written Spec</h2>
+    <p class="subtitle">The spec lives in your README.md. It is a contract with yourself — and a context document you will paste to the AI repeatedly.</p>
+  </div>
+</section>
+
+<section>
+  <h3>What a Good Spec Looks Like</h3>
+  <div class="cols-2">
+    <div>
+      <pre><code class="language-markdown" data-trim>
+# Frogger — Spec
+
+## Gameplay
+A frog crosses a road and a river. The road has
+cars; getting hit costs a life. The river has logs;
+the frog must ride them to cross. Three lives.
+Reach the top to win the level.
+
+## Model — FrogModel.java
+- frog x, y (grid coords)
+- lives (int, starts at 3)
+- score (int)
+- 5 lanes, each a List&lt;LaneObject&gt;
+- gameState: PLAYING / WON / LOST
+
+## View — FrogView.java
+- draws frog as green square
+- draws each lane (cars red, logs brown)
+- draws lives count and score top-left
+- draws "GAME OVER" / "YOU WIN" centered
+
+## Controller — FrogController.java
+- arrow keys move frog one cell
+- Swing Timer ticks every 100ms
+- on tick: advance lanes, check collisions
+- R key restarts after game over
+
+## "Done" for this week
+Frog can cross both road and river. Lives work.
+Win and lose screens appear. R restarts.
+      </code></pre>
+    </div>
+    <div>
+      <div class="card-title" style="color:var(--mint);margin-bottom:0.4em;">Why this spec works</div>
+      <ul>
+        <li>Each layer's data is enumerated</li>
+        <li>"Done" is concrete and testable</li>
+        <li>Stretch features are <em>not</em> here — they go in a separate section if at all</li>
+        <li>Short enough to paste into a prompt as context</li>
+        <li>Specific enough that the AI cannot drift into building a different game</li>
+      </ul>
+      <div class="good-box" style="margin-top:0.5em;">
+        Your spec is your most-pasted document this week. Treat it as code.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h3>Bad Spec vs Good Spec</h3>
+  <div class="cols-2">
+    <div class="card" style="border-color:var(--rose);">
+      <div class="card-title" style="color:var(--rose);">Bad</div>
+      <p>"A fun puzzle game with cool levels and good controls. The player solves puzzles to advance. There will be a score and probably some kind of timer. I want it to feel polished."</p>
+      <p class="muted" style="font-size:0.65em;margin-top:0.4em;">Every sentence is a vibe, not a fact. The AI will invent five different games across five prompts.</p>
+    </div>
+    <div class="card layer-view">
+      <div class="card-title" style="color:var(--mint);">Good</div>
+      <p>"Sokoban on a 10x10 grid. Player pushes boxes onto target tiles. Player cannot pull. Boxes cannot be pushed into walls or other boxes. Level is won when every target tile has a box on it. One hard-coded level. Arrow keys to move. R to restart."</p>
+      <p class="muted" style="font-size:0.65em;margin-top:0.4em;">Every sentence is a rule the AI can implement and you can test.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 5 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 5</div>
+    <h2>Build a Vertical Slice First</h2>
+    <p class="subtitle">A playable bad game beats an unplayable good one. Get something on screen that responds to input within the first hour.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### The Vertical Slice Principle
+
+A **vertical slice** is the smallest version of your game that touches all three MVC layers and is actually playable.
+
+For Breakout, the vertical slice is:
+
+- a paddle that moves left and right (Controller → Model → View)
+- a ball that bounces off walls and the paddle (Model rule, View draws)
+- *no bricks, no score, no lives, no game over*
+
+That slice is not a finished game. But it proves the pipeline works. Once it does, every new feature is an addition to a working program — not a step closer to one.
+
+The opposite mistake is to build a **horizontal layer** first: a beautiful menu screen, a settings system, a high-score persistence layer — none of which can be tested because there is no game yet.
+
+> Build down through all three layers before you build out across features.
+  </textarea>
+</section>
+
+<section>
+  <h3>Suggested Build Order</h3>
+  <div class="cols-2">
+    <div>
+      <ol>
+        <li><strong>Spec the game</strong> — one page, in README.md</li>
+        <li><strong>Generate three class shells</strong> — Model, View, Controller, compiles, opens window</li>
+        <li><strong>Get one entity drawn</strong> — the player, in the right place</li>
+        <li><strong>Get one input working</strong> — arrow keys move the player</li>
+        <li><strong>Add the timer</strong> — one Model thing updates each tick</li>
+        <li><strong>Add the core mechanic</strong> — collision, scoring, whatever the game is about</li>
+        <li><strong>Add win and lose conditions</strong> — game cannot run forever</li>
+        <li><strong>Add restart</strong> — R key resets state</li>
+        <li><strong>Now add features and polish</strong></li>
+      </ol>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-title">If you stop at step 8</div>
+        <p>You have a complete, defensible Week 3 submission. It is small but it is whole. That is a B+ project.</p>
+      </div>
+      <div class="card layer-view" style="margin-top:0.5em;">
+        <div class="card-title">Steps 1–8 in one hour</div>
+        <p>Aggressive, but possible if your spec is tight and your prompts are scoped. Most students who hit step 8 quickly end up with the strongest projects — they have time left for the things that make a game feel <em>finished</em>.</p>
+      </div>
+      <div class="warn-box" style="margin-top:0.5em;">
+        If you are on day three and still on step 4, your scope is too big. Cut, do not push through.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 6 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 6</div>
+    <h2>Prompt Strategies When There Are No Seed Prompts</h2>
+    <p class="subtitle">Five prompt patterns that replace what the seed prompts gave you in Weeks 1 and 2.</p>
+  </div>
+</section>
+
+<section>
+  <h3>Pattern 1 — The Spec Dump</h3>
+  <div class="prompt-box">
+    <p>I am building <strong>[game]</strong> in Java with Swing using MVC. Here is my spec:</p>
+    <p style="font-style:italic;">[paste your full spec from README.md]</p>
+    <p>Generate three class shells — <code>GameModel.java</code>, <code>GameView.java</code>, <code>GameController.java</code> — with method stubs based on this design. <code>GameModel</code> must not import any Swing classes. The program should compile and open a blank window.</p>
+  </div>
+  <p class="muted" style="font-size:0.7em;margin-top:0.4em;">Use this <strong>once</strong> at the very start. The spec dump is what gives the AI a shared mental model with you. Don't paste the spec every time — only when you are starting fresh or correcting drift.</p>
+</section>
+
+<section>
+  <h3>Pattern 2 — The Scoped Edit</h3>
+  <div class="prompt-box">
+    <p>In <code>FrogModel.java</code>, add a method <code>advanceLanes()</code> that moves every object in every lane by its <code>speed</code> field. Wrap objects around the screen edges. <strong>Do not modify FrogView or FrogController.</strong> Show me only the new method — I will paste it in.</p>
+  </div>
+  <div class="cols-2" style="margin-top:0.4em;">
+    <div>
+      <ul style="font-size:0.75em;">
+        <li>Names <em>one</em> file</li>
+        <li>Names <em>one</em> method</li>
+        <li>Forbids changes elsewhere</li>
+        <li>Returns a snippet, not a rewrite</li>
+      </ul>
+    </div>
+    <div class="good-box" style="font-size:0.75em;">
+      Most of your prompts in Week 3 should look like this. Scoped edits prevent the AI from "helpfully" rewriting code you didn't ask it to touch. <strong>In agentic tools</strong> (Copilot agent, Claude Code, Antigravity), the AI will edit the file directly — read the diff before accepting, and undo immediately if it touched anything outside the named scope.
+    </div>
+  </div>
+</section>
+
+<section>
+  <h3>Pattern 3 — The Paste-the-File Prompt</h3>
+  <div class="prompt-box">
+    <p>Here is my current <code>FrogModel.java</code> in full:</p>
+    <p style="font-style:italic;">[paste the entire file]</p>
+    <p>I want to add a power-up that gives the frog two extra lives. Where in this file should the new state live, and what method should add it? Show me the diff, not a rewrite of the whole file.</p>
+  </div>
+  <p class="muted" style="font-size:0.7em;margin-top:0.4em;">Use this when the AI's idea of your file has drifted (you can tell — it references methods that don't exist, or forgets fields you added). Pasting the file resets its mental state. <strong>In agentic tools you usually don't need to paste</strong> — the AI reads the file itself. But you may still need to <em>name</em> it explicitly ("look at FrogModel.java first") if the tool doesn't pick it up automatically.</p>
+</section>
+
+<section>
+  <h3>Pattern 4 — The Error-First Prompt</h3>
+  <div class="prompt-box">
+    <p>I am getting this exception when I press the spacebar:</p>
+    <pre style="font-size:0.6em;background:rgba(0,0,0,0.3);padding:0.4em;border-radius:4px;">Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
+        at FrogController.keyPressed(FrogController.java:47)
+        at java.desktop/java.awt.Component.processKeyEvent(...)</pre>
+    <p>Here is the relevant method from <code>FrogController.java</code>:</p>
+    <p style="font-style:italic;">[paste the keyPressed method]</p>
+    <p>What is null on line 47, and why?</p>
+  </div>
+  <p class="muted" style="font-size:0.7em;margin-top:0.4em;">Bad: "it's broken, fix it." Good: stack trace, the relevant code, a hypothesis or specific question. The AI is far better at debugging when given the same context a human debugger would want. <strong>In agentic tools</strong> you can often just paste the trace and say "find and fix it" — but you'll still get better results if you add a hypothesis. The agent reads code; it does not read your mind.</p>
+</section>
+
+<section>
+  <h3>Pattern 5 — The Test Extension</h3>
+  <div class="prompt-box">
+    <p>Here is my <code>ModelTester.java</code>:</p>
+    <p style="font-style:italic;">[paste it]</p>
+    <p>Add three new test methods that verify: (1) the frog cannot move off the bottom edge, (2) crossing into the river without a log decrements lives, (3) reaching the top row sets <code>gameState</code> to <code>WON</code>. Use the same <code>check(name, condition)</code> helper. Do not change the existing tests.</p>
+  </div>
+  <p class="muted" style="font-size:0.7em;margin-top:0.4em;">From Lecture 12. Every new Model behavior should ship with a new test. The AI is good at writing these once you've shown it the pattern.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 7 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 7</div>
+    <h2>Managing the AI's Context Drift</h2>
+    <p class="subtitle">After 30+ messages the AI forgets your design. Recognizing this — and recovering from it — is a Week 3 skill.</p>
+  </div>
+</section>
+
+<section>
+  <h3>Symptoms of Context Drift</h3>
+  <div class="cols-2">
+    <div>
+      <ul>
+        <li>The AI adds Swing imports back to your Model</li>
+        <li>It renames a method you've been using for the last hour</li>
+        <li>It "helpfully" rewrites a method you didn't ask it to touch</li>
+        <li>It references a method that doesn't exist in your file</li>
+        <li>It forgets a rule from your spec ("the frog moves with the log")</li>
+        <li>It produces code that compiles but does the wrong thing</li>
+      </ul>
+    </div>
+    <div>
+      <div class="card-title" style="color:var(--mint);margin-bottom:0.4em;">Defenses</div>
+      <ul>
+        <li><strong>Re-paste the spec</strong> (or, in agentic tools, point at <code>README.md</code>) at the top of important prompts</li>
+        <li><strong>Paste the actual file</strong> when the AI's mental model is off — or in agentic tools, tell it to re-read the file</li>
+        <li><strong>Ask for diffs</strong>, not whole files — easier to review, less drift</li>
+        <li><strong>Read every change</strong> before accepting it — pasting in chat, or approving a diff in agentic tools</li>
+        <li><strong>Start a fresh chat / new agent session</strong> when the AI is arguing with its own earlier wrong answer</li>
+      </ul>
+      <div class="warn-box" style="margin-top:0.5em;">
+        If a chat has gone in circles for 5+ turns, the chat itself is the problem. Open a new one.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h3>The Fresh-Chat Restart Recipe</h3>
+  <div class="prompt-box">
+    <p>I am partway through building <strong>[game]</strong> in Java with Swing using MVC.</p>
+    <p>Here is my spec:</p>
+    <p style="font-style:italic;">[paste spec]</p>
+    <p>Here are my current files:</p>
+    <p style="font-style:italic;">[paste FrogModel.java]<br>[paste FrogView.java]<br>[paste FrogController.java]</p>
+    <p>Right now I am stuck on <strong>[specific problem]</strong>. Help me with that and only that.</p>
+  </div>
+  <p class="muted" style="font-size:0.7em;margin-top:0.4em;">A fresh chat with full context will out-perform a long chat with stale context almost every time. Don't be afraid to restart. <strong>Save the previous chat's key prompts to PROMPTS.md before you do.</strong></p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 8 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 8</div>
+    <h2>Debugging Your Own Game</h2>
+    <p class="subtitle">When the bug is yours and there's no seed prompt to fall back on, you need a debugging method.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### The Debugging Sequence
+
+1. **Read the stack trace** — top line is the exception type, next line is the file and line number where it happened
+2. **Find the line** — open that file, look at it, read the line above and below
+3. **Form a hypothesis** — "I think the bullet list is null because it isn't initialized in the constructor"
+4. **Test the hypothesis cheaply** — add a `System.out.println`, or look at the constructor
+5. **Only then ask the AI** — give it the trace, the file, and your hypothesis
+
+The first four steps cost two minutes. They make the fifth step ten times more productive.
+
+> Asking the AI before forming a hypothesis is asking it to do your thinking for you. It will, badly.
+  </textarea>
+</section>
+
+<section>
+  <h3>Bad Debug vs Good Debug</h3>
+  <div class="cols-2">
+    <div class="card" style="border-color:var(--rose);">
+      <div class="card-title" style="color:var(--rose);">Bad</div>
+      <p style="font-style:italic;">"my game is broken can u fix it"</p>
+      <p class="muted" style="font-size:0.7em;">No file, no error, no hypothesis. The AI guesses, you paste the guess, the new bug is worse than the old one.</p>
+    </div>
+    <div class="card layer-view">
+      <div class="card-title" style="color:var(--mint);">Good</div>
+      <p style="font-style:italic;">"The ball passes through the paddle when moving fast. I think this is a tunneling bug — the ball moves more than its own width per tick, so the collision check at the new position misses. Here is my <code>checkPaddleCollision</code> method. Is my hypothesis right, and how would I fix it?"</p>
+      <p class="muted" style="font-size:0.7em;">Names the symptom, names the suspected cause, asks a specific question. The AI now has somewhere useful to start.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h3>When the Bug Is in the Model — Use the Tester</h3>
+  <pre><code class="language-java" data-trim>
+// add this BEFORE asking the AI to fix anything
+public static void testBallPaddleCollision() {
+    GameModel m = new GameModel();
+    m.setBall(100, 200, 0, 30);   // ball moving down 30 px/tick
+    m.setPaddle(80, 210, 60, 10); // paddle just below it
+    m.tick();
+    check("ball bounces off paddle when moving fast",
+          m.getBallVY() &lt; 0);
+}
+  </code></pre>
+  <div class="good-box" style="margin-top:0.5em;">
+    A failing test is a more precise bug report than any sentence you can write. If you can reproduce the bug in <code>ModelTester</code>, the AI can fix it without ever seeing the View or Controller.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 9 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 9</div>
+    <h2>Refactoring as the File Grows</h2>
+    <p class="subtitle">When GameModel.java hits 300 lines, the AI starts forgetting things. Time to extract.</p>
+  </div>
+</section>
+
+<section>
+  <h3>When and What to Extract</h3>
+  <div class="cols-2">
+    <div>
+      <div class="card-title">Signs you should refactor</div>
+      <ul>
+        <li>One file is over 300 lines</li>
+        <li>The AI forgets fields you added an hour ago</li>
+        <li>You have to scroll to find anything</li>
+        <li>One concept (Ball, Brick, Ghost) appears in dozens of places</li>
+      </ul>
+    </div>
+    <div>
+      <div class="card-title">Common extractions</div>
+      <ul>
+        <li>An <code>Entity</code> class for things with x, y, width, height</li>
+        <li>A <code>Sprite</code> class for image-loading logic</li>
+        <li>A <code>Level</code> class for level layout data</li>
+        <li>A <code>Sound</code> helper for audio</li>
+        <li>An <code>InputState</code> class held by the Controller</li>
+      </ul>
+    </div>
+  </div>
+  <div class="warn-box" style="margin-top:0.5em;">
+    Refactor only after the game works. <strong>Never</strong> refactor while debugging — you cannot tell whether your bug fix worked or whether the refactor introduced new bugs.
+  </div>
+</section>
+
+<section>
+  <h3>The Refactor Prompt</h3>
+  <div class="prompt-box">
+    <p>Here is my <code>BreakoutModel.java</code>:</p>
+    <p style="font-style:italic;">[paste full file]</p>
+    <p>The Brick concept appears in many places — its position, its color, whether it's destroyed. Extract a <code>Brick</code> class in a new file <code>Brick.java</code> with fields and a constructor. Update <code>BreakoutModel</code> to use a <code>List&lt;Brick&gt;</code> instead of parallel arrays. Show me both files in full. <strong>Do not change game behavior</strong> — this is a pure refactor.</p>
+  </div>
+  <p class="muted" style="font-size:0.7em;margin-top:0.4em;">"Pure refactor — do not change behavior" is critical. Without it the AI may "improve" your logic and break things. After the refactor, run your <code>ModelTester</code> — if all tests still pass, the refactor was clean. <strong>Agentic tools shine here</strong>: a single prompt can edit multiple files, run the tester, and report back. Commit before you start so you can revert in one command if it goes sideways.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 10 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 10</div>
+    <h2>Polish on a Budget</h2>
+    <p class="subtitle">Two well-chosen polish features make a game feel finished. Five half-finished ones make it feel broken. Pick two.</p>
+  </div>
+</section>
+
+<section>
+  <h3>High-Leverage Polish</h3>
+  <div class="cols-2">
+    <div>
+      <div class="card-title" style="color:var(--mint);">Disproportionate impact</div>
+      <ul>
+        <li><strong>Title screen</strong> with the game name and "Press SPACE to start"</li>
+        <li><strong>Pause key</strong> (P) that freezes the timer</li>
+        <li><strong>One sound effect</strong> on the most important event (hit, score, death)</li>
+        <li><strong>Persistent high score</strong> — read and write a single int from a text file</li>
+        <li><strong>A clean death and restart cycle</strong> — game over, R restarts, no leftover state</li>
+      </ul>
+    </div>
+    <div>
+      <div class="card-title" style="color:var(--rose);">Low leverage — skip</div>
+      <ul>
+        <li>Custom fonts</li>
+        <li>Animated sprites with multiple frames</li>
+        <li>Particle effects</li>
+        <li>Settings menus</li>
+        <li>Difficulty levels (unless this is the core mechanic)</li>
+      </ul>
+      <p class="muted" style="font-size:0.65em;">Low-leverage polish takes hours and rarely shows up in a 5-minute demo.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h3>The Title Screen Pattern</h3>
+  <pre><code class="language-java" data-trim>
+// in GameModel
+public enum State { TITLE, PLAYING, GAME_OVER }
+private State state = State.TITLE;
+
+public void startGame() { state = State.PLAYING; }
+public State getState() { return state; }
+  </code></pre>
+  <pre><code class="language-java" data-trim>
+// in GameView.paintComponent
+switch (model.getState()) {
+    case TITLE     -> drawTitle(g);
+    case PLAYING   -> drawGame(g);
+    case GAME_OVER -> { drawGame(g); drawGameOver(g); }
+}
+  </code></pre>
+  <p class="muted" style="font-size:0.7em;margin-top:0.4em;">A state enum in the Model lets the View pick what to draw without holding any logic of its own. Adding a pause state later is a one-line change.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 11 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 11</div>
+    <h2>PROMPTS.md as a Record of Judgment</h2>
+    <p class="subtitle">This week needs at least 10 prompts. The graders care less about the count than about the one labeled "this is where the AI was wrong."</p>
+  </div>
+</section>
+
+<section>
+  <h3>What Goes in PROMPTS.md This Week</h3>
+  <div class="cols-2">
+    <div>
+      <ul>
+        <li>The interview that produced your spec</li>
+        <li>The spec-dump prompt that started the build</li>
+        <li>A scoped-edit prompt for one of your features</li>
+        <li>A debugging prompt with the stack trace</li>
+        <li>One prompt where the AI was wrong, and what you did</li>
+        <li>A refactor prompt (if you did one)</li>
+        <li>A test-extension prompt for ModelTester</li>
+      </ul>
+    </div>
+    <div>
+      <div class="card-title">For each entry</div>
+      <ul>
+        <li>Copy the prompt verbatim</li>
+        <li>One sentence on what the AI produced</li>
+        <li>One sentence on what you changed and why</li>
+        <li>If it was wrong: what was wrong, how you noticed, what you did instead</li>
+      </ul>
+      <div class="good-box" style="margin-top:0.4em;">
+        Honesty matters more than polish. "I asked it to add bricks and it deleted my paddle code, so I reverted and asked again with 'do not modify the paddle'" is a great entry.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h3>One Good Entry — Example</h3>
+  <div class="card" style="font-size:0.7em;">
+    <div class="card-title">Prompt 6 — Adding ghost AI (first attempt)</div>
+    <p><strong>Prompt:</strong> "Add a ghost that chases Pac-Man."</p>
+    <p><strong>What it did:</strong> Generated a Ghost class and a movement method that called <code>Math.atan2</code> with floating-point coordinates. My Model uses integer grid cells.</p>
+    <p><strong>Why it was wrong:</strong> The AI assumed continuous movement because I never told it the maze was a grid. The ghost ended up between cells, which broke my collision check.</p>
+    <p><strong>What I did:</strong> Re-prompted with: "My maze is a 20x15 grid of integer cells. The ghost should also live on grid cells, moving one cell per tick toward Pac-Man's current cell. Use <code>Math.signum(dx)</code> and <code>Math.signum(dy)</code>, and prefer the longer axis when both are nonzero."</p>
+    <p><strong>What I learned:</strong> The AI defaults to physics-style movement unless told otherwise. My spec didn't say "grid-based" loud enough.</p>
+  </div>
+  <p class="muted" style="font-size:0.7em;margin-top:0.4em;">An entry like this is worth five "it worked great!" entries combined. It shows judgment.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 12 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 12</div>
+    <h2>The 5-Minute Video Demo</h2>
+    <p class="subtitle">A demo is not a screen recording of you playing. It is a guided tour. Plan it like a presentation.</p>
+  </div>
+</section>
+
+<section>
+  <h3>A 5-Minute Demo, Minute by Minute</h3>
+  <table style="font-size:0.75em;">
+    <tr><th>Time</th><th>What to show</th><th>What to say</th></tr>
+    <tr><td>0:00 – 0:30</td><td>Title screen, README spec on screen</td><td>"This is [game]. The core mechanic is X. Here's the spec I wrote."</td></tr>
+    <tr><td>0:30 – 2:30</td><td>Play the game — main mechanic working</td><td>"Notice how the player can do X, the enemy responds with Y, and Z triggers when…"</td></tr>
+    <tr><td>2:30 – 3:30</td><td>Demonstrate an edge case — die on purpose, win on purpose, hit a corner case</td><td>"Here's what happens when you lose / win / hit the boundary."</td></tr>
+    <tr><td>3:30 – 4:30</td><td>Open VS Code — point to one Model method and one View method</td><td>"This rule lives in the Model because… This drawing code lives in the View because…"</td></tr>
+    <tr><td>4:30 – 5:00</td><td>One slide or one sentence</td><td>"The hardest part was X. The thing I would change with more time is Y."</td></tr>
+  </table>
+  <div class="warn-box" style="margin-top:0.5em;">
+    Do not narrate every line of code. Pick one method per layer and explain why it lives there. The grader is checking that you understand the structure, not that you can read aloud.
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Recording Tips
+
+- Use **OBS Studio** (free) or your platform's built-in screen recorder
+- Record in 1080p so code is readable
+- Run a microphone check first — bad audio sinks an otherwise good demo
+- Have your spec, your game, and VS Code open before you hit record
+- Do **one full take** and only re-record if something is genuinely broken
+- Upload to **YouTube (unlisted)** or **MediaSpace** and submit the link
+
+> A real recording of a small working game beats a polished trailer for a game that doesn't run.
+  </textarea>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ PART 13 -->
+<section class="part-slide">
+  <div class="part">
+    <div class="kicker">Part 13</div>
+    <h2>What You Actually Learned This Semester</h2>
+    <p class="subtitle">The course was not really about Java or Swing. Step back and look at what you can do now.</p>
+  </div>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### The Real Curriculum
+
+You learned Java syntax, Swing, MVC, and testing — those were the visible curriculum.
+
+Underneath, you learned something more durable:
+
+- How to **decompose** a problem into pieces small enough to prompt
+- How to **direct an AI** with scope, vocabulary, and verifiable outcomes
+- How to **read code you didn't write** well enough to fix it
+- How to **recognize when an AI is wrong** and recover
+- How to **test behavior** independently of how it's displayed
+- How to **manage your own work** with Git, with PROMPTS.md, with a spec
+
+> The next time you pick up an unfamiliar language or framework, the move is the same: small spec, vertical slice, scoped prompts, test the model, read every diff. The Java is incidental. The method is the point.
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+### Working with AI After This Course
+
+Two things to take with you:
+
+**The AI is more useful as a thinking partner than as an oracle.** When you do not know what you want, do not ask it for an answer — ask it for questions. The interview pattern works for code, for writing, for design, for almost anything.
+
+**You are responsible for what you submit.** The AI does not understand your goals; it pattern-matches. The judgment about whether its output is *right* is always yours. PROMPTS.md is practice for being honest about that responsibility.
+
+> Use AI fluently and use it carefully. Those are not opposites — they are the same skill.
+  </textarea>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ SUMMARY -->
+<section data-markdown>
+  <textarea data-template>
+## Summary
+
+By the end of this lecture, you should understand that:
+
+- **scope** is the most common reason Week 3 projects fail — cut, then cut again
+- the **AI interviews you** before you ask it to write code
+- a **good spec** is concrete, structured by MVC layer, and short enough to paste
+- a **vertical slice** beats a horizontal layer — playable beats polished
+- **scoped prompts** name the file, name the method, and forbid drift — and in agentic tools, you read the diff before accepting it
+- **chat AI and agentic AI** are different tools — chat for thinking and design, agentic for editing across files
+- **context drift** is real — re-paste the spec, paste the file, start fresh chats
+- **debugging** starts with a hypothesis, not a prompt
+- **refactor** when the file grows past the AI's working memory
+- **two pieces of polish** beat five half-finished ones
+- **PROMPTS.md** is a record of your judgment, not just your prompts
+- the **demo** is a guided tour, not a screen recording
+  </textarea>
+</section>
+
+<section data-markdown>
+  <textarea data-template>
+## Reader Checklist
+
+Before submitting your final project, you should be able to say yes to each of these:
+
+- I wrote a one-page spec in `README.md` before I wrote any code.
+- I used an AI interview to surface what was missing from my spec.
+- My game has a working vertical slice — input, model update, drawing — even if features are missing.
+- My game is split into at least three files matching MVC.
+- `GameModel` does not import any Swing classes.
+- I have a `ModelTester` with at least three tests for my game's rules.
+- My `PROMPTS.md` has at least 10 entries, including one where the AI was wrong.
+- My game has a working game-over and restart cycle.
+- I recorded a 5-minute demo that shows gameplay, an edge case, and a code tour.
+- I can point to one method in each MVC layer and explain why it lives there.
+  </textarea>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/markdown/markdown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+<script src="lecture-init.js"></script>
+</body>
+</html>
